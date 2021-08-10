@@ -1,0 +1,449 @@
+---
+naming:
+  medDict: r_med_dict
+  productDict: r_product_dict
+  commonDose: r_common_dose
+  consSource: r_cons_source
+  emisCodeCat: r_emis_code_cat
+  jobCat: r_job_cat
+  gender: r_gender
+  numUnit: r_num_unit
+  obsType: r_obs_type
+  orgType: r_org_type
+  parentProbRel: r_parent_prob_rel
+  patientType: r_patient_type
+  probStatus: r_prob_status
+  quantUnit: r_quant_unit
+  refMode: r_ref_mode
+  refServiceType: r_ref_service_type
+  refUrgency: r_ref_urgency
+  region: r_region
+  sign: r_sign
+  visionToEmisMigrators: r_vision_to_emis_migrators
+keys:
+  medDict: "medcodeid"
+  productDict: "prodcodeid"
+  commonDose: "dosageid"
+  consSource: "conssourceid"
+  emisCodeCat: "emiscodecatid"
+  jobCat: "jobcatid"
+  gender: "genderid"
+  numUnit: "numunitid"
+  obsType: "obstypeid"
+  orgType: "orgtypeid"
+  parentProbRel: "parentprobrelid"
+  patientType: "patienttypeid"
+  probStatus: "probstatusid"
+  quantUnit: "quantunitid"
+  refMode: "refmodeid"
+  refServiceType: "refservicetypeid"
+  refUrgency: "refurgencyid"
+  region: "regionid"
+  sign: "signid"
+paths:
+  medDict: "{refPath}/202005_EMISMedicalDictionary.txt"
+  productDict: "{refPath}/202005_EMISProductDictionary.txt"
+  commonDose: "{refPath}/common_dosages.txt"
+  consSource: "{refPath}/ConsSource.txt"
+  emisCodeCat: "{refPath}/EmisCodeCat.txt"
+  jobCat: "{refPath}/JobCat.txt"
+  gender: "{refPath}/Gender.txt"
+  numUnit: "{refPath}/NumUnit.txt"
+  obsType: "{refPath}/ObsType.txt"
+  orgType: "{refPath}/OrgType.txt"
+  parentProbRel: "{refPath}/ParentProbRel.txt"
+  patientType: "{refPath}/PatientType.txt"
+  probStatus: "{refPath}/ProbStatus.txt"
+  quantUnit: "{refPath}/QuantUnit.txt"
+  refMode: "{refPath}/RefMode.txt"
+  refServiceType: "{refPath}/RefServiceType.txt"
+  refUrgency: "{refPath}/RefUrgency.txt"
+  region: "{refPath}/Region.txt"
+  sign: "{refPath}/Sign.txt"
+  visionToEmisMigrators: "{refPath}/VisionToEmisMigrators.txt"
+tables:
+  medDict:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{medDict}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{medDict}
+      (medcodeid BIGINT,
+      term VARCHAR(255),
+      originalreadcode VARCHAR(100),
+      cleansedreadcode VARCHAR(7),
+      snomedctconceptid BIGINT UNSIGNED,
+      snomedctdescriptionid BIGINT UNSIGNED,
+      releaseid VARCHAR(100),
+      emiscodecatid TINYINT,
+      PRIMARY KEY (medcodeid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{medDict}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (medcodeid, term, originalreadcode, @orig_cleansedreadcode,
+      snomedctconceptid, snomedctdescriptionid,
+      @orig_releaseid, emiscodecatid)
+      SET cleansedreadcode = NULLIF(@orig_cleansedreadcode,''),
+      releaseid = NULLIF(@orig_releaseid,'');
+  productDict:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{productDict};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{productDict}
+      (prodcodeid BIGINT,
+      dmdid BIGINT UNSIGNED,
+      termfromemis VARCHAR(255),
+      productname VARCHAR(999),
+      formulation VARCHAR(999),
+      routeofadministration VARCHAR(999),
+      drugsubstancename VARCHAR(999),
+      substancestrength VARCHAR(999),
+      bnfchapter VARCHAR(999),
+      releaseid VARCHAR(100),
+      PRIMARY KEY (prodcodeid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{productDict}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (prodcodeid, @orig_dmdid, @orig_termfromemis, @orig_productname, @orig_formulation, @orig_routeofadministration, @orig_drugsubstancename, @orig_substancestrength, @orig_bnfchapter, @orig_releaseid)
+      SET dmdid = NULLIF(@orig_dmdid,''),
+      termfromemis = @orig_termfromemis,
+      productname = IF(@orig_productname='',@orig_termfromemis,@orig_productname),
+      formulation = NULLIF(@orig_formulation,''),
+      routeofadministration = NULLIF(@orig_routeofadministration,''),
+      drugsubstancename = NULLIF(@orig_drugsubstancename,''),
+      substancestrength = NULLIF(@orig_substancestrength,''),
+      bnfchapter = NULLIF(@orig_bnfchapter,''),
+      releaseid = NULLIF(@orig_releaseid,'');
+  commonDose:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{commonDose};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{commonDose}
+      (dosageid CHAR(64),
+      dosage_text VARCHAR(999),
+      daily_dose DECIMAL(15,9),
+      dose_number DECIMAL(14,7),
+      dose_unit VARCHAR(20),
+      dose_frequency DECIMAL(9,6),
+      dose_interval DECIMAL(11,8),
+      choice_of_dose TINYINT,
+      dose_max_average TINYINT,
+      change_dose TINYINT,
+      dose_duration DECIMAL(4,1),
+      PRIMARY KEY (dosageid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{commonDose}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (dosageid, dosage_text, daily_dose, @orig_dose_number, @orig_dose_unit, dose_frequency, dose_interval, choice_of_dose, dose_max_average, change_dose, dose_duration)
+      SET dose_number = IF(@orig_dose_number > 9999999,NULL,@orig_dose_number),
+      dose_unit = NULLIF(@orig_dose_unit,'');
+  consSource:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{consSource};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{consSource}
+      (conssourceid BIGINT,
+      description VARCHAR(100),
+      PRIMARY KEY (conssourceid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{consSource}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (conssourceid, description);
+  emisCodeCat:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{emisCodeCat};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{emisCodeCat}
+      (emiscodecatid TINYINT,
+      description VARCHAR(100),
+      PRIMARY KEY (emiscodecatid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{emisCodeCat}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (emiscodecatid, description);
+  gender:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{gender};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{gender}
+      (genderid SMALLINT,
+      description VARCHAR(1),
+      PRIMARY KEY (genderid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{gender}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (genderid, description);
+  jobCat:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{jobCat};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{jobCat}
+      (jobcatid MEDIUMINT,
+      description VARCHAR(100),
+      PRIMARY KEY (jobcatid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{jobCat}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (jobcatid, description);
+  numUnit:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{numUnit};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{numUnit}
+      (numunitid BIGINT,
+      description VARCHAR(100),
+      PRIMARY KEY (numunitid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{numUnit}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (numunitid, description);
+  obsType:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{obsType};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{obsType}
+      (obstypeid MEDIUMINT,
+      description VARCHAR(100),
+      PRIMARY KEY (obstypeid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{obsType}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (obstypeid, description);
+  orgType:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{orgType};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{orgType}
+      (orgtypeid SMALLINT,
+      description VARCHAR(100),
+      PRIMARY KEY (orgtypeid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{orgType}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (orgtypeid, description);
+  parentProbRel:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{parentProbRel};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{parentProbRel}
+      (parentprobrelid MEDIUMINT,
+      description VARCHAR(100),
+      PRIMARY KEY (parentprobrelid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{parentProbRel}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (parentprobrelid, description);
+  patientType:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{patientType};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{patientType}
+      (patienttypeid MEDIUMINT,
+      description VARCHAR(100),
+      PRIMARY KEY (patienttypeid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{patientType}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patienttypeid, description);
+  probStatus:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{probStatus};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{probStatus}
+      (probstatusid MEDIUMINT,
+      description VARCHAR(100),
+      PRIMARY KEY (probstatusid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{probStatus}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (probstatusid, description);
+  quantUnit:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{quantUnit};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{quantUnit}
+      (quantunitid SMALLINT,
+      description VARCHAR(100),
+      PRIMARY KEY (quantunitid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{quantUnit}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (quantunitid, description);
+  refMode:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{refMode};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{refMode}
+      (refmodeid TINYINT,
+      description VARCHAR(100),
+      PRIMARY KEY (refmodeid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{refMode}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (refmodeid, description);
+  refServiceType:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{refServiceType};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{refServiceType}
+      (refservicetypeid TINYINT,
+      description VARCHAR(100),
+      PRIMARY KEY (refservicetypeid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{refServiceType}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (refservicetypeid, description);
+  refUrgency:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{refUrgency};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{refUrgency}
+      (refurgencyid TINYINT,
+      description VARCHAR(100),
+      PRIMARY KEY (refurgencyid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{refUrgency}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (refurgencyid, description);
+  region:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{region};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{region}
+      (regionid MEDIUMINT,
+      description VARCHAR(100),
+      PRIMARY KEY (regionid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{region}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (regionid, description);
+  sign:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{sign};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{sign}
+      (signid MEDIUMINT,
+      description VARCHAR(100),
+      PRIMARY KEY (signid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{sign}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (signid, description);
+  visionToEmisMigrators:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{visionToEmisMigrators};
+    create: |
+      #VisionToEmisMigrators
+      CREATE TABLE IF NOT EXISTS {dataDb}.{visionToEmisMigrators}
+      (gold_pracid SMALLINT,
+      gold_lcdate DATE,
+      emis_pracid MEDIUMINT,
+      emis_join_date DATE,
+      emis_fdcdate DATE,
+      PRIMARY KEY (gold_pracid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{visionToEmisMigrators}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (gold_pracid, @orig_gold_lcdate, emis_pracid, @orig_emis_join_date, @orig_emis_fdcdate)
+      SET gold_lcdate = STR_TO_DATE(@orig_gold_lcdate,'%d/%m/%Y'),
+      emis_join_date = STR_TO_DATE(@orig_emis_join_date,'%d/%m/%Y'),
+      emis_fdcdate = STR_TO_DATE(@orig_emis_fdcdate,'%d/%m/%Y');

@@ -1,0 +1,190 @@
+---
+title: "Getting started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Configuration and environments
+
+Configuration is stored in a private file in the users account on slade - which by default is named `~/.aurum.yaml`. 
+
+The aurum database is connected to via the mysql driver which needs a bit of configuration, in terms of username, password and server. 
+The config file also defines the possible CPRD environments you will be using, e.g. `analysis` or `test-analysis`. 
+
+The config file must be similar as follows:
+
+```YAML
+default:
+  user: <your cprd database user>
+  password: <your cprd database password>
+  server: "localhost"
+  port: 3306  
+  sessionConfig:
+    SESSION sort_buffer_size: 2*1024*1024-1
+    SESSION myisam_sort_buffer_size: 2*1024*1024-1
+    SESSION read_buffer_size: 1024*1024*1024-1
+    SESSION read_rnd_buffer_size: 1024*1024*1024-1
+    SESSION join_buffer_size: 256*1024*1024-1
+    SESSION max_heap_table_size: 4*1024*1024*1024-1
+    SESSION tmp_table_size: 4*1024*1024*1024-1
+  
+analysis:
+  dataDatabase: cprd_data
+  analysisDatabase: cprd_analysis
+  
+test-analysis:
+  dataDatabase: cprd_data
+  analysisDatabase: cprd_analysis_dev
+```
+
+In general for the `dataDatabase` you will want to use `cprd_data`, as ` cprd_data_dev` is really for testing the load process, and will not contain a complete data set.
+For the `analysisDatabase` you may wish to use `cprd_analysis_dev` while building an analysis and `cprd_analysis` when you think you have a stable approach and want to run it.
+In this example both are defined and can be selected when the connection to CPRD is made.
+
+### Different connections
+
+The example above assumes all R analysis is running on Slade, as well as any database queries the R analysis entails. This may or may not be desirable, depending on what your connection to Slade is like.
+Over a lower bandwidth connection, e.g. for remotely testing the analysis over an SSH tunnel you can combine this `~/.aurum.yaml` config
+
+```YAML
+test-remote:
+  dataDatabase: cprd_data
+  analysisDatabase: cprd_analysis_dev
+  server: 127.0.0.1
+  port: 3307
+```
+
+with this SSH configuration (`~/.ssh/config`)
+
+```console
+host hashbang
+    HostName 144.173.6.146
+    User <your exeter username>
+
+host slade
+    HostName slade.ex.ac.uk
+    User <your exeter username>
+    Cipher chacha20-poly1305@openssh.com
+    ForwardX11 yes
+    Compression yes
+    LocalForward 3307 127.0.0.1:3306
+    ProxyCommand ssh hashbang -W %h:%p
+```
+
+If you are using VPN it should be possible to do the same thing with:
+
+```YAML
+test-vpn:
+  dataDatabase: cprd_data
+  analysisDatabase: cprd_analysis_dev
+  server: slade.ex.ac.uk
+  port: 3306
+```
+
+### Session config
+
+Querying the CPRD data may put a lot of load on MySQL. We didn't get a lot of info about sensible settings from the people that required us to use MyISAM. The `sessionConfig` option in the `~/.aurum.yaml` file allow you to change the memory configuration of MySQL as you are querying it.
+Some of the possible options for these are detailed in various resources:
+
+* https://www.liquidweb.com/kb/mysql-performance-myisam/
+* https://dba.stackexchange.com/questions/136349/mysql-performance-tuning-for-myisam
+* https://dev.mysql.com/doc/refman/5.7/en/repair-table-optimization.html
+* https://dev.mysql.com/doc/refman/8.0/en/myisam-start.html
+
+This may need tweaking to optimise query performance.
+
+### Overriding defaults
+
+```{r eval=FALSE}
+
+# Sets a global debugging option which makes the library spew out debugging information
+options("cprd.debug"=TRUE)
+
+# sets the location of the configuration file (~/.aurum.yaml is the default)
+options("cprd.config"="~/.aurum.yaml")
+
+# Sets the environment that you will use for the CPRD connection. This must be one of the configurations defined in the ~/.aurum.yaml file
+options("cprd.environment"="test-analysis")
+
+```
+
+## Connecting to the aurum database
+
+To connect to the aurum database you first neeed to load this library
+
+```{r setup}
+here::i_am("vignettes/getting-started.Rmd")
+library(tidyverse)
+
+# when stable load the aurum library
+
+# library(aurum)
+
+# for development and testing:
+
+try({
+  # clean up previous runs if restarting
+  cprd$finalize()
+  rm(cprd)
+})
+
+devtools::load_all(here::here())
+
+```
+
+Then you need to make the connection
+
+```{r}
+
+# Connect using the defaults defined in the options above
+# cprd = CPRDData$new()
+
+# connect using explicit options
+cprd = CPRDData$new(cprdEnv = "test-remote",cprdConf = "~/.aurum.yaml")
+
+```
+
+The `cprd` object contains a range of options for interacting with the database. The main point of it though is to lazily access the tables in the database as a set of `dbplyr` tables
+
+```{r}
+# list out all the tables:
+names(cprd$tables)
+
+# glimpse the contents of one table:
+cprd$tables$patient %>% glimpse()
+
+
+cprd$tables$problem %>% glimpse()
+```
+
+## Disconnecting
+
+Best practice is to disconnect from the cprd database. This will be automatically done when the `cprd` object is removed, but should also happen if the script terminates. It is possible the `cprd` connection gets lost when inactive for a long time (although I hope I fixed that). In any of these cases 
+
+```{r}
+rm(cprd)
+```
+
+### Extensibility and configuration
+
+Not really a getting started topic but all the tables in the CPRD data are driven by configuration. This is so we can extend the tables when we get the linked data. This configuration is defined in `aurum::dataSql`, and `aurum::lookupSql`.
+
+```{r}
+c(
+  names(aurum::dataSql$tables),
+  names(aurum::lookupSql$tables)
+)
+#names(aurum::codeSetsSql$tables)
+#names(aurum::analysisSql$tables)
+```
+

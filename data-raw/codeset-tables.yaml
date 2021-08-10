@@ -1,0 +1,23 @@
+naming:
+  codeSets: "code_sets"
+tables:
+  codeSets:
+    drop: |
+      DROP TABLE IF EXISTS {analysisDb}.{codeSets}
+    create: |
+      CREATE TABLE IF NOT EXISTS {analysisDb}.{codeSets}
+      (codeid BIGINT UNSIGNED,
+      setname VARCHAR(256),
+      version VARCHAR(32),
+      type VARCHAR(32),
+      hash CHAR(32),
+      PRIMARY KEY (codeid,setname,version),
+      INDEX (codeid)
+      )
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    deleteNamedVersion: |
+      DELETE FROM {analysisDb}.{codeSets} where version={version} and setname={name}
+    deleteNamed: |
+      DELETE FROM {analysisDb}.{codeSets} where setname={name}
+

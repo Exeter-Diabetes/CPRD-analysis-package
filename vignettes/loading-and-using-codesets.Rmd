@@ -1,0 +1,143 @@
+---
+title: "Loading and using code sets"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Loading and using code sets}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Connect to CPRD
+
+See "getting started".
+
+```{r setup}
+here::i_am("vignettes/loading-and-using-codesets.Rmd")
+library(tidyverse)
+
+# load the aurum library
+# when stable
+# library(aurum)
+# cprd = CPRDData$new(cprdEnv = "test-analysis")
+
+# for development and testing:
+try({
+  # clean up previous runs if restarting
+  cprd$finalize()
+  rm(cprd,codesets)
+})
+devtools::load_all(here::here())
+
+cprd = CPRDData$new(cprdEnv = "test-remote",cprdConf = "~/.aurum.yaml")
+
+```
+
+## Manipulating code sets
+
+Once the `cprd` connection is established we can get the pointer to the `codesets` object which contains references to codesets. and see what is available.
+
+```{r}
+codesets = cprd$codesets()
+codesets$listCodeSets()
+```
+
+### Loading a new code set into the database
+
+New code lists can be created from flat files or spreadsheets. First these need to be loaded into an R data frame. All they really need is a column with `medcode` or `prodcode` ids. The code list can then be loaded using one of `codesets$loadMedCodeSet(...)`, `codesets$loadProdCodeSet(...)` or the generic `codesets$loadCodeSet(...)`. The generic version can be used to define code sets on any of the CPRD id columns (i.e. `r paste0(aurum::lookupSql$keys, collapse=", ")`).
+
+When using cprd code lists in R it is important that the code columns are either loaded as a "character" or as an "integer64" otherwise there is the risk of truncation of the code, as shown in the example here. The `codesets` object will complain if you try to load a medcode set with a numeric id.
+
+In this example we load a code set from disk and the resulting code set will be stored in the `aurum` analysis database with the name - `all diabetes` and the version `test`.
+
+```{r}
+# read code lists in with the code column as a character otherwise we may get rounding errors in the code
+diabetesCodelist = readr::read_tsv(
+  here::here("Codelists and rules/Diabetes and HbA1c codelists/All diabetes medcodes/all_diabetes_medcodes.txt"),
+  col_types = cols(.default=col_character()))
+
+diabetesCodelist %>% codesets$loadMedCodeSet(name = "all diabetes",version="test",colname="MedCodeId")
+codesets$listCodeSets()
+```
+
+### Deleting a named codeset
+
+This deletes all code sets with this name. there is also a `codesets$deleteCodeSetVersion(name, version)` equivalent.
+
+```{r}
+tmp = codesets$getCodeSet("all diabetes")
+codesets$deleteCodeSet("all diabetes")
+```
+
+### Loading more than one code set
+
+Loading more than one the code sets into the database is also possible. In this case the loaded codesets will be named after the terminal part of their file path. This searches the file hierarchy for `csv` or `txt` files containing a `medcodeid` or other compatible column. All matched codesets will be loaded 
+
+```{r}
+
+codesets$loadAll(
+  paths = c(
+    here::here("Codelists and rules/Diabetes and HbA1c codelists"),
+    here::here("Codelists and rules/OpenSafely drug list testing"),
+    here::here("Codelists and rules/Other conditions/E Final medcode codelists"),
+    here::here("Codelists and rules/Biomarkers/E Medcode codelists"),
+    here::here("Codelists and rules/Covid codes")
+  ),
+  version = "0.3.0"
+)
+
+codesets$listCodeSets()
+
+```
+
+## Using code sets
+
+Using a code set requires `codesets$getCodeSetDetails(...)` if you want the codes and the names, or `codesets$getCodeSet(...)` for just the codes
+
+```{r}
+# getting the full details is really for human checking
+codesets$getCodeSetDetails("insulin_prodcodes",version = "0.3.0") %>% glimpse()
+```
+
+getting just the codes is useful when you want to use them for some part of your analysis
+
+```{r}
+insProd = codesets$getCodeSet("insulin_prodcodes")
+insProd %>% glimpse()
+
+```
+
+The `insProd` variable is now a pointer to a table (well query really) in MySQL. This can be used as part of a dplyr query. For example this query pulls all the patients who have an insulin prodcode in their drugIssues:
+
+```{r}
+
+cprd$tables$drugIssue %>% inner_join(insProd) %>% glimpse()
+
+```
+
+The results of this query is not fully calculated or stored by default. It will be cleared when we disconnect. 
+
+We can grab all of the codesets of a given version into a list at once using the following. This has the advantage that RStudio will give you automatic code completion on this list.
+
+
+```{r}
+
+codes = codesets$getAllCodeSetVersion(version = "0.3.0")
+
+```
+
+
+Disconnecting wil try and remove all the components from the global environment that are linked to the database.
+
+```{r}
+
+cprd$finalize()
+rm(cprd)
+
+```

@@ -1,0 +1,42 @@
+naming:
+  loadLog: o_load_status
+tables:
+  loadLog:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{loadLog};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{loadLog} (
+        loaddate DATETIME,
+        filedate DATETIME,
+        tablename VARCHAR(50),
+        sourcepath TEXT,
+        hash CHAR(32),
+        success BOOLEAN,
+        rowsloaded BIGINT
+      )
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    insert: |
+      INSERT INTO {dataDb}.{loadLog}
+      VALUES (
+        {loaddate},
+        {filedate},
+        {tablename},
+        {sourcepath},
+        {hash},
+        {success},
+        {rowsloaded}
+      )
+    isHashLoaded: |
+      SELECT * as n FROM {dataDb}.{loadLog}
+      WHERE tablename={tablename} AND hash={hash};
+    isDateLoaded: |
+      SELECT * as n FROM {dataDb}.{loadLog}
+      WHERE tablename={tablename} AND filedate={filedate};
+  staging:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.staging
+    copyStaging: |
+      INSERT IGNORE INTO {dataDb}.{tablename} SELECT * FROM {dataDb}.staging
+
+

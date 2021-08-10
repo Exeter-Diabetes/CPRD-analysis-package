@@ -1,0 +1,390 @@
+---
+title: "Setting up an analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Connect to CPRD and Codesets
+
+See "getting started", and "loading and using codesets".
+
+```{r setup}
+here::i_am("vignettes/loading-and-using-codesets.Rmd")
+library(tidyverse)
+
+# load the aurum library
+# when stable
+# library(aurum)
+# cprd = CPRDData$new(cprdEnv = "test-analysis")
+
+# for development and testing:
+try({
+  # clean up previous runs if restarting
+  rm(cprd,codesets)
+})
+devtools::load_all(here::here())
+```
+
+Initialise the connection
+
+```{r}
+cprd = CPRDData$new(cprdEnv = "test-remote",cprdConf = "~/.aurum.yaml")
+codesets = cprd$codesets()
+codes = codesets$getAllCodeSetVersion(v = "0.3.0")
+
+# grab the MySQL connection so we can use it in markdown chunks for testing (see below)
+conn = cprd$.con
+```
+
+## Setting up an analysis
+
+Each analysis will have its own set of tables in the analysis database. Setting up or loading an analysis is a question of calling `cprd$analysis(...)` with a table name. Convention suggests this should be a
+lowercase name with underscores, but anything compatible with being part of a MySQL table name should work.
+
+```{r}
+# This will connect to an existing analysis
+analysis = cprd$analysis("test_analysis")
+```
+
+## Storing data during an analysis
+
+Caching data in the progress of an analysis and re-using the cached versions is a question of:
+
+```{r}
+testCache = codes$all_diabetes_medcodes %>% analysis$cached("tmp_diab_medcodes")
+```
+
+Sometimes forcing recalculation of a cached item is needed, which can be achieved with the recompute flag:
+
+```{r}
+testCache = codes$all_diabetes_medcodes %>% analysis$cached("tmp_diab_medcodes", recompute = TRUE)
+```
+
+## Deleting an analysis
+
+```{r eval=FALSE}
+# this will prompt the user to make sure they are expecting to delete the analysis
+# analysis$delete()
+
+options("cprd.debug"=TRUE)
+
+# not run
+analysis$delete(sure=TRUE)
+analysis = cprd$analysis("test_analysis")
+
+```
+
+## Defining a cohort.
+
+A cohort is a list of patient ids with an inception date and a censoring date.
+
+### 'VALID DATE' definition
+
+A valid date is one which fulfils all of the following:
+* No earlier than the patient's month of birth (Patient.mob and Patient.yob needed) or year of birth if month of birth missing - prescriptions and (HbA1c) test results shouldn't be backdated so should only get these for non-test medcodes
+* No later than the patient's date of death (use Patient.cprd_ddate, some are missing Patient.emis_ddate)
+* No later than the registration end date (Patient.regenddate)
+* No later than the date of data collection from the Practice (Practice.lcd)
+
+```{r}
+
+# This is a dplyr style function and not the easiest example to start with
+# this is worth reading: https://dbplyr.tidyverse.org/articles/sql-translation.html
+# and this https://adv-r.hadley.nz/quasiquotation.html
+# this function basically using symbols to refer to columns constructs the SQL to do this operation but does not execute it.
+# the end result of applying this function to a query is to construct a more complex query that will be executed on slade
+# although this is native R code translated to SQL it can also include 
+excludeInvalidDates = function(query, dateCol, patidCol = "patid", patient = cprd$tables$patient, practice = cprd$tables$practice) {
+  
+  # the following 2 lines are needed to prevent dateCol and patidCol from being interpreted by converting it into a symbol
+  dateCol = ensym(dateCol)
+  patidCol = ensym(patidCol)
+  
+  tmp = patient %>% 
+    left_join(
+      practice %>% select(pracid,lcd),
+      by = "pracid"
+    ) %>%
+    mutate(
+      tmp_mob = case_when(is.na(mob) ~ 1,TRUE ~ mob),
+      tmp_earliest = as.Date(paste0(yob, tmp_mob, '1', sep="-")),
+      # when constructing R code you can mix in SQL functions if needs be. For example the line above could
+      # also have been the following, which uses native SQL DATE and SQL CONCAT_WS:
+      # tmp_earliest = DATE(CONCAT_WS('-', yob, tmp_mob, '1')),
+      tmp_latest = pmin(
+        # these are needed as pmin is translated to SQL LEAST which does not handle NULL values. See below.
+        # ifelse gets translated to SQL CASE_WHEN
+        ifelse(is.na(cprd_ddate),as.Date("2050-01-01"),cprd_ddate), 
+        ifelse(is.na(regenddate),as.Date("2050-01-01"),regenddate), 
+        ifelse(is.na(lcd),as.Date("2050-01-01"),lcd)
+      )
+    ) %>% 
+    # the double !! here means that patidCol is a symbolic reference to a column name and in the translated SQL becomes 'patid'
+    select(!!patidCol, tmp_earliest, tmp_latest)
+  
+  # the !!dateCol lets us pass a dateCol as a reference similarly to !!patidCol above. Annoyingly if you need to join by one of these symbolic columns dplyr requires the join column to be 
+  # specified as a string not a symbol. as_label(...) fixes this.
+  out = query %>% 
+    inner_join(tmp, by=as_label(patidCol)) %>% 
+    filter(!!dateCol >= tmp_earliest & !!dateCol <= tmp_latest) %>% 
+    select(-tmp_earliest,-tmp_latest)
+  
+  return(out)
+}
+
+# Testing such a function is a little bit difficult. The trick of using a filter(1==0) enables you dry run the function without actually causing
+# any query to be run. the show_query() function then will show you what the SQL would look like.
+cprd$tables$observation %>% filter(1==0) %>% excludeInvalidDates(obsdate) %>% show_query()
+
+# All this is complex but it only needs to be done once. From here on we can re-use this bit of generated SQL in the future and 
+# most importantly we can maintain it without having to change it in many places.
+
+# glimpsing the result with the filter specified executes the SQL and allows us to check it is syntactically correct.
+cprd$tables$observation %>% filter(1==0) %>% excludeInvalidDates(obsdate) %>% glimpse()
+
+```
+
+debugging R -> SQL conversion can be tricky. One handy trick is to run a snippet of some SQL directly to test it within R. To do this we need the cprd connection which we put in the `conn` variable above. 
+More details on how to do this are here: https://bookdown.org/yihui/rmarkdown/language-engines.html
+For example, in the code above the `pmin(...)` call is translated to SQL that does not directly handle NULL values, and hence the need for the `ifelse(...)` statements, this is a non-standard feature of MySQL:
+
+```{sql, connection = conn}
+SELECT LEAST(CAST('2021-01-01' AS DATE), CAST('2020-1-1' AS DATE),  CAST(NULL AS DATE)) AS test;
+```
+
+General notes:
+* Sometimes we'll need to match on missing values - not here but wondering how to do: could include "" in the .txt files, but will they be NULL in MySQL/NA in R?
+
+### DEFINITION OF (T1 OR T2) DIABETES DIAGNOSIS
+
+Include patients who fulfil all of the following:
+* Have '1' in Patient.acceptable
+* Have a diabetes QOF medcode ("/Diabetes qof codes/diabetes_qof_medcodes.txt") in Observation.medcodeid with a valid date (see below)
+
+Exclude patients who:
+* Have a diabetes exclusion medcode ("/Diabetes exclusion codes/diabetes_exclusion_medcodes.txt") in Observation.medcodeid with any date
+
+```{r}
+
+# This hopefully is a more straightforward example
+# first deal with the specific inclusion/exclusion criteria
+# don't forget this just ends up specifiying the SQL rather than running the query
+
+acceptablePatient = cprd$tables$patient %>% filter(acceptable == 1) %>% select(patid)
+diabetesExclusion = cprd$tables$observation %>% semi_join(codes$diabetes_exclusion_medcodes) %>% select(patid)
+
+t1t2 = cprd$tables$observation %>% 
+  inner_join(codes$diabetes_qof_medcodes, by="medcodeid") %>% 
+  excludeInvalidDates(obsdate) %>%
+  semi_join(acceptablePatient, by="patid") %>% 
+  anti_join(diabetesExclusion, by="patid") %>%
+  # group_by(patid) %>%
+  # summarise(date = min(obsdate,na.rm=TRUE)) %>%
+  select(patid) %>%
+  distinct()
+
+# this gives you some idea of the value of doing this in dplyr rather than directly in SQL
+t1t2 %>% show_query()
+
+# if you need to debug a statement such as the above sticking in a 
+# filter(1==0) %>% glimpse()
+# into the middle of the pipeline allows you to dry run the sql up to that point and see what the output
+# will look like.
+
+```
+
+The SQL code above is not actually executed until needed. 
+
+Sometimes you can specify things that will send the server off thinking for a long time. Stopping a query should be as simple as the following.
+
+```SQL
+KILL QUERY
+```
+
+but unfortunately this is not generally possible from within R, as R will hang waiting for the response to the query. In which case you'll have to resort to MySQL workbench, where the "client connections" page will let you kill the query and return control to R.
+
+### Temporarily storing the outcome of a query
+
+The query above is getting pretty complicated and maybe could take a long type to calculate each time we want to use it. Forcing dplyr to compute the result and store it in a named table
+
+```{r}
+# TODO: put this into the CPRD analysis functions.
+# allow analysis to store permanent tables and reload them at startup.
+t1t2computed = t1t2 %>% analysis$cached("t1t2_candidates", unique_indexes="patid")
+
+t1t2computed %>% count()
+```
+
+Using `head(...)` is equivalent to `SQL LIMIT`
+
+```{r eval=FALSE}
+t1t2computed %>% head(10)
+```
+
+## DEFINING T1 vs T2 IN THE ABOVE COHORT
+
+Type 1 if fulfils both of:
+* At least one prescription for insulin ("/Diabetes drugs/insulin_prodcodes.txt")
+* Number of Type 1 specific medcodes >2x number of Type 2 specific medcodes ("/Diabetes type codes/type_specific_medcodes.txt" has both Type 1 specific and Type 2 specific codes)
+
+Otherwise = Type 2
+
+```{r}
+# Type specific medcodes has an extra bit of metadata in it. Read combined list in as text
+tmp = readr::read_tsv(here::here("Codelists and rules/Diabetes and HbA1c codelists/Diabetes type codes/type_specific_medcodes.txt"),col_types = cols(.default = col_character()))
+
+# split into 2 lists
+type1medcodes = tmp %>% filter(type == "1")
+type2medcodes = tmp %>% filter(type == "2")
+
+# load them into the database as 2 different code sets
+codesets$loadMedCodeSet(codeSetDf = type1medcodes, name = "Type 1 medcodes",version = "0.3.0")
+codesets$loadMedCodeSet(codeSetDf = type2medcodes, name = "Type 2 medcodes",version = "0.3.0")
+
+#retrieve pointer to them in database
+type1medcodes = codesets$getCodeSet(name = "Type 1 medcodes",version = "0.3.0")
+type2medcodes = codesets$getCodeSet(name = "Type 2 medcodes",version = "0.3.0")
+
+# patients with at least 1 prescription for insulin
+insulinT1T2 = cprd$tables$drugIssue %>% 
+  inner_join(codes$insulin_prodcodes, by="prodcodeid") %>%
+  inner_join(t1t2computed, by="patid") %>% 
+  select(patid) %>%
+  compute(unique_indexes="patid") %>%
+  distinct() %>% 
+  analysis$cached("t1t2_insulin", unique_indexes="patid")
+
+#insulinT1T2 %>% count()
+
+# counts of type1 specific med codes for patients with at least 1 insulin prescription
+countType1Medcodes = cprd$tables$drugIssue %>% 
+  inner_join(insulinT1T2, by="patid") %>% 
+  inner_join(type1medcodes, by="prodcodeid") %>%
+  group_by(patid) %>%
+  summarise(t1count = n()) %>% 
+  analysis$cached("t1t2_countt1", unique_indexes="patid")
+
+# counts of type2 specific med codes for patients with at least 1 insulin prescription
+countType2Medcodes = cprd$tables$drugIssue %>% 
+  inner_join(insulinT1T2, by="patid") %>% 
+  inner_join(type2medcodes, by="prodcodeid") %>%
+  group_by(patid) %>%
+  summarise(t2count = n()) %>% 
+  analysis$cached("t1t2_countt2", unique_indexes="patid")
+
+# patients with type1 specific medcodes > 2* type 2 specific medcodes
+type1patients = countType1Medcodes %>% 
+  left_join(countType2Medcodes, by="patid") %>%
+  filter(t1count > 2*ifelse(is.na(t2count),0,t2count)) %>%
+  select(patid) %>%
+  distinct() %>% 
+  compute()
+
+
+type1patients %>% show_query()
+
+# N.b. it may be possible for a patient to have insulin prescription and zero type 1 specific medcodes. 
+# these patients would be excluded by the logic above. The patients must have had at least 1 type specific medcode as well as an insulin
+# prescription to be counted as a type1.
+
+isType1Feature = t1t2computed %>% 
+  left_join(type1patients %>% mutate(value = TRUE)) %>%
+  mutate(value = ifelse(is.na(value),FALSE,value)) %>%
+  mutate(
+    feature = "Type 1", 
+    featuredate=as.Date(NA)
+  )
+
+isType1Feature %>% analysis$cached("t1t2_isType1", unique_indexes="patid")
+
+isType1Feature %>% group_by(value) %>% count()
+
+#TODO:
+# write isType1Feature to analysis db
+
+```
+
+## DEFINITION OF DIABETES DIAGNOSIS DATE
+
+Diagnosis date defined as the earliest of:
+
+* Any diabetes medcode ("/All diabetes medcodes/all_diabetes_medcodes.txt") in Observation.medcodeid with a valid date (see below)
+EXCLUDE those with obstypeid==4 ('Family history')
+
+* Any diabetes drug (insulin or non-insulin) prodcode ("/Diabetes drugs/non_ins_prodcodes.txt" and "/Diabetes drugs/insulin_prodcodes.txt") in Drug Issue.prodcodeid with a valid date (see below)
+
+* Any HbA1c test >47.5 mmol/mol with a valid date (see below) in Observation
+** HbA1c medcodes are in "/HbA1c codes and units/hba1c_medcodes.txt"; match on Observation.medcodeid
+** Also need to look at Observation.testvalue
+*** If testvalue <=20, assume in % units and convert to mmol/mol using (x-2.152)/0.09148
+*** If testvalue >20, assume in mmol/mol units and keep as is
+** Ignore results where (mmol/mol) value is <20 or >195 (lower limit not relevant here as only interested in those >47.5 mmol/mol)
+
+```{r}
+
+# any diabetes medcode
+anyDiab = cprd$tables$observation %>% 
+  semi_join(t1t2computed, by="patid") %>%
+  inner_join(codes$all_diabetes_medcodes, by="medcodeid") %>%
+  filter(obstype != 4) %>%
+  excludeInvalidDates(obsdate) %>%
+  select(patid,date=obsdate) %>%
+  mutate(source = "Diabetes observation")
+
+diabDrugCodes = codes$non_ins_prodcodes %>% union(codes$insulin_prodcodes)
+
+anyDiabDrug = cprd$tables$drugIssue %>%
+  semi_join(t1t2computed, by="patid") %>%
+  inner_join(diabDrugCodes, by="prodcodeid") %>%
+  excludeInvalidDates(issuedate) %>%
+  select(patid,date=issuedate) %>%
+  mutate(source = "Diabetes drug issue")
+
+anyHBA1CTest = cprd$tables$observation %>%
+  semi_join(t1t2computed, by="patid") %>%
+  inner_join(codes$hba1c_medcodes, by="medcodeid") %>%
+  excludeInvalidDates(issuedate) %>%
+  mutate(testvalue = ifelse(testvalue <-20, (testvalue*-2.152)/0.09148), testvalue) %>%
+  filter(testvalue > 47.5 & testvalue <= 195) %>%
+  select(patid,date=issuedate) %>%
+  mutate(source = "Diabetes drug issue")
+
+dxDate = anyDiab %>% 
+  union(anyDiabDrug) %>% 
+  union(anyHBA1CTest) %>%
+  group_by(patid) %>%
+  summarise(date = min(date,na.rm=TRUE))
+
+#TODO: save dxDate in the database
+dxDate %>% analysis$cached("t1t2_dxDate", unique_indexes=c("patid"),indexes=c("date"))
+
+```
+
+If diagnosis date is within 91 of start of registration, add flag to indicate that patient may have been diagnosed prior to registration.
+
+
+
+## Calculate and store result
+
+```{r}
+
+
+```
+
+
+## Tidy up
+
+```{r}
+cprd$finalize()
+rm(cprd)
+```

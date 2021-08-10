@@ -1,0 +1,132 @@
+---
+title: "Setting up the database"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Setting up the database}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Configuration for loading the data
+
+The Aurum database is connected to via the mysql driver which needs a bit of configuration. 
+This is stored in a private file in the users account on slade - which by default is named "~/.aurum.load.yaml". 
+The contents of the file must be similar as follows:
+
+```YAML
+default:
+  user: <your cprd database user>
+  password: <your cprd database password>
+  server: "localhost"
+  port: 3306
+  lookupSourceDirectory: "/slade/DBs/mysql-files/CPRD/reference-data/202005_Lookups_CPRDAurum"
+  dataSourceDirectories:
+    - /slade/DBs/mysql-files/CPRD/master_males
+    - /slade/DBs/mysql-files/CPRD/master_females
+  sessionConfig:
+    SESSION sort_buffer_size: 2*1024*1024-1
+    SESSION myisam_sort_buffer_size: 2*1024*1024-1
+    SESSION read_buffer_size: 1024*1024*1024-1
+    SESSION read_rnd_buffer_size: 1024*1024*1024-1
+    SESSION join_buffer_size: 256*1024*1024-1
+    SESSION max_heap_table_size: 4*1024*1024*1024-1
+    SESSION tmp_table_size: 4*1024*1024*1024-1
+    SESSION myisam_sort_buffer_size: 32*1024*1024*1024-1
+    SESSION myisam-repair-threads: 4
+
+dev:
+  dataDatabase: cprd_data_dev
+  analysisDatabase: cprd_analysis_dev
+  buildDirectory: /slade/DBs/mysql-files/CPRD/staging-dev
+  loadLimit: 10
+
+prod:
+  dataDatabase: cprd_data
+  analysisDatabase: cprd_analysis
+  buildDirectory: /slade/DBs/mysql-files/CPRD/staging
+  loadLimit: 100000
+```
+
+Loading must be done locally on the database server (in our case Slade)
+
+The load scripts are designed to be interruptible and non destructive, however this has not been extensively tested. 
+It should also not repeat actions that it has already taken unless the source datafiles have changed. 
+
+The load script takes 1 or 2 parameters:
+
+* the environment to be used as defined in the yaml file (must be one of `prod`/`dev`)
+* the location of the yaml config file (optional. defaults to `~/.aurum.load.yaml`)
+
+The yaml configuration is fairly self explanatory. 
+It includes connection parameters, and directories where the source data files can be found on Slade.
+It also contains 
+
+For testing the `dev` flag uses the `cprd_data_dev` configuration in the YAML file other wise you can use `prod` to kick off the main data load.
+The `loadLimit` flag controls how many files of data will be loaded on a single run of the script.
+
+For example, using the config about this command should trigger a load and indexing of the next 10 files into the `cprd_data_dev` database.
+
+```console
+cd Git/aurum/data-raw/
+./cprd-data-setup.R dev
+```
+
+N.b. in reality for production you are going to want to combine this with something that lets to disconnect from Slade without terminating the script, e.g. `nohup`:
+
+```console
+cd Git/aurum/data-raw/
+nohup ./cprd-data-setup.R prod & > ~/loadProgress.txt
+```
+
+If the indexing needs to be done separately the following script can be used. This is unlikely to be needed, as the load script should do all of this.
+As with the main load script this should be interruptible and resumable, but this was not extensively tested.
+
+```console
+cd Git/aurum/data-raw/
+nohup ./cprd-index-setup.R dev & > ~/indexProgress.txt
+```
+
+## Issues
+
+During the initial load there was an issue with the script to do with incorrect checking the md5 hash of the files that were being loaded. 
+A full load process kicked off without review could trigger the whole build process for all files even ones that have been already loaded.
+In theory this would be OK as nothing would be changed by the load process but would take a long time.
+
+This was not fixed as the load scripts took a very long time, particularly around indexing. 
+This was partly due to a lack of optimisation of the MyISAM configuration. 
+This has been examined and the `sessionConfig` options added above but not 100% sure about this as we didn't get any feedback from the people who required us to use MyISAM.
+This needs further testing to verify the approach. However this is fairly configurable.
+
+We didn't get a lot of info about sensible settings from the people that required us to use MyISAM. The session config options allow you to change the memory configuration of MySQL as you are querying it.
+These are detailed in various resources:
+
+* https://www.liquidweb.com/kb/mysql-performance-myisam/
+* https://dba.stackexchange.com/questions/136349/mysql-performance-tuning-for-myisam
+* https://dev.mysql.com/doc/refman/5.7/en/repair-table-optimization.html
+* https://dev.mysql.com/doc/refman/8.0/en/myisam-start.html
+
+
+## Extending the data structure.
+
+The files `data-raw/data-tables.yaml` define the structure and naming conventions of the CPRD data.
+The files `data-raw/lookup-tables.yaml` define the structure and naming conventions of the CPRD reference data.
+These are designed to be extended to allow the other linked data (e.g. SGSS covid tests) to be imported alongside the CPRD data.
+Changing these files will affect the structure of the database, and the load scripts may need to be modified to account for the new data.
+The intention is that these tables will automagically be picked up by the rest of the infrastructure based on these config files, but the whole library config needs to be updated and the library reloaded for this to be possible.
+
+This updates the config and reloads the aurum library. 
+
+```console
+cd Git/aurum/data-raw/
+nohup ./cprd-data-setup.R prod & > ~/loadProgress.txt
+./cprd-config-setup.R
+```
+
+This has not been tested, as we don't have the data yet.

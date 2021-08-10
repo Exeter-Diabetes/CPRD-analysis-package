@@ -1,0 +1,290 @@
+naming:
+  consultation: consultation
+  drugIssue: drug_issue
+  observation: observation
+  patient: patient
+  practice: practice
+  problem: problem
+  referral: referral
+  staff: staff
+tables:
+  consultation:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{consultation}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{consultation}
+      (patid BIGINT UNSIGNED,
+      consid BIGINT UNSIGNED NOT NULL,
+      pracid MEDIUMINT,
+      consdate DATE,
+      enterdate DATE,
+      staffid BIGINT,
+      conssourceid BIGINT,
+      cprdconstype SMALLINT,
+      consmedcodeid BIGINT,
+      PRIMARY KEY (consid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{consultation}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patid, consid, pracid, @orig_consdate, @orig_enterdate, @orig_staffid, @orig_conssourceid, @orig_cprdconstype, @orig_consmedcodeid)
+      SET consdate = STR_TO_DATE(NULLIF(@orig_consdate,''),'%d/%m/%Y'),
+      enterdate = STR_TO_DATE(@orig_enterdate,'%d/%m/%Y'),
+      staffid = NULLIF(@orig_staffid,''),
+      conssourceid = NULLIF(@orig_conssourceid,''),
+      cprdconstype = NULLIF(@orig_cprdconstype,''),
+      consmedcodeid = NULLIF(@orig_consmedcodeid,'')
+  drugIssue:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{drugIssue}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{drugIssue}
+      (patid BIGINT UNSIGNED,
+      issueid BIGINT UNSIGNED,
+      pracid MEDIUMINT,
+      probobsid BIGINT UNSIGNED,
+      drugrecid BIGINT UNSIGNED,
+      issuedate DATE,
+      enterdate DATE,
+      staffid BIGINT,
+      prodcodeid BIGINT,
+      dosageid CHAR(64),
+      quantity DECIMAL(9,3),
+      quantunitid TINYINT,
+      duration BIGINT,
+      estnhscost DECIMAL(10,4),
+      PRIMARY KEY (issueid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{drugIssue}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patid, issueid, pracid, @orig_probobsid, @orig_drugrecid, @orig_issuedate, @orig_enterdate, @orig_staffid, prodcodeid, dosageid, quantity, @orig_quantunitid, duration, estnhscost)
+      SET probobsid = NULLIF(@orig_probobsid,''),
+      drugrecid = NULLIF(@orig_drugrecid,''),
+      issuedate = STR_TO_DATE(@orig_issuedate,'%d/%m/%Y'),
+      enterdate = STR_TO_DATE(@orig_enterdate,'%d/%m/%Y'),
+      staffid = NULLIF(@orig_staffid,''),
+      quantunitid = NULLIF(@orig_quantunitid,'')
+  observation:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{observation}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{observation}
+      (patid BIGINT UNSIGNED,
+      consid BIGINT UNSIGNED,
+      pracid MEDIUMINT,
+      obsid BIGINT UNSIGNED NOT NULL,
+      obsdate DATE,
+      enterdate DATE,
+      staffid BIGINT,
+      parentsobsid BIGINT UNSIGNED,
+      medcodeid BIGINT,
+      testvalue DECIMAL(19,3),
+      numunitid BIGINT,
+      obstypeid MEDIUMINT,
+      numrangelow DECIMAL(19,3),
+      numrangehigh DECIMAL(19,3),
+      probobsid BIGINT UNSIGNED,
+      PRIMARY KEY (obsid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{observation}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patid, @orig_consid, pracid, obsid, @orig_obsdate, @orig_enterdate, @orig_staffid, @orig_parentsobsid, @orig_medcodeid, @orig_testvalue, @orig_numunitid, obstypeid, @orig_numrangelow, @orig_numrangehigh, @orig_probobsid)
+      SET consid = NULLIF(@orig_consid,''),
+      obsdate = STR_TO_DATE(NULLIF(@orig_obsdate,''),'%d/%m/%Y'),
+      enterdate = STR_TO_DATE(@orig_enterdate,'%d/%m/%Y'),
+      staffid = NULLIF(@orig_staffid,''),
+      parentsobsid = NULLIF(@orig_parentsobsid,''),
+      medcodeid = NULLIF(@orig_medcodeid,''),
+      testvalue = NULLIF(@orig_testvalue,''),
+      numunitid = NULLIF(@orig_numunitid,''),
+      numrangelow = NULLIF(@orig_numrangelow,''),
+      numrangehigh = NULLIF(@orig_numrangehigh,''),
+      probobsid = NULLIF(@orig_probobsid,'')
+  patient:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{patient}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{patient}
+      (patid BIGINT UNSIGNED,
+      pracid MEDIUMINT,
+      usualgpstaffid BIGINT,
+      gender SMALLINT,
+      yob SMALLINT,
+      mob TINYINT,
+      emis_ddate DATE,
+      regstartdate DATE,
+      patienttypeid MEDIUMINT,
+      regenddate DATE,
+      acceptable BOOL,
+      cprd_ddate DATE,
+      PRIMARY KEY (patid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{patient}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patid, pracid, @orig_usualgpstaffid, gender, yob, @orig_mob, @orig_emis_ddate, @orig_regstartdate, patienttypeid, @orig_regenddate, acceptable, @orig_cprd_ddate)
+      SET usualgpstaffid = NULLIF(@orig_usualgpstaffid,''),
+      mob = NULLIF(@orig_mob,''),
+      emis_ddate = STR_TO_DATE(NULLIF(@orig_emis_ddate,''),'%d/%m/%Y'),
+      regstartdate = STR_TO_DATE(@orig_regstartdate,'%d/%m/%Y'),
+      regenddate = STR_TO_DATE(NULLIF(@orig_regenddate,''),'%d/%m/%Y'),
+      cprd_ddate = STR_TO_DATE(NULLIF(@orig_cprd_ddate,''),'%d/%m/%Y')
+  practice:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{practice}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{practice}
+      (pracid MEDIUMINT,
+      lcd DATE,
+      uts DATE,
+      region MEDIUMINT,
+      PRIMARY KEY (pracid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{practice}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (pracid, @orig_lcd, @orig_uts, @orig_region)
+      SET lcd = STR_TO_DATE(@orig_lcd,'%d/%m/%Y'),
+      uts = STR_TO_DATE(NULLIF(@orig_uts,''),'%d/%m/%Y'),
+      region = NULLIF(@orig_region,'')
+  problem:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{problem}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{problem}
+      (patid BIGINT UNSIGNED,
+      obsid BIGINT UNSIGNED NOT NULL,
+      pracid MEDIUMINT,
+      parentprobobsid BIGINT UNSIGNED,
+      probenddate DATE,
+      expduration MEDIUMINT,
+      lastrevdate DATE,
+      lastrevstaffid VARCHAR(10),
+      parentprobrelid MEDIUMINT,
+      probstatusid MEDIUMINT,
+      signid MEDIUMINT
+      ) ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{problem}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patid, obsid, pracid, @orig_parentprobobsid, @orig_probenddate, @orig_expduration, @orig_lastrevdate, @orig_lastrevstaffid, @orig_parentprobrelid, @orig_probstatusid, @orig_signid)
+      SET parentprobobsid = NULLIF(@orig_parentprobobsid,''),
+      probenddate = STR_TO_DATE(NULLIF(@orig_probenddate,''),'%d/%m/%Y'),
+      expduration = NULLIF(@orig_expduration,''),
+      lastrevdate = STR_TO_DATE(NULLIF(@orig_lastrevdate,''),'%d/%m/%Y'),
+      lastrevstaffid = NULLIF(@orig_lastrevstaffid,''),
+      parentprobrelid = NULLIF(@orig_parentprobrelid,''),
+      probstatusid = NULLIF(@orig_probstatusid,''),
+      signid = NULLIF(@orig_signid,'')
+  referral:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{referral}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{referral}
+      (patid BIGINT UNSIGNED,
+      obsid BIGINT UNSIGNED NOT NULL,
+      pracid MEDIUMINT,
+      refsourceorgid BIGINT,
+      reftargetorgid BIGINT,
+      refurgencyid TINYINT,
+      refservicetypeid TINYINT,
+      refmodeid TINYINT,
+      PRIMARY KEY (obsid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{referral}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patid, obsid, pracid, @orig_refsourceorgid, @orig_reftargetorgid, @orig_refurgencyid, @orig_refservicetypeid, @orig_refmodeid)
+      SET refsourceorgid = NULLIF(@orig_refsourceorgid,''),
+      reftargetorgid = NULLIF(@orig_reftargetorgid,''),
+      refurgencyid = NULLIF(@orig_refurgencyid,''),
+      refservicetypeid = NULLIF(@orig_refservicetypeid,''),
+      refmodeid = NULLIF(@orig_refmodeid,'')
+  staff:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{staff}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{staff}
+      (staffid BIGINT NOT NULL,
+      pracid MEDIUMINT,
+      jobid MEDIUMINT,
+      PRIMARY KEY (staffid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{staff}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (staffid, pracid, @orig_jobid)
+      SET jobid = NULLIF(@orig_jobid,'')
+indexes:
+  # patid
+  - CREATE INDEX x_{consultation}_patid ON {dataDb}.{consultation} (patid);
+  - CREATE INDEX x_{drugIssue}_patid ON {dataDb}.{drugIssue} (patid);
+  - CREATE INDEX x_{observation}_patid ON {dataDb}.{observation} (patid);
+  - CREATE INDEX x_{problem}_patid ON {dataDb}.{problem} (patid);
+  - CREATE INDEX x_{referral}_patid ON {dataDb}.{referral} (patid);
+  # obsid / problemid
+  - CREATE INDEX x_{referral}_obsid ON {dataDb}.{referral} (obsid);
+  - CREATE INDEX x_{observation}_parentobsid ON {dataDb}.{observation} (parentsobsid);
+  - CREATE INDEX x_{problem}_parentprobobsid ON {dataDb}.{problem} (parentprobobsid);
+  - CREATE INDEX x_{drugIssue}_probobsid ON {dataDb}.{drugIssue} (probobsid);
+  - CREATE INDEX x_{observation}_probobsid ON {dataDb}.{observation} (probobsid);
+  # pracid
+  - CREATE INDEX x_{consultation}_pracid ON {dataDb}.{consultation} (pracid);
+  - CREATE INDEX x_{drugIssue}_pracid ON {dataDb}.{drugIssue} (pracid);
+  - CREATE INDEX x_{observation}_pracid ON {dataDb}.{observation} (pracid);
+  - CREATE INDEX x_{patient}_pracid ON {dataDb}.{patient} (pracid);
+  - CREATE INDEX x_{problem}_pracid ON {dataDb}.{problem} (pracid);
+  - CREATE INDEX x_{referral}_pracid ON {dataDb}.{referral} (pracid);
+  - CREATE INDEX x_{staff}_pracid ON {dataDb}.{staff} (pracid);
+  # dates
+  - CREATE INDEX x_{consultation}_consdate ON {dataDb}.{consultation} (consdate);
+  - CREATE INDEX x_{drugIssue}_issuedate ON {dataDb}.{drugIssue} (issuedate);
+  - CREATE INDEX x_{observation}_obsdate ON {dataDb}.{observation} (obsdate);
+  - CREATE INDEX x_{patient}_dob ON {dataDb}.{patient} (yob,mob);
+  - CREATE INDEX x_{patient}_cprd_ddate ON {dataDb}.{patient} (cprd_ddate);
+  - CREATE INDEX x_{patient}_regenddate ON {dataDb}.{patient} (regenddate);
+  - CREATE INDEX x_{patient}_regstartdate ON {dataDb}.{patient} (regstartdate);
+  - CREATE INDEX x_{problem}_probenddate ON {dataDb}.{problem} (probenddate);
+  # medCodes / prodCodes
+  - CREATE INDEX x_{consultation}_consmedcodeid ON {dataDb}.{consultation} (consmedcodeid);
+  - CREATE INDEX x_{drugIssue}_prodcodeid ON {dataDb}.{drugIssue} (prodcodeid);
+  - CREATE INDEX x_{drugIssue}_dosageid ON {dataDb}.{drugIssue} (dosageid);
+  - CREATE INDEX x_{observation}_medcodeid ON {dataDb}.{observation} (medcodeid);
+  - CREATE INDEX x_{observation}_numunitid ON {dataDb}.{observation} (numunitid);
+  - CREATE INDEX x_{patient}_patienttypeid ON {dataDb}.{patient} (patienttypeid);
+  - CREATE INDEX x_{problem}_probstatusid ON {dataDb}.{problem} (probstatusid);
+  - CREATE INDEX x_{referral}_refservicetypeid ON {dataDb}.{referral} (refservicetypeid);
