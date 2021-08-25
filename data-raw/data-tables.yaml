@@ -7,6 +7,7 @@ naming:
   problem: problem
   referral: referral
   staff: staff
+  linkageAvailability: linkage_availability
   chess: chess
   hesAcp: hes_acp
   hesCcare: hes_ccare
@@ -263,6 +264,25 @@ tables:
       IGNORE 1 LINES
       (staffid, pracid, @orig_jobcatid)
       SET jobcatid = NULLIF(@orig_jobcatid,'')
+  linkageAvailability:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{linkageAvailability}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{linkageAvailability}
+      (patid BIGINT UNSIGNED NOT NULL,
+      hes_e BOOL NOT NULL DEFAULT 0,
+      death_e BOOL NOT NULL DEFAULT 0,
+      lsoa_e BOOL NOT NULL DEFAULT 0,
+      PRIMARY KEY (patid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{linkageAvailability}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patid, @pracid, @linkdate, hes_e, death_e, @cr_e, lsoa_e, @mh_e)
   chess:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{chess}
@@ -930,6 +950,7 @@ tables:
       specimen_date = STR_TO_DATE(@specimen_date,'%d/%m/%Y'),
       care_home = IF(@care_home='FALSE',0,IF(@care_home='TRUE',1,IF(@care_home='',NULL,@care_home)))
 indexes:
+  # Primary care data
   # patid
   - CREATE INDEX x_{consultation}_patid ON {dataDb}.{consultation} (patid);
   - CREATE INDEX x_{drugIssue}_patid ON {dataDb}.{drugIssue} (patid);
@@ -990,3 +1011,250 @@ indexes:
   - CREATE INDEX x_{referral}_refurgencyid ON {dataDb}.{referral} (refurgencyid);
   - CREATE INDEX x_{referral}_refmodeid ON {dataDb}.{referral} (refmodeid);
   - CREATE INDEX x_{staff}_jobcatid ON {dataDb}.{staff} (jobcatid);
+  # Linkage data (index all fields except chess where there are too many)
+  # linkageAvailability
+  - CREATE INDEX x_{linkageAvailability}_hes_e ON {dataDb}.{linkageAvailability} (hes_e);
+  - CREATE INDEX x_{linkageAvailability}_death_e ON {dataDb}.{linkageAvailability} (death_e);
+  - CREATE INDEX x_{linkageAvailability}_lsoa_e ON {dataDb}.{linkageAvailability} (lsoa_e);
+  # chess
+  - CREATE INDEX x_{chess}_patid ON {dataDb}.{chess} (patid);
+  - CREATE INDEX x_{chess}_pracid ON {dataDb}.{chess} (pracid);
+  - CREATE INDEX x_{chess}_n_chess_patid ON {dataDb}.{chess} (n_chess_patid);
+  - CREATE INDEX x_{chess}_trustid ON {dataDb}.{chess} (trustid);
+  - CREATE INDEX x_{chess}_weekofadmission,yearofadmission ON {dataDb}.{chess} (weekofadmission,yearofadmission);
+  - CREATE INDEX x_{chess}_estimateddateonset ON {dataDb}.{chess} (estimateddateonset);
+  - CREATE INDEX x_{chess}_infectionswabdate ON {dataDb}.{chess} (infectionswabdate);
+  - CREATE INDEX x_{chess}_labtestdate ON {dataDb}.{chess} (labtestdate);
+  - CREATE INDEX x_{chess}_covid19 ON {dataDb}.{chess} (covid19);
+  - CREATE INDEX x_{chess}_admittedfrom ON {dataDb}.{chess} (admittedfrom);
+  - CREATE INDEX x_{chess}_dateadmittedicu ON {dataDb}.{chess} (dateadmittedicu);
+  - CREATE INDEX x_{chess}_dateleavingicu ON {dataDb}.{chess} (dateleavingicu);
+  - CREATE INDEX x_{chess}_admissionflu ON {dataDb}.{chess} (admissionflu);
+  - CREATE INDEX x_{chess}_admissioncovid19 ON {dataDb}.{chess} (admissioncovid19);
+  - CREATE INDEX x_{chess}_ventilatedwhilstadmitteddays ON {dataDb}.{chess} (ventilatedwhilstadmitteddays);
+  - CREATE INDEX x_{chess}_wasthepatientadmittedtoicu ON {dataDb}.{chess} (wasthepatientadmittedtoicu);
+  - CREATE INDEX x_{chess}_daysecmo ON {dataDb}.{chess} (daysecmo);
+  - CREATE INDEX x_{chess}_hospitaladmissiondate ON {dataDb}.{chess} (hospitaladmissiondate);
+  - CREATE INDEX x_{chess}_admissionrsv ON {dataDb}.{chess} (admissionrsv);
+  - CREATE INDEX x_{chess}_respiratorysupportnone ON {dataDb}.{chess} (respiratorysupportnone);
+  - CREATE INDEX x_{chess}_oxygenviacannulaeormask ON {dataDb}.{chess} (oxygenviacannulaeormask);
+  - CREATE INDEX x_{chess}_highflownasaloxygen ON {dataDb}.{chess} (highflownasaloxygen);
+  - CREATE INDEX x_{chess}_noninvasivemechanicalventilation ON {dataDb}.{chess} (noninvasivemechanicalventilation);
+  - CREATE INDEX x_{chess}_invasivemechanicalventilation ON {dataDb}.{chess} (invasivemechanicalventilation);
+  - CREATE INDEX x_{chess}_respiratorysupportecmo ON {dataDb}.{chess} (respiratorysupportecmo);
+  - CREATE INDEX x_{chess}_anticovid19treatment ON {dataDb}.{chess} (anticovid19treatment);
+  - CREATE INDEX x_{chess}_chronicrespiratory ON {dataDb}.{chess} (chronicrespiratory);
+  - CREATE INDEX x_{chess}_asthmarequiring ON {dataDb}.{chess} (asthmarequiring);
+  - CREATE INDEX x_{chess}_chronicheart ON {dataDb}.{chess} (chronicheart);
+  - CREATE INDEX x_{chess}_chronicrenal ON {dataDb}.{chess} (chronicrenal);
+  - CREATE INDEX x_{chess}_chronicliver ON {dataDb}.{chess} (chronicliver);
+  - CREATE INDEX x_{chess}_chronicneurological ON {dataDb}.{chess} (chronicneurological);
+  - CREATE INDEX x_{chess}_isdiabetes ON {dataDb}.{chess} (isdiabetes);
+  - CREATE INDEX x_{chess}_diabetestype ON {dataDb}.{chess} (diabetestype);
+  - CREATE INDEX x_{chess}_immunosuppressiontreatment ON {dataDb}.{chess} (immunosuppressiontreatment);
+  - CREATE INDEX x_{chess}_immunosuppressiondisease ON {dataDb}.{chess} (immunosuppressiondisease);
+  - CREATE INDEX x_{chess}_other ON {dataDb}.{chess} (other);
+  - CREATE INDEX x_{chess}_obesityclinical ON {dataDb}.{chess} (obesityclinical);
+  - CREATE INDEX x_{chess}_obesitybmi ON {dataDb}.{chess} (obesitybmi);
+  - CREATE INDEX x_{chess}_pregnancy ON {dataDb}.{chess} (pregnancy);
+  - CREATE INDEX x_{chess}_prematurity ON {dataDb}.{chess} (prematurity);
+  - CREATE INDEX x_{chess}_hypertension ON {dataDb}.{chess} (hypertension);
+  - CREATE INDEX x_{chess}_travelin14days ON {dataDb}.{chess} (travelin14days);
+  - CREATE INDEX x_{chess}_worksashealthcareworker ON {dataDb}.{chess} (worksashealthcareworker);
+  - CREATE INDEX x_{chess}_contactwithconfirmedcovid19case ON {dataDb}.{chess} (contactwithconfirmedcovid19case);
+  - CREATE INDEX x_{chess}_finaloutcome ON {dataDb}.{chess} (finaloutcome);
+  - CREATE INDEX x_{chess}_finaloutcomedate ON {dataDb}.{chess} (finaloutcomedate);
+  - CREATE INDEX x_{chess}_transferdestination ON {dataDb}.{chess} (transferdestination);
+  - CREATE INDEX x_{chess}_causeofdeath ON {dataDb}.{chess} (causeofdeath);
+  - CREATE INDEX x_{chess}_hospitaladmissionadmittedfrom ON {dataDb}.{chess} (hospitaladmissionadmittedfrom);
+  - CREATE INDEX x_{chess}_mechanicalinvasiveventilationdur ON {dataDb}.{chess} (mechanicalinvasiveventilationdur);
+  - CREATE INDEX x_{chess}_asymptomatictesting ON {dataDb}.{chess} (asymptomatictesting);
+  - CREATE INDEX x_{chess}_patientstillonicu ON {dataDb}.{chess} (patientstillonicu);
+  - CREATE INDEX x_{chess}_respiratorysupportunknown ON {dataDb}.{chess} (respiratorysupportunknown);
+  - CREATE INDEX x_{chess}_priorhospitalattendance ON {dataDb}.{chess} (priorhospitalattendance);
+  - CREATE INDEX x_{chess}_dateofpriorattendance ON {dataDb}.{chess} (dateofpriorattendance);
+  - CREATE INDEX x_{chess}_admissionnotrelatedtorespiratory ON {dataDb}.{chess} (admissionnotrelatedtorespiratory);
+  - CREATE INDEX x_{chess}_typeorplaceofwork ON {dataDb}.{chess} (typeorplaceofwork);
+  - CREATE INDEX x_{chess}_treatmenttocilizumab ON {dataDb}.{chess} (treatmenttocilizumab);
+  - CREATE INDEX x_{chess}_treatmentremdesivir ON {dataDb}.{chess} (treatmentremdesivir);
+  - CREATE INDEX x_{chess}_treatmentother ON {dataDb}.{chess} (treatmentother);
+  - CREATE INDEX x_{chess}_treatmentconvalescentplasma ON {dataDb}.{chess} (treatmentconvalescentplasma);
+  # hesPatient
+  - CREATE INDEX x_{hesPatient}_pracid ON {dataDb}.{hesPatient} (pracid);
+  - CREATE INDEX x_{hesPatient}_gen_hesid ON {dataDb}.{hesPatient} (gen_hesid);
+  - CREATE INDEX x_{hesPatient}_n_patid_hes ON {dataDb}.{hesPatient} (n_patid_hes);
+  - CREATE INDEX x_{hesPatient}_gen_ethnicity ON {dataDb}.{hesPatient} (gen_ethnicity);
+  - CREATE INDEX x_{hesPatient}_match_rank ON {dataDb}.{hesPatient} (match_rank);
+  # hesHospital
+  - CREATE INDEX x_{hesHospital}_patid ON {dataDb}.{hesHospital} (patid);
+  - CREATE INDEX x_{hesHospital}_spno ON {dataDb}.{hesHospital} (spno);
+  - CREATE INDEX x_{hesHospital}_admidate ON {dataDb}.{hesHospital} (admidate);
+  - CREATE INDEX x_{hesHospital}_discharged ON {dataDb}.{hesHospital} (discharged);
+  - CREATE INDEX x_{hesHospital}_admimeth ON {dataDb}.{hesHospital} (admimeth);
+  - CREATE INDEX x_{hesHospital}_admisorc ON {dataDb}.{hesHospital} (admisorc);
+  - CREATE INDEX x_{hesHospital}_disdest ON {dataDb}.{hesHospital} (disdest);
+  - CREATE INDEX x_{hesHospital}_dismeth ON {dataDb}.{hesHospital} (dismeth);
+  - CREATE INDEX x_{hesHospital}_duration ON {dataDb}.{hesHospital} (duration);
+  - CREATE INDEX x_{hesHospital}_elecdate ON {dataDb}.{hesHospital} (elecdate);
+  - CREATE INDEX x_{hesHospital}_elecdur ON {dataDb}.{hesHospital} (elecdur);
+  # hesEpisodes
+  - CREATE INDEX x_{hesEpisodes}_patid ON {dataDb}.{hesEpisodes} (patid);
+  - CREATE INDEX x_{hesEpisodes}_spno ON {dataDb}.{hesEpisodes} (spno);
+  - CREATE INDEX x_{hesEpisodes}_epikey ON {dataDb}.{hesEpisodes} (epikey);
+  - CREATE INDEX x_{hesEpisodes}_admidate ON {dataDb}.{hesEpisodes} (admidate);
+  - CREATE INDEX x_{hesEpisodes}_epistart ON {dataDb}.{hesEpisodes} (epistart);
+  - CREATE INDEX x_{hesEpisodes}_epiend ON {dataDb}.{hesEpisodes} (epiend);
+  - CREATE INDEX x_{hesEpisodes}_discharged ON {dataDb}.{hesEpisodes} (discharged);
+  - CREATE INDEX x_{hesEpisodes}_eorder ON {dataDb}.{hesEpisodes} (eorder);
+  - CREATE INDEX x_{hesEpisodes}_epidur ON {dataDb}.{hesEpisodes} (epidur);
+  - CREATE INDEX x_{hesEpisodes}_epitype ON {dataDb}.{hesEpisodes} (epitype);
+  - CREATE INDEX x_{hesEpisodes}_admimeth ON {dataDb}.{hesEpisodes} (admimeth);
+  - CREATE INDEX x_{hesEpisodes}_admisorc ON {dataDb}.{hesEpisodes} (admisorc);
+  - CREATE INDEX x_{hesEpisodes}_disdest ON {dataDb}.{hesEpisodes} (disdest);
+  - CREATE INDEX x_{hesEpisodes}_dismeth ON {dataDb}.{hesEpisodes} (dismeth);
+  - CREATE INDEX x_{hesEpisodes}_mainspef ON {dataDb}.{hesEpisodes} (mainspef);
+  - CREATE INDEX x_{hesEpisodes}_tretspef ON {dataDb}.{hesEpisodes} (tretspef);
+  - CREATE INDEX x_{hesEpisodes}_pconsult ON {dataDb}.{hesEpisodes} (pconsult);
+  - CREATE INDEX x_{hesEpisodes}_intmanig ON {dataDb}.{hesEpisodes} (intmanig);
+  - CREATE INDEX x_{hesEpisodes}_classpat ON {dataDb}.{hesEpisodes} (classpat);
+  - CREATE INDEX x_{hesEpisodes}_firstreg ON {dataDb}.{hesEpisodes} (firstreg);
+  - CREATE INDEX x_{hesEpisodes}_ethnos ON {dataDb}.{hesEpisodes} (ethnos);
+  # hesDiagnosisEpi
+  - CREATE INDEX x_{hesDiagnosisEpi}_patid ON {dataDb}.{hesDiagnosisEpi} (patid);
+  - CREATE INDEX x_{hesDiagnosisEpi}_spno ON {dataDb}.{hesDiagnosisEpi} (spno);
+  - CREATE INDEX x_{hesDiagnosisEpi}_epikey ON {dataDb}.{hesDiagnosisEpi} (epikey);
+  - CREATE INDEX x_{hesDiagnosisEpi}_epistart ON {dataDb}.{hesDiagnosisEpi} (epistart);
+  - CREATE INDEX x_{hesDiagnosisEpi}_epiend ON {dataDb}.{hesDiagnosisEpi} (epiend);
+  - CREATE INDEX x_{hesDiagnosisEpi}_ICD ON {dataDb}.{hesDiagnosisEpi} (ICD);
+  - CREATE INDEX x_{hesDiagnosisEpi}_ICDx ON {dataDb}.{hesDiagnosisEpi} (ICDx);
+  - CREATE INDEX x_{hesDiagnosisEpi}_d_order ON {dataDb}.{hesDiagnosisEpi} (d_order);
+  # hesDiagnosisHosp
+  - CREATE INDEX x_{hesDiagnosisHosp}_patid ON {dataDb}.{hesDiagnosisHosp} (patid);
+  - CREATE INDEX x_{hesDiagnosisHosp}_spno ON {dataDb}.{hesDiagnosisHosp} (spno);
+  - CREATE INDEX x_{hesDiagnosisHosp}_admidate ON {dataDb}.{hesDiagnosisHosp} (admidate);
+  - CREATE INDEX x_{hesDiagnosisHosp}_discharged ON {dataDb}.{hesDiagnosisHosp} (discharged);
+  - CREATE INDEX x_{hesDiagnosisHosp}_ICD ON {dataDb}.{hesDiagnosisHosp} (ICD);
+  - CREATE INDEX x_{hesDiagnosisHosp}_ICDx ON {dataDb}.{hesDiagnosisHosp} (ICDx);
+  # hesPrimaryDiagHosp
+  - CREATE INDEX x_{hesPrimaryDiagHosp}_patid ON {dataDb}.{hesPrimaryDiagHosp} (patid);
+  - CREATE INDEX x_{hesPrimaryDiagHosp}_spno ON {dataDb}.{hesPrimaryDiagHosp} (spno);
+  - CREATE INDEX x_{hesPrimaryDiagHosp}_admidate ON {dataDb}.{hesPrimaryDiagHosp} (admidate);
+  - CREATE INDEX x_{hesPrimaryDiagHosp}_discharged ON {dataDb}.{hesPrimaryDiagHosp} (discharged);
+  - CREATE INDEX x_{hesPrimaryDiagHosp}_ICD_PRIMARY ON {dataDb}.{hesPrimaryDiagHosp} (ICD_PRIMARY);
+  - CREATE INDEX x_{hesPrimaryDiagHosp}_ICDx ON {dataDb}.{hesPrimaryDiagHosp} (ICDx);
+  # hesProceduresEpi
+  - CREATE INDEX x_{hesProceduresEpi}_patid ON {dataDb}.{hesProceduresEpi} (patid);
+  - CREATE INDEX x_{hesProceduresEpi}_spno ON {dataDb}.{hesProceduresEpi} (spno);
+  - CREATE INDEX x_{hesProceduresEpi}_epikey ON {dataDb}.{hesProceduresEpi} (epikey);
+  - CREATE INDEX x_{hesProceduresEpi}_admidate ON {dataDb}.{hesProceduresEpi} (admidate);
+  - CREATE INDEX x_{hesProceduresEpi}_epistart ON {dataDb}.{hesProceduresEpi} (epistart);
+  - CREATE INDEX x_{hesProceduresEpi}_epiend ON {dataDb}.{hesProceduresEpi} (epiend);
+  - CREATE INDEX x_{hesProceduresEpi}_discharged ON {dataDb}.{hesProceduresEpi} (discharged);
+  - CREATE INDEX x_{hesProceduresEpi}_OPCS ON {dataDb}.{hesProceduresEpi} (OPCS);
+  - CREATE INDEX x_{hesProceduresEpi}_evdate ON {dataDb}.{hesProceduresEpi} (evdate);
+  - CREATE INDEX x_{hesProceduresEpi}_p_order ON {dataDb}.{hesProceduresEpi} (p_order);
+  # hesAcp
+  - CREATE INDEX x_{hesAcp}_patid ON {dataDb}.{hesAcp} (patid);
+  - CREATE INDEX x_{hesAcp}_spno ON {dataDb}.{hesAcp} (spno);
+  - CREATE INDEX x_{hesAcp}_epikey ON {dataDb}.{hesAcp} (epikey);
+  - CREATE INDEX x_{hesAcp}_epistart ON {dataDb}.{hesAcp} (epistart);
+  - CREATE INDEX x_{hesAcp}_epiend ON {dataDb}.{hesAcp} (epiend);
+  - CREATE INDEX x_{hesAcp}_eorder ON {dataDb}.{hesAcp} (eorder);
+  - CREATE INDEX x_{hesAcp}_epidur ON {dataDb}.{hesAcp} (epidur);
+  - CREATE INDEX x_{hesAcp}_numacp ON {dataDb}.{hesAcp} (numacp);
+  - CREATE INDEX x_{hesAcp}_acpn ON {dataDb}.{hesAcp} (acpn);
+  - CREATE INDEX x_{hesAcp}_acpstar ON {dataDb}.{hesAcp} (acpstar);
+  - CREATE INDEX x_{hesAcp}_acpend ON {dataDb}.{hesAcp} (acpend);
+  - CREATE INDEX x_{hesAcp}_acpdur ON {dataDb}.{hesAcp} (acpdur);
+  - CREATE INDEX x_{hesAcp}_intdays ON {dataDb}.{hesAcp} (intdays);
+  - CREATE INDEX x_{hesAcp}_depdays ON {dataDb}.{hesAcp} (depdays);
+  - CREATE INDEX x_{hesAcp}_acploc ON {dataDb}.{hesAcp} (acploc);
+  - CREATE INDEX x_{hesAcp}_acpsour ON {dataDb}.{hesAcp} (acpsour);
+  - CREATE INDEX x_{hesAcp}_acpdisp ON {dataDb}.{hesAcp} (acpdisp);
+  - CREATE INDEX x_{hesAcp}_acpout ON {dataDb}.{hesAcp} (acpout);
+  - CREATE INDEX x_{hesAcp}_acpplan ON {dataDb}.{hesAcp} (acpplan);
+  - CREATE INDEX x_{hesAcp}_acpspef ON {dataDb}.{hesAcp} (acpspef);
+  - CREATE INDEX x_{hesAcp}_orgsup ON {dataDb}.{hesAcp} (orgsup);
+  # hesCcare
+  - CREATE INDEX x_{hesCcare}_patid ON {dataDb}.{hesCcare} (patid);
+  - CREATE INDEX x_{hesCcare}_spno ON {dataDb}.{hesCcare} (spno);
+  - CREATE INDEX x_{hesCcare}_epikey ON {dataDb}.{hesCcare} (epikey);
+  - CREATE INDEX x_{hesCcare}_admidate ON {dataDb}.{hesCcare} (admidate);
+  - CREATE INDEX x_{hesCcare}_discharged ON {dataDb}.{hesCcare} (discharged);
+  - CREATE INDEX x_{hesCcare}_epistart ON {dataDb}.{hesCcare} (epistart);
+  - CREATE INDEX x_{hesCcare}_epiend ON {dataDb}.{hesCcare} (epiend);
+  - CREATE INDEX x_{hesCcare}_eorder ON {dataDb}.{hesCcare} (eorder);
+  - CREATE INDEX x_{hesCcare}_ccstartdate ON {dataDb}.{hesCcare} (ccstartdate);
+  - CREATE INDEX x_{hesCcare}_ccstarttime ON {dataDb}.{hesCcare} (ccstarttime);
+  - CREATE INDEX x_{hesCcare}_ccdisrdydate ON {dataDb}.{hesCcare} (ccdisrdydate);
+  - CREATE INDEX x_{hesCcare}_ccdisrdytime ON {dataDb}.{hesCcare} (ccdisrdytime);
+  - CREATE INDEX x_{hesCcare}_ccdisdate ON {dataDb}.{hesCcare} (ccdisdate);
+  - CREATE INDEX x_{hesCcare}_ccdistime ON {dataDb}.{hesCcare} (ccdistime);
+  - CREATE INDEX x_{hesCcare}_ccadmitype ON {dataDb}.{hesCcare} (ccadmitype);
+  - CREATE INDEX x_{hesCcare}_ccadmisorc ON {dataDb}.{hesCcare} (ccadmisorc);
+  - CREATE INDEX x_{hesCcare}_ccsorcloc ON {dataDb}.{hesCcare} (ccsorcloc);
+  - CREATE INDEX x_{hesCcare}_ccdisstat ON {dataDb}.{hesCcare} (ccdisstat);
+  - CREATE INDEX x_{hesCcare}_ccdisdest ON {dataDb}.{hesCcare} (ccdisdest);
+  - CREATE INDEX x_{hesCcare}_ccdisloc ON {dataDb}.{hesCcare} (ccdisloc);
+  - CREATE INDEX x_{hesCcare}_cclev2days ON {dataDb}.{hesCcare} (cclev2days);
+  - CREATE INDEX x_{hesCcare}_cclev3days ON {dataDb}.{hesCcare} (cclev3days);
+  - CREATE INDEX x_{hesCcare}_bcardsupdays ON {dataDb}.{hesCcare} (bcardsupdays);
+  - CREATE INDEX x_{hesCcare}_acardsupdays ON {dataDb}.{hesCcare} (acardsupdays);
+  - CREATE INDEX x_{hesCcare}_bressupdays ON {dataDb}.{hesCcare} (bressupdays);
+  - CREATE INDEX x_{hesCcare}_aressupdays ON {dataDb}.{hesCcare} (aressupdays);
+  - CREATE INDEX x_{hesCcare}_gisupdays ON {dataDb}.{hesCcare} (gisupdays);
+  - CREATE INDEX x_{hesCcare}_liversupdays ON {dataDb}.{hesCcare} (liversupdays);
+  - CREATE INDEX x_{hesCcare}_neurosupdays ON {dataDb}.{hesCcare} (neurosupdays);
+  - CREATE INDEX x_{hesCcare}_rensupdays ON {dataDb}.{hesCcare} (rensupdays);
+  - CREATE INDEX x_{hesCcare}_dermsupdays ON {dataDb}.{hesCcare} (dermsupdays);
+  - CREATE INDEX x_{hesCcare}_orgsupmax ON {dataDb}.{hesCcare} (orgsupmax);
+  - CREATE INDEX x_{hesCcare}_ccunitfun ON {dataDb}.{hesCcare} (ccunitfun);
+  - CREATE INDEX x_{hesCcare}_unitbedconfig ON {dataDb}.{hesCcare} (unitbedconfig);
+  - CREATE INDEX x_{hesCcare}_bestmatch ON {dataDb}.{hesCcare} (bestmatch);
+  - CREATE INDEX x_{hesCcare}_ccapcrel ON {dataDb}.{hesCcare} (ccapcrel);
+  # patientImd2015
+  - CREATE INDEX x_{patientImd2015}_pracid ON {dataDb}.{patientImd2015} (pracid);
+  - CREATE INDEX x_{patientImd2015}_imd2015_10 ON {dataDb}.{patientImd2015} (imd2015_10);
+  # practiceImd
+  - CREATE INDEX x_{practiceImd}_country ON {dataDb}.{practiceImd} (country);
+  - CREATE INDEX x_{practiceImd}_e2015_imd_10 ON {dataDb}.{practiceImd} (e2015_imd_10);
+  - CREATE INDEX x_{practiceImd}_ni2017_imd_10 ON {dataDb}.{practiceImd} (ni2017_imd_10);
+  - CREATE INDEX x_{practiceImd}_s2016_imd_10 ON {dataDb}.{practiceImd} (s2016_imd_10);
+  - CREATE INDEX x_{practiceImd}_w2014_imd_10 ON {dataDb}.{practiceImd} (w2014_imd_10);
+  # onsDeath
+  - CREATE INDEX x_{onsDeath}_pracid ON {dataDb}.{onsDeath} (pracid);
+  - CREATE INDEX x_{onsDeath}_gen_death_id ON {dataDb}.{onsDeath} (gen_death_id);
+  - CREATE INDEX x_{onsDeath}_n_patid_death ON {dataDb}.{onsDeath} (n_patid_death);
+  - CREATE INDEX x_{onsDeath}_match_rank ON {dataDb}.{onsDeath} (match_rank);
+  - CREATE INDEX x_{onsDeath}_dor ON {dataDb}.{onsDeath} (dor);
+  - CREATE INDEX x_{onsDeath}_dod ON {dataDb}.{onsDeath} (dod);
+  - CREATE INDEX x_{onsDeath}_dod_partial ON {dataDb}.{onsDeath} (dod_partial);
+  - CREATE INDEX x_{onsDeath}_nhs_indicator ON {dataDb}.{onsDeath} (nhs_indicator);
+  - CREATE INDEX x_{onsDeath}_pod_category ON {dataDb}.{onsDeath} (pod_category);
+  - CREATE INDEX x_{onsDeath}_cause ON {dataDb}.{onsDeath} (cause);
+  - CREATE INDEX x_{onsDeath}_cause1 ON {dataDb}.{onsDeath} (cause1);
+  - CREATE INDEX x_{onsDeath}_cause2 ON {dataDb}.{onsDeath} (cause2);
+  - CREATE INDEX x_{onsDeath}_cause3 ON {dataDb}.{onsDeath} (cause3);
+  - CREATE INDEX x_{onsDeath}_cause4 ON {dataDb}.{onsDeath} (cause4);
+  - CREATE INDEX x_{onsDeath}_cause5 ON {dataDb}.{onsDeath} (cause5);
+  - CREATE INDEX x_{onsDeath}_cause6 ON {dataDb}.{onsDeath} (cause6);
+  - CREATE INDEX x_{onsDeath}_cause7 ON {dataDb}.{onsDeath} (cause7);
+  - CREATE INDEX x_{onsDeath}_cause8 ON {dataDb}.{onsDeath} (cause8);
+  - CREATE INDEX x_{onsDeath}_cause9 ON {dataDb}.{onsDeath} (cause9);
+  - CREATE INDEX x_{onsDeath}_cause10 ON {dataDb}.{onsDeath} (cause10);
+  - CREATE INDEX x_{onsDeath}_cause11 ON {dataDb}.{onsDeath} (cause11);
+  - CREATE INDEX x_{onsDeath}_cause12 ON {dataDb}.{onsDeath} (cause12);
+  - CREATE INDEX x_{onsDeath}_cause13 ON {dataDb}.{onsDeath} (cause13);
+  - CREATE INDEX x_{onsDeath}_cause14 ON {dataDb}.{onsDeath} (cause14);
+  - CREATE INDEX x_{onsDeath}_cause15 ON {dataDb}.{onsDeath} (cause15);
+  # sgss
+  - CREATE INDEX x_{sgss}_patid ON {dataDb}.{sgss} (patid);
+  - CREATE INDEX x_{sgss}_pracid ON {dataDb}.{sgss} (pracid);
+  - CREATE INDEX x_{sgss}_n_patid_spec ON {dataDb}.{sgss} (n_patid_spec);
+  - CREATE INDEX x_{sgss}_pseudo_specimen_id ON {dataDb}.{sgss} (pseudo_specimen_id);
+  - CREATE INDEX x_{sgss}_organism_species_name ON {dataDb}.{sgss} (organism_species_name);
+  - CREATE INDEX x_{sgss}_lab_report_date ON {dataDb}.{sgss} (lab_report_date);
+  - CREATE INDEX x_{sgss}_age_in_years ON {dataDb}.{sgss} (age_in_years);
+  - CREATE INDEX x_{sgss}_reporting_lab_id ON {dataDb}.{sgss} (reporting_lab_id);
+  - CREATE INDEX x_{sgss}_specimen_date ON {dataDb}.{sgss} (specimen_date);
+  - CREATE INDEX x_{sgss}_care_home ON {dataDb}.{sgss} (care_home);

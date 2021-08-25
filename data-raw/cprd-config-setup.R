@@ -29,4 +29,4 @@ usethis::use_data(analysisSql,overwrite = TRUE)
 usethis::use_data(codeSetsSql,overwrite = TRUE)
 
 # install this version of the setup.
-devtools::install_local(here::here("."))
+# devtools::install_local(here::here("."))

@@ -1,3 +1,24 @@
+set role 'role_full_admin';
+
+# Linkage availability
+CREATE TABLE cprd_data.linkage_availability 
+(patid BIGINT UNSIGNED,
+hes_e BOOL NOT NULL DEFAULT 0,
+death_e BOOL NOT NULL DEFAULT 0,
+lsoa_e BOOL NOT NULL DEFAULT 0,
+PRIMARY KEY (patid))
+CHARSET=latin1 COLLATE=latin1_general_ci;
+
+LOAD DATA INFILE '/slade/DBs/mysql-files/CPRD/linkage_data/20_000101_linkage_eligibility_aurum.txt'
+INTO TABLE cprd_data.linkage_availability
+FIELDS TERMINATED BY '\t'
+LINES TERMINATED BY '\r\n'
+IGNORE 1 LINES
+(patid, @pracid, @linkdate, hes_e, death_e, @cr_e, lsoa_e, @mh_e);
+
+
+
+
 # CHESS data
 CREATE TABLE cprd_data.chess
 (patid BIGINT UNSIGNED,

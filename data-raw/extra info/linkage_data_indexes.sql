@@ -1,5 +1,11 @@
 set role 'role_full_admin';
 
+# Linkage availability
+CREATE INDEX x_linkage_availability_hes_e ON cprd_data.linkage_availability (hes_e);
+CREATE INDEX x_linkage_availability_death_e ON cprd_data.linkage_availability (death_e);
+CREATE INDEX x_linkage_availability_lsoa_e ON cprd_data.linkage_availability (lsoa_e);
+
+
 # CHESS
 CREATE INDEX x_chess_patid ON cprd_data.chess (patid);
 CREATE INDEX x_chess_pracid ON cprd_data.chess (pracid);
