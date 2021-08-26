@@ -77,7 +77,7 @@ codesets$deleteCodeSet("all diabetes")
 
 ### Loading more than one code set
 
-Loading more than one the code sets into the database is also possible. In this case the loaded codesets will be named after the terminal part of their file path. This searches the file hierarchy for `csv` or `txt` files containing a `medcodeid` or other compatible column. All matched codesets will be loaded 
+Loading more than one the code sets into the database is also possible. In this case the loaded codesets will be named after the terminal part of their file path. This searches the file hierarchy for `txt` files containing a `medcodeid` or other compatible column. All matched codesets will be loaded 
 
 ```{r}
 

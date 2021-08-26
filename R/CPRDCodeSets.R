@@ -110,14 +110,14 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     return(TRUE)
   },
 
-  #' @description load a set of med codes from CSV or tab separated text files into the CPRD database.
+  #' @description load a set of med codes from tab separated text files into the CPRD database.
   #' The names of the codesets will be defined by the filenames. Files will not be loaded if they have the same hash,
   #' name and version as an existing code set.
   #' @param paths a list of file paths to try and load.
   #' @param version the version of the codesets that are being loaded
   #' @return Nothing
   loadAll = function(paths,version) {
-    files = unlist(lapply(paths, function(x) paste0(x,"/",list.files(x,pattern=".*\\.(txt|csv)",recursive=TRUE))))
+    files = unlist(lapply(paths, function(x) paste0(x,"/",list.files(x,pattern=".*\\.(txt)",recursive=TRUE))))
     for (file in files) {
       parts = fs::path_file(file) %>% stringr::str_split("\\.") %>% unlist()
       name = parts[1]
