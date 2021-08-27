@@ -120,7 +120,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     files = unlist(lapply(paths, function(x) paste0(x,"/",list.files(x,pattern=".*\\.(txt)",recursive=TRUE))))
     for (file in files) {
       parts = fs::path_file(file) %>% stringr::str_split("\\.") %>% unlist()
-      name = parts[1]
+      name = substr(parts[1],8,nchar(part[1])-8)
       ext = parts[2]
       tryCatch({
         if(ext == "txt") {
@@ -143,7 +143,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   #' @description list the codes, and their descriptions, in a given named version of a code set. The medcodeid or prodcodeid
   #' @param name the code set name
   #' @param version the code set version
-  #' @return a lazy dataframe continaing the codes and their descriptions
+  #' @return a lazy dataframe containing the codes and their descriptions
   getCodeSetDetails = function(name,version) {
     previous = self$codeSets %>% dplyr::filter(setname==name & version==version)
     key = previous %>% select(type) %>% distinct() %>% pull(type) %>% unique()
