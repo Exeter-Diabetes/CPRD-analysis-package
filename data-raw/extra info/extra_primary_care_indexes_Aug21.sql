@@ -4,11 +4,6 @@ SET GLOBAL key_buffer_size = 200*1024*1024*1024;
 SET sort_buffer_size = 200*1024*1024*1024;
 SET myisam_sort_buffer_size = 200*1024*1024*1024;
 
-show variables like 'key_buffer_size';
-show variables like 'sort_buffer_size';
-show variables like 'myisam_sort_buffer_size';
-show variables like 'myisam_max_sort_file_size';
-
 #done
 CREATE INDEX x_consultation_staffid ON cprd_data.consultation (staffid);
 CREATE INDEX x_consultation_conssourceid ON cprd_data.consultation (conssourceid);
