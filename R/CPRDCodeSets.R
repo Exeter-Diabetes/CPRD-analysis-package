@@ -120,7 +120,8 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     files = unlist(lapply(paths, function(x) paste0(x,"/",list.files(x,pattern=".*\\.(txt)",recursive=TRUE))))
     for (file in files) {
       parts = fs::path_file(file) %>% stringr::str_split("\\.") %>% unlist()
-      name = substr(parts[1],8,nchar(parts[1])-8)
+      parts_of_part1 <- strsplit(parts[1])
+      name = parts_of_part1[[1]][3]
       ext = parts[2]
       tryCatch({
         if(ext == "txt") {
