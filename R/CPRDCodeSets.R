@@ -47,7 +47,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   #' @param version the version of the codeset
   #' @param colname (optional) the name of the column containing the medcode. If set to NULL defaults to the first column.
   #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
-  loadMedCodeSet = function(codeSetDf, name, category, version, colname=NULL) {
+  loadMedCodeSet = function(codeSetDf, name, category=NULL, version, colname=NULL) {
     self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="prodcodeid")
   },
 
