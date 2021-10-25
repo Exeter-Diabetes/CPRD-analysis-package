@@ -47,7 +47,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   #' @param version the version of the codeset
   #' @param colname (optional) the name of the column containing the medcode. If set to NULL defaults to the first column.
   #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
-  loadMedCodeSet = function(codeSetDf, name, category=NULL, version, colname=NULL) {
+  loadMedCodeSet = function(codeSetDf, category=NULL, name, version, colname=NULL) {
     self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="prodcodeid")
   },
 
@@ -58,8 +58,8 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   #' @param version the version of the codeset
   #' @param colname (optional) the name of the column containing the prodcode. If set to NULL defaults to the first column.
   #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
-  loadProdCodeSet = function(codeSetDf, name, version, colname=NULL) {
-    self$loadCodeSet(codeSetDf=codeSetDf, name=name, version=version, colname=colname, type="medcodeid")
+  loadProdCodeSet = function(codeSetDf, category=NULL, name, version, colname=NULL) {
+    self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="medcodeid")
   },
 
   #' @description load a new code set into the CPRD data from an R dataframe.
@@ -70,7 +70,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   #' @param colname the name of the column containing the medcode or prodcode. If set to NULL defaults to the first column.
   #' @param type the type of the code as the column name it will match on e.g. medcodeid, prodcodeid. This can be used for any kind of codeid column
   #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
-  loadCodeSet = function(codeSetDf, name, category, version, colname, type) {
+  loadCodeSet = function(codeSetDf, category, name, version, colname, type) {
     if (!type %in% aurum::lookupSql$keys) stop("type must be one of: ",paste0(aurum::lookupSql$keys,collapse = ", "))
     table = names(lookupSql$keys[lookupSql$keys==type])
     # colname or first col
