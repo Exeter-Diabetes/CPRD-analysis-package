@@ -48,7 +48,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   #' @param colname (optional) the name of the column containing the medcode. If set to NULL defaults to the first column.
   #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
   loadMedCodeSet = function(codeSetDf, category=NULL, name, version, colname=NULL) {
-    self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="prodcodeid")
+    self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="medcodeid")
   },
 
   #' @description load a new prodcode set into the CPRD data from an R dataframe.
@@ -59,7 +59,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   #' @param colname (optional) the name of the column containing the prodcode. If set to NULL defaults to the first column.
   #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
   loadProdCodeSet = function(codeSetDf, category=NULL, name, version, colname=NULL) {
-    self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="medcodeid")
+    self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="prodcodeid")
   },
 
   #' @description load a new code set into the CPRD data from an R dataframe.
@@ -84,16 +84,14 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     if(codeSetDf %>% dplyr::pull(!!colname) %>% class() == "character") {
       codeSetDf = codeSetDf %>% dplyr::mutate(!!colname := bit64::as.integer64(stringr::str_remove_all(!!colname,"[^0-9]")))
     }
-    
     # category
     if(is.null(category)) {
       category = colnames(codeSetDf)[3]
       message("no category field specified")
     }
     category = as.symbol(category)
-    
-    
-    codeSetDf = codeSetDf %>% dplyr::select(codeid = !!colname) %>% dplyr::arrange(codeid) %>% dplyr::distinct()
+
+        codeSetDf = codeSetDf %>% dplyr::select(codeid = !!colname) %>% dplyr::arrange(codeid) %>% dplyr::distinct()
     if(any(is.na(codeSetDf$codeid))) message("removing rows with empty codes in ",name," v.",version)
     codeSetDf = codeSetDf %>% dplyr::filter(!is.na(codeid))
 
