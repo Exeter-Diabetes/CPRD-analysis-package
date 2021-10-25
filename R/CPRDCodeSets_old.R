@@ -42,18 +42,16 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
 
   #' @description load a new medcode set into the CPRD data from an R dataframe.
   #' @param codeSetDf a dataframe with minimally a single column of medcode ids.
-  #' @param category (optional) column containing category code. If set to NULL defaults to the third column.
   #' @param name the name of the codeset
   #' @param version the version of the codeset
   #' @param colname (optional) the name of the column containing the medcode. If set to NULL defaults to the first column.
   #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
-  loadMedCodeSet = function(codeSetDf, name, category, version, colname=NULL) {
-    self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="prodcodeid")
+  loadMedCodeSet = function(codeSetDf, name, version, colname=NULL) {
+    self$loadCodeSet(codeSetDf=codeSetDf, name=name, version=version, colname=colname, type="prodcodeid")
   },
 
   #' @description load a new prodcode set into the CPRD data from an R dataframe.
   #' @param codeSetDf a dataframe with minimally a single column of prodcode ids.
-  #' @param category (optional) column containing category code. If set to NULL defaults to the third column.
   #' @param name the name of the codeset
   #' @param version the version of the codeset
   #' @param colname (optional) the name of the column containing the prodcode. If set to NULL defaults to the first column.
@@ -64,13 +62,12 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
 
   #' @description load a new code set into the CPRD data from an R dataframe.
   #' @param codeSetDf a dataframe with minimally a single column of medcode ids or prodcode ids.
-  #' @param category (optional) column containing category code. If set to NULL defaults to the third column.
   #' @param name the name of the codeset
   #' @param version the version of the codeset
   #' @param colname the name of the column containing the medcode or prodcode. If set to NULL defaults to the first column.
   #' @param type the type of the code as the column name it will match on e.g. medcodeid, prodcodeid. This can be used for any kind of codeid column
   #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
-  loadCodeSet = function(codeSetDf, name, category, version, colname, type) {
+  loadCodeSet = function(codeSetDf, name, version, colname, type) {
     if (!type %in% aurum::lookupSql$keys) stop("type must be one of: ",paste0(aurum::lookupSql$keys,collapse = ", "))
     table = names(lookupSql$keys[lookupSql$keys==type])
     # colname or first col
@@ -84,15 +81,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     if(codeSetDf %>% dplyr::pull(!!colname) %>% class() == "character") {
       codeSetDf = codeSetDf %>% dplyr::mutate(!!colname := bit64::as.integer64(stringr::str_remove_all(!!colname,"[^0-9]")))
     }
-    
-    # category
-    if(is.null(category)) {
-      category = colnames(codeSetDf)[3]
-      message("no category field specified")
-    }
-    category = as.symbol(category)
-    
-    
+
     codeSetDf = codeSetDf %>% dplyr::select(codeid = !!colname) %>% dplyr::arrange(codeid) %>% dplyr::distinct()
     if(any(is.na(codeSetDf$codeid))) message("removing rows with empty codes in ",name," v.",version)
     codeSetDf = codeSetDf %>% dplyr::filter(!is.na(codeid))

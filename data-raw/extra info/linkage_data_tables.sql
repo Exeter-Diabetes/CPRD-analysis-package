@@ -300,12 +300,13 @@ INTO TABLE cprd_data.hes_episodes
 FIELDS TERMINATED BY '\t'
 LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES
-(patid, spno, epikey, @admidate, @epistart, @epiend, @discharged, eorder, @epidur, epitype, admimeth, admisorc, disdest, dismeth, mainspef, tretspef, pconsult, intmanig, classpat, @firstreg, @ethnos)
+(patid, spno, epikey, @admidate, @epistart, @epiend, @discharged, eorder, @epidur, epitype, admimeth, admisorc, disdest, dismeth, mainspef, tretspef, @pconsult, intmanig, classpat, @firstreg, @ethnos)
 SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%d/%m/%Y'),
 epistart = STR_TO_DATE(NULLIF(@epistart,''),'%d/%m/%Y'),
 epiend = STR_TO_DATE(NULLIF(@epiend,''),'%d/%m/%Y'),
 discharged = STR_TO_DATE(NULLIF(@discharged,''),'%d/%m/%Y'),
 epidur = NULLIF(@epidur,''),
+pconsult = IF(@pconsult='&' OR @pconsult='99',NULL,@pconsult),
 firstreg = IF(@firstreg='N',1,IF(@firstreg='',NULL,@firstreg)),
 ethnos = IF(@ethnos = 'White', 1,
 IF(@ethnos = 'Bl_Carib', 2,
