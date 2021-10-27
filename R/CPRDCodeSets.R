@@ -70,7 +70,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   #' @param colname the name of the column containing the medcode or prodcode. If set to NULL defaults to the first column.
   #' @param type the type of the code as the column name it will match on e.g. medcodeid, prodcodeid. This can be used for any kind of codeid column
   #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
-  loadCodeSet = function(codeSetDf, category, name, version, colname, type) {
+  loadCodeSet = function(codeSetDf, category=NULL, name, version, colname=NULL, type) {
     if (!type %in% aurum::lookupSql$keys) stop("type must be one of: ",paste0(aurum::lookupSql$keys,collapse = ", "))
     table = names(lookupSql$keys[lookupSql$keys==type])
     # colname or first col
@@ -86,12 +86,13 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     }
     # category
     if(is.null(category)) {
-      category = colnames(codeSetDf)[3]
+      codeSetDf = codeSetDf %>% dplyr::mutate(empty_category=NA)
+      category="empty_category"
       message("no category field specified")
     }
     category = as.symbol(category)
 
-        codeSetDf = codeSetDf %>% dplyr::select(codeid = !!colname) %>% dplyr::arrange(codeid) %>% dplyr::distinct()
+        codeSetDf = codeSetDf %>% dplyr::select(codeid = !!colname,category = !!category) %>% dplyr::arrange(codeid) %>% dplyr::distinct()
     if(any(is.na(codeSetDf$codeid))) message("removing rows with empty codes in ",name," v.",version)
     codeSetDf = codeSetDf %>% dplyr::filter(!is.na(codeid))
 
@@ -154,18 +155,35 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   #' @param name the code set name
   #' @param version the code set version
   #' @return a lazy dataframe containing the codes and their descriptions
-  getCodeSetDetails = function(name,version) {
-    previous = self$codeSets %>% dplyr::filter(setname==name & version==version)
+  getCodeSetDetails = function(name,category=NULL,version=NULL) {
+    if (is.null(version) & is.null(category)) {
+      previous = self$codeSets %>% dplyr::filter(setname==name & version==max(version,na.rm=TRUE))
+      message("no category field specified, all will be included")
+      message("no version specified, will use latest")
+    } else if (!is.null(version) & is.null(category)) {
+      vs = version
+      previous = self$codeSets %>% dplyr::filter(setname==name & version==local(vs))
+      message("no category field specified, all will be included")
+    } else if (is.null(version) & !is.null(category)) {
+      chosen_cat = category
+      previous = self$codeSets %>% dplyr::filter(setname==name & category==local(chosen_cat) & version==max(version,na.rm=TRUE))
+      message("no version specified, will use latest")
+    } else if (!is.null(version) & !is.null(category)) {
+      vs = version
+      chosen_cat = category
+      previous = self$codeSets %>% dplyr::filter(setname==name & category==local(chosen_cat) & version==local(vs))
+    }
     key = previous %>% select(type) %>% distinct() %>% pull(type) %>% unique()
     if (length(key)!=1) {warning("problem with name and version..."); browser()} #TODO identify further
     table = names(aurum::lookupSql$keys[aurum::lookupSql$keys==key])
     tableid = aurum::lookupSql$naming[[table]]
+    catname = paste0(name,"_cat")
     return(
       previous %>%
         dplyr::inner_join(
           self$.data$tables[[table]],
           by = c("codeid"=key)
-        ) %>% rename(!!key := codeid)
+        ) %>% rename(!!key := codeid, !!catname := category)
     )
     # return(self$lazySql(
     #   aurum::codeSetsSql$tables$codeSets$getFromTableKeyByNameVersion,
@@ -183,21 +201,35 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   #' @param name the code set name
   #' @param version (optional) the code set version, if not sepcified returns the maximium code
   #' @return a lazy dataframe containing the code only
-  getCodeSet = function(name,version = NULL) {
-    if (is.null(version)) {
+  getCodeSet = function(name,category=NULL,version = NULL) {
+    if (is.null(version) & is.null(category)) {
       previous = self$codeSets %>% dplyr::filter(setname==name & version==max(version,na.rm=TRUE))
-    } else {
+      message("no category field specified, all will be included")
+      message("no version specified, will use latest")
+    } else if (!is.null(version) & is.null(category)) {
       vs = version
       previous = self$codeSets %>% dplyr::filter(setname==name & version==local(vs))
+      message("no category field specified, all will be included")
+    } else if (is.null(version) & !is.null(category)) {
+      chosen_cat = category
+      previous = self$codeSets %>% dplyr::filter(setname==name & category==local(chosen_cat) & version==max(version,na.rm=TRUE))
+      message("no version specified, will use latest")
+    } else if (!is.null(version) & !is.null(category)) {
+      vs = version
+      chosen_cat = category
+      previous = self$codeSets %>% dplyr::filter(setname==name & category==local(chosen_cat) & version==local(vs))
     }
+    
     key = previous %>% select(type) %>% distinct() %>% pull(type) %>% unique()
     if (length(key)!=1) {warning("problem with name and version..."); browser()} #TODO identify further
     #table = names(aurum::lookupSql$keys[aurum::lookupSql$keys==key])
     #tableid = aurum::lookupSql$naming[[table]]
-    return(previous %>% select(!!key := codeid))
+    catname = paste0(name,"_cat")
+    return(previous %>% select(!!key := codeid,category) %>% rename(!!catname := category))
   },
 
-  getAllCodeSetVersion = function(v) {
+  getAllCodeSetVersion = function(version) {
+    v = version
     tmp = self$listCodeSets() %>% filter(version==v) %>% pull(setname)
     out = list()
     for (name in tmp) {
