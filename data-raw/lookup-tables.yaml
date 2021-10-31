@@ -42,9 +42,11 @@ naming:
   epitype: rl_epitype
   firstreg: rl_firstreg
   gen_ethnicity: rl_gen_ethnicity
+  icd10Dict: rl_icd10_dict
   intmanig: rl_intmanig
   mainspef: rl_mainspef
   nhs_indicator: rl_nhs_indicator
+  opcs4Dict: rl_opcs4_dict
   orgsup: rl_orgsup
   tretspef: rl_tretspef
   trustid: rl_trustid
@@ -52,6 +54,8 @@ naming:
 keys:
   medDict: "medcodeid"
   productDict: "prodcodeid"
+  icd10Dict: "icd10"
+  opcs4Dict: "opcs4"
 paths:
   medDict: "{refPath}/202005_EMISMedicalDictionary.txt"
   productDict: "{refPath}/202005_EMISProductDictionary.txt"
@@ -96,8 +100,10 @@ paths:
   firstreg: "{refPath}/firstreg.txt"
   gen_ethnicity: "{refPath}/gen_ethnicity.txt"
   intmanig: "{refPath}/intmanig.txt"
+  icd10Dict: "{refPath}/icd10_dict.txt"
   mainspef: "{refPath}/mainspef.txt"
   nhs_indicator: "{refPath}/nhs_indicator.txt"
+  opcs4Dict: "{refPath}/opcs4_dict.txt"
   orgsup: "{refPath}/orgsup.txt"
   tretspef: "{refPath}/tretspef.txt"
   trustid: "{refPath}/trustid.txt"
@@ -880,6 +886,39 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (intmanig, description);
+  icd10Dict:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{icd10Dict}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{icd10Dict}
+      (icd10 VARCHAR(6),
+      alt_code VARCHAR(5),
+      usage_uk TINYINT,
+      description VARCHAR(200),
+      modifier_4 VARCHAR(100),
+      modifier_5 VARCHAR(100),
+      qualifiers VARCHAR(200),
+      gender_mask TINYINT,
+      min_age TINYINT,
+      max_age TINYINT,
+      tree_description VARCHAR(200),
+      PRIMARY KEY (icd10))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{icd10Dict}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\n'
+      IGNORE 1 LINES
+      (icd10, alt_code, usage_uk, description, @modifier_4, @modifier_5, @qualifiers, @gender_mask, @min_age, @max_age, @tree_description)
+      SET modifier_4 = NULLIF(@modifier_4,''),
+      modifier_5 = NULLIF(@modifier_5,''),
+      qualifiers = NULLIF(@qualifiers,''),
+      gender_mask = NULLIF(@gender_mask,''),
+      min_age = NULLIF(@min_age,''),
+      max_age = NULLIF(@max_age,''),
+      tree_description = NULLIF(@tree_description,'');
   mainspef:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{mainspef}
@@ -914,6 +953,24 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (nhs_indicator, description);
+  opcs4Dict:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{opcs4Dict}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{opcs4Dict}
+      (opcs4 VARCHAR(4),
+      code VARCHAR(5),
+      description VARCHAR(200),
+      PRIMARY KEY (opcs4))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{opcs4Dict}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (code, opcs4, description);
   orgsup:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{orgsup}

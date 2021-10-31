@@ -6,7 +6,7 @@ tables:
       DROP TABLE IF EXISTS {analysisDb}.{codeSets}
     create: |
       CREATE TABLE IF NOT EXISTS {analysisDb}.{codeSets}
-      (codeid BIGINT UNSIGNED,
+      (codeid VARCHAR(20),
       category VARCHAR(256),
       setname VARCHAR(256),
       version VARCHAR(32),

@@ -42,7 +42,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
 
   #' @description load a new medcode set into the CPRD data from an R dataframe.
   #' @param codeSetDf a dataframe with minimally a single column of medcode ids.
-  #' @param category (optional) column containing category code. If set to NULL defaults to the third column.
+  #' @param category (optional) column containing category code. If set to NULL, all values are NULL.
   #' @param name the name of the codeset
   #' @param version the version of the codeset
   #' @param colname (optional) the name of the column containing the medcode. If set to NULL defaults to the first column.
@@ -53,7 +53,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
 
   #' @description load a new prodcode set into the CPRD data from an R dataframe.
   #' @param codeSetDf a dataframe with minimally a single column of prodcode ids.
-  #' @param category (optional) column containing category code. If set to NULL defaults to the third column.
+  #' @param category (optional) column containing category code. If set to NULL, all values are NULL.
   #' @param name the name of the codeset
   #' @param version the version of the codeset
   #' @param colname (optional) the name of the column containing the prodcode. If set to NULL defaults to the first column.
@@ -62,6 +62,28 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="prodcodeid")
   },
 
+  #' @description load a new ICD10 set into the CPRD data from an R dataframe.
+  #' @param codeSetDf a dataframe with minimally a single column of ICD10 codes.
+  #' @param category (optional) column containing category code. If set to NULL, all values are NULL.
+  #' @param name the name of the codeset
+  #' @param version the version of the codeset
+  #' @param colname (optional) the name of the column containing the ICD10 code If set to NULL defaults to the first column.
+  #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
+  loadICD10CodeSet = function(codeSetDf, category=NULL, name, version, colname=NULL) {
+    self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="icd10")
+  },
+  
+  #' @description load a new ICD10 set into the CPRD data from an R dataframe.
+  #' @param codeSetDf a dataframe with minimally a single column of ICD10 codes.
+  #' @param category (optional) column containing category code. If set to NULL, all values are NULL.
+  #' @param name the name of the codeset
+  #' @param version the version of the codeset
+  #' @param colname (optional) the name of the column containing the ICD10 code If set to NULL defaults to the first column.
+  #' @return A TRUE/FALSE depending on if the code set was successfully loaded.
+  loadOPCS4CodeSet = function(codeSetDf, category=NULL, name, version, colname=NULL) {
+    self$loadCodeSet(codeSetDf=codeSetDf, category=category, name=name, version=version, colname=colname, type="opcs4")
+  },
+  
   #' @description load a new code set into the CPRD data from an R dataframe.
   #' @param codeSetDf a dataframe with minimally a single column of medcode ids or prodcode ids.
   #' @param category (optional) column containing category code. If set to NULL defaults to the third column.
@@ -81,7 +103,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     colname = as.symbol(colname)
     if(!(codeSetDf %>% dplyr::pull(!!colname) %>% class() %in% c("character","integer64")))
       stop("Code sets can only be defined using character or bit64::integer64 data types, otherwise all sorts of problems may occur. Load data using the readr package and the col_types = cols(.default=col_character()) option")
-    if(codeSetDf %>% dplyr::pull(!!colname) %>% class() == "character") {
+    if((codeSetDf %>% dplyr::pull(!!colname) %>% class() == "character") & (codeSetDf %>% dplyr::pull(!!colname) %>% nchar %>% max > 6)) {
       codeSetDf = codeSetDf %>% dplyr::mutate(!!colname := bit64::as.integer64(stringr::str_remove_all(!!colname,"[^0-9]")))
     }
     # category
@@ -101,7 +123,7 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
       return(FALSE)
     }
 
-    hash = codeSetDf %>% dplyr::pull(codeid) %>% as.raw() %>% openssl::md5() %>% as.character()
+    hash = codeSetDf %>% dplyr::mutate(codeid := bit64::as.integer64(stringr::str_remove_all(codeid,"[^0-9]"))) %>% dplyr::pull(codeid) %>% as.raw() %>% openssl::md5() %>% as.character()
     codeSetDf = codeSetDf %>% dplyr::mutate(setname = name, version = version, type=type, hash=hash)
 
     previous= self$codeSets %>% dplyr::filter(setname == name & version==version) %>% dplyr::collect()
@@ -131,7 +153,15 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     for (file in files) {
       parts = fs::path_file(file) %>% stringr::str_split("\\.") %>% unlist()
       parts_of_part1 <- strsplit(parts[1],'_')
-      name = tolower(parts_of_part1[[1]][3])
+      if (lengths(parts_of_part1)==3) {
+        name = tolower(parts_of_part1[[1]][3])
+      } else if (lengths(parts_of_part1)==4) {
+        name = paste0(tolower(parts_of_part1[[1]][3]),"_",tolower(parts_of_part1[[1]][4]))
+      } else if (lengths(parts_of_part1)==5) {
+        name = paste0(tolower(parts_of_part1[[1]][3]),"_",tolower(parts_of_part1[[1]][4]),"_",tolower(parts_of_part1[[1]][5]))
+      } else if (lengths(parts_of_part1)==6) {
+        name = paste0(tolower(parts_of_part1[[1]][3]),"_",tolower(parts_of_part1[[1]][4]),"_",tolower(parts_of_part1[[1]][5]),"_",tolower(parts_of_part1[[1]][6]))
+      }
       ext = parts[2]
       tryCatch({
         if(ext == "txt") {
