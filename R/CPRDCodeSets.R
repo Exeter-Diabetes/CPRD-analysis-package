@@ -152,16 +152,9 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     files = unlist(lapply(paths, function(x) paste0(x,"/",list.files(x,pattern=".*\\.(txt)",recursive=TRUE))))
     for (file in files) {
       parts = fs::path_file(file) %>% stringr::str_split("\\.") %>% unlist()
-      parts_of_part1 <- strsplit(parts[1],'_')
-      if (lengths(parts_of_part1)==3) {
-        name = tolower(parts_of_part1[[1]][3])
-      } else if (lengths(parts_of_part1)==4) {
-        name = paste0(tolower(parts_of_part1[[1]][3]),"_",tolower(parts_of_part1[[1]][4]))
-      } else if (lengths(parts_of_part1)==5) {
-        name = paste0(tolower(parts_of_part1[[1]][3]),"_",tolower(parts_of_part1[[1]][4]),"_",tolower(parts_of_part1[[1]][5]))
-      } else if (lengths(parts_of_part1)==6) {
-        name = paste0(tolower(parts_of_part1[[1]][3]),"_",tolower(parts_of_part1[[1]][4]),"_",tolower(parts_of_part1[[1]][5]),"_",tolower(parts_of_part1[[1]][6]))
-      }
+      name = stringr::str_remove_all(parts[1],"exeter_medcodelist_")))
+      name = stringr::str_remove_all(name,"exeter_prodcodelist_")))
+      name = stringr::str_remove_all(name,"exeter_")))
       ext = parts[2]
       tryCatch({
         if(ext == "txt") {
