@@ -1,11 +1,11 @@
 naming:
   cohort: "{analysis}_cohort"
-  binaryFeature: "{analysis}_binary_feature"
-  numericFeature: "{analysis}_numeric_feature"
-  categoricFeature: "{analysis}_categoric_feature"
-  dateFeature: "{analysis}_date_feature"
-  codedFeature: "{analysis}_coded_feature"
-  analysisTemp: "{analysis}_temp"
+#  binaryFeature: "{analysis}_binary_feature"
+#  numericFeature: "{analysis}_numeric_feature"
+#  categoricFeature: "{analysis}_categoric_feature"
+#  dateFeature: "{analysis}_date_feature"
+#  codedFeature: "{analysis}_coded_feature"
+#  analysisTemp: "{analysis}_temp"
 tables:
   cohort:
     drop: |
@@ -19,68 +19,68 @@ tables:
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
 
-  binaryFeature:
-    drop: |
-      DROP TABLE IF EXISTS {analysisDb}.{binaryFeature}
-    create: |
-      CREATE TABLE IF NOT EXISTS {analysisDb}.{binaryFeature}
-      (patid BIGINT UNSIGNED NOT NULL,
-      featuredate DATE,
-      feature VARCHAR(255) NOT NULL,
-      value TINYINT,
-      INDEX (patid,feature)
-      )
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci
-  numericFeature:
-    drop: |
-      DROP TABLE IF EXISTS {analysisDb}.{numericFeature}
-    create: |
-      CREATE TABLE IF NOT EXISTS {analysisDb}.{numericFeature}
-      (patid BIGINT UNSIGNED NOT NULL,
-      featuredate DATE,
-      feature VARCHAR(255) NOT NULL,
-      value DOUBLE,
-      INDEX (patid,feature)
-      )
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci
-  categoricFeature:
-    drop: |
-      DROP TABLE IF EXISTS {analysisDb}.{categoricFeature}
-    create: |
-      CREATE TABLE IF NOT EXISTS {analysisDb}.{categoricFeature}
-      (patid BIGINT UNSIGNED NOT NULL,
-      featuredate DATE,
-      feature VARCHAR(255) NOT NULL,
-      value VARCHAR(255),
-      INDEX (patid,feature)
-      )
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci
-  dateFeature:
-    drop: |
-      DROP TABLE IF EXISTS {analysisDb}.{dateFeature}
-    create: |
-      CREATE TABLE IF NOT EXISTS {analysisDb}.{dateFeature}
-      (patid BIGINT UNSIGNED NOT NULL,
-      featuredate DATE,
-      feature VARCHAR(255) NOT NULL,
-      value DATE,
-      INDEX (patid,feature)
-      )
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci
-  codedFeature:
-    drop: |
-      DROP TABLE IF EXISTS {analysisDb}.{codedFeature}
-    create: |
-      CREATE TABLE IF NOT EXISTS {analysisDb}.{codedFeature}
-      (patid BIGINT UNSIGNED NOT NULL,
-      featuredate DATE,
-      feature VARCHAR(255) NOT NULL,
-      value BIGINT,
-      INDEX (patid,feature)
-      )
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci
+#  binaryFeature:
+#    drop: |
+#      DROP TABLE IF EXISTS {analysisDb}.{binaryFeature}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {analysisDb}.{binaryFeature}
+#      (patid BIGINT UNSIGNED NOT NULL,
+#      featuredate DATE,
+#      feature VARCHAR(255) NOT NULL,
+#      value TINYINT,
+#      INDEX (patid,feature)
+#      )
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci
+#  numericFeature:
+#    drop: |
+#      DROP TABLE IF EXISTS {analysisDb}.{numericFeature}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {analysisDb}.{numericFeature}
+#      (patid BIGINT UNSIGNED NOT NULL,
+#      featuredate DATE,
+#      feature VARCHAR(255) NOT NULL,
+#      value DOUBLE,
+#      INDEX (patid,feature)
+#      )
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci
+#  categoricFeature:
+#    drop: |
+#      DROP TABLE IF EXISTS {analysisDb}.{categoricFeature}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {analysisDb}.{categoricFeature}
+#      (patid BIGINT UNSIGNED NOT NULL,
+#      featuredate DATE,
+#      feature VARCHAR(255) NOT NULL,
+#      value VARCHAR(255),
+#      INDEX (patid,feature)
+#      )
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci
+#  dateFeature:
+#    drop: |
+#      DROP TABLE IF EXISTS {analysisDb}.{dateFeature}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {analysisDb}.{dateFeature}
+#      (patid BIGINT UNSIGNED NOT NULL,
+#      featuredate DATE,
+#      feature VARCHAR(255) NOT NULL,
+#      value DATE,
+#      INDEX (patid,feature)
+#      )
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci
+#  codedFeature:
+#    drop: |
+#      DROP TABLE IF EXISTS {analysisDb}.{codedFeature}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {analysisDb}.{codedFeature}
+#      (patid BIGINT UNSIGNED NOT NULL,
+#      featuredate DATE,
+#      feature VARCHAR(255) NOT NULL,
+#      value BIGINT,
+#      INDEX (patid,feature)
+#      )
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci
