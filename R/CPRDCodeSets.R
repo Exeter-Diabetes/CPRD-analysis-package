@@ -181,12 +181,10 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   getCodeSetDetails = function(name,category=NULL,version=NULL) {
     if (is.null(version) & is.null(category)) {
       previous = self$codeSets %>% dplyr::filter(setname==name & version==max(version,na.rm=TRUE))
-      message("no category field specified, all will be included")
       message("no version specified, will use latest")
     } else if (!is.null(version) & is.null(category)) {
       vs = version
       previous = self$codeSets %>% dplyr::filter(setname==name & version==local(vs))
-      message("no category field specified, all will be included")
     } else if (is.null(version) & !is.null(category)) {
       chosen_cat = category
       previous = self$codeSets %>% dplyr::filter(setname==name & category==local(chosen_cat) & version==max(version,na.rm=TRUE))
@@ -227,12 +225,10 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
   getCodeSet = function(name,category=NULL,version = NULL) {
     if (is.null(version) & is.null(category)) {
       previous = self$codeSets %>% dplyr::filter(setname==name & version==max(version,na.rm=TRUE))
-      message("no category field specified, all will be included")
       message("no version specified, will use latest")
     } else if (!is.null(version) & is.null(category)) {
       vs = version
       previous = self$codeSets %>% dplyr::filter(setname==name & version==local(vs))
-      message("no category field specified, all will be included")
     } else if (is.null(version) & !is.null(category)) {
       chosen_cat = category
       previous = self$codeSets %>% dplyr::filter(setname==name & category==local(chosen_cat) & version==max(version,na.rm=TRUE))
