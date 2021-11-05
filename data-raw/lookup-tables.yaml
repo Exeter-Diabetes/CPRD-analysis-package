@@ -9,6 +9,7 @@ naming:
   gender: r_gender
   numUnit: r_num_unit
   obsType: r_obs_type
+  ohaLookup: r_oha_lookup
   orgType: r_org_type
   parentProbRel: r_parent_prob_rel
   patientType: r_patient_type
@@ -66,6 +67,7 @@ paths:
   gender: "{refPath}/Gender.txt"
   numUnit: "{refPath}/NumUnit.txt"
   obsType: "{refPath}/ObsType.txt"
+  ohaLookup: "{refPath}/oha_lookup.txt"
   orgType: "{refPath}/OrgType.txt"
   parentProbRel: "{refPath}/ParentProbRel.txt"
   patientType: "{refPath}/PatientType.txt"
@@ -300,6 +302,31 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (obstypeid, description);
+  ohaLookup:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{ohaLookup};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{ohaLookup}
+      (prodcodeid BIGINT UNSIGNED,
+      INS BOOL,
+      TZD BOOL,
+      SU BOOL,
+      DPP4 BOOL,
+      MFN BOOL,
+      GLP1 BOOL,
+      Glinide BOOL,
+      Acarbose BOOL,
+      SGLT2 BOOL,
+      PRIMARY KEY (prodcodeid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{ohaLookup}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (prodcodeid, INS, TZD, SU, DPP4, MFN, GLP1, Glinide, Acarbose, SGLT2);
   orgType:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{orgType};
