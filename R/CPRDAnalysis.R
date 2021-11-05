@@ -111,6 +111,18 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
     queryDf %>% dplyr::compute(name=tmpTableName, temporary = FALSE, ...) %>% return()
 
   },
+  
+  #' @description compute a query or retrieve a precomputed query
+  #' @param queryDf - a dplyr query dataframe
+  #' @param name - the analysis local identifier
+  #' @param recompute - force re-computation of the query
+  #clean_biomarker = function(dataset,biomarker) {
+    
+  #},
+  
+  
+  
+  
 
   #' @description
   #' Prints the database connection information.

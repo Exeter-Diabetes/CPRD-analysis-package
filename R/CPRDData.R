@@ -125,7 +125,7 @@ CPRDData = R6::R6Class("CPRDData", inherit = AbstractCPRDConnection, public=list
 
         # lookup tables
         for (tableAlias in names(aurum::lookupSql$tables)) {
-          message("connecting to... ",tableAlias)
+          #message("connecting to... ",tableAlias)
           self$tables[[tableAlias]] = dplyr::tbl(con, dbplyr::in_schema(dataDb, self$.conventions[[tableAlias]]))
         }
 
