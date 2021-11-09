@@ -2,6 +2,8 @@
 naming:
   medDict: r_med_dict
   productDict: r_product_dict
+  biomarkerAcceptableLimits: r_biomarker_acceptable_limits
+  biomarkerAcceptableUnits: r_biomarker_acceptable_units
   commonDose: r_common_dose
   consSource: r_cons_source
   emisCodeCat: r_emis_code_cat
@@ -60,6 +62,8 @@ keys:
 paths:
   medDict: "{refPath}/202005_EMISMedicalDictionary.txt"
   productDict: "{refPath}/202005_EMISProductDictionary.txt"
+  biomarkerAcceptableLimits: "{refPath}/biomarker_acceptable_limits.txt"
+  biomarkerAcceptableUnits: "{refPath}/biomarker_acceptable_units.txt"
   commonDose: "{refPath}/common_dosages.txt"
   consSource: "{refPath}/ConsSource.txt"
   emisCodeCat: "{refPath}/EmisCodeCat.txt"
@@ -172,6 +176,41 @@ tables:
       substancestrength = NULLIF(@orig_substancestrength,''),
       bnfchapter = NULLIF(@orig_bnfchapter,''),
       releaseid = NULLIF(@orig_releaseid,'');
+  biomarkerAcceptableLimits:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{biomarkerAcceptableLimits};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{biomarkerAcceptableLimits}
+      (biomarker VARCHAR(20),
+      lower_limit BIGINT NOT NULL,
+      upper_limit BIGINT NOT NULL,
+      PRIMARY KEY (biomarker))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{biomarkerAcceptableLimits}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (biomarker, lower_limit, upper_limit);
+  biomarkerAcceptableUnits:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{biomarkerAcceptableUnits};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{biomarkerAcceptableUnits}
+      (biomarker VARCHAR(20),
+      numunitid BIGINT)
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{biomarkerAcceptableUnits}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (biomarker, @numunitid)
+      SET numunitid = NULLIF(@numunitid,'');
   commonDose:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{commonDose};
