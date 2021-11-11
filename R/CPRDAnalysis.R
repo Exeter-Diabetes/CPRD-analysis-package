@@ -112,17 +112,37 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
 
   },
   
-  #' @description compute a query or retrieve a precomputed query
-  #' @param queryDf - a dplyr query dataframe
-  #' @param name - the analysis local identifier
-  #' @param recompute - force re-computation of the query
-  #clean_biomarker = function(dataset,biomarker) {
-    
-  #},
+  #' @description only keep measurements with 'acceptable' unit codes (numunitid) for specified biomarker
+  #' @param dataset - dataset containing biomarker observations
+  #' @param biomrkr - name of biomarker to clean (acr/alt/ast/bmi/creatinine/dbp/fastingglucose/hba1c/hdl/height/ldl/pcr/sbp/totalcholesterol/triglyceride/weight)
+  clean_biomarker_units = function(dataset,biomrkr) {
+    unit_codes <- cprd$tables$biomarkerAcceptableUnits %>% dplyr::filter(biomarker==local(biomrkr))
+    return(
+      dataset %>%
+        dplyr::inner_join(
+          unit_codes,
+          by = "numunitid",
+          na_matches="na"
+        ))
+  },
   
-  
-  
-  
+  #' @description only keep measurements within acceptable limits for specified biomarker
+  #' @param dataset - dataset containing biomarker observations
+  #' @param biomrkr - name of biomarker to clean (acr/alt/ast/bmi/creatinine/dbp/fastingglucose/hba1c/hdl/height/ldl/pcr/sbp/totalcholesterol/triglyceride/weight)
+  clean_biomarker_values = function(dataset,biomrkr) {
+    lower_limit <- cprd$tables$biomarkerAcceptableLimits %>% dplyr::filter(biomarker==local(biomrkr)) %>% dplyr::select(lower_limit)
+    lower_lmt <- as.numeric(collect(lower_limit)[[1,1]])
+    upper_limit <- cprd$tables$biomarkerAcceptableLimits %>% dplyr::filter(biomarker==local(biomrkr)) %>% dplyr::select(upper_limit)
+    upper_lmt <- as.numeric(collect(upper_limit)[[1,1]])
+    if (biomrkr=="hba1c") {
+      message("If HbA1c values are not in mmol/mol, they will be removed")
+    }
+    message("Values <",lower_lmt, ", >", upper_lmt, " and missing values removed")
+    return(
+      dataset %>%
+            dplyr::filter(testvalue>=lower_lmt & testvalue<=upper_lmt)
+        )
+  },
 
   #' @description
   #' Prints the database connection information.

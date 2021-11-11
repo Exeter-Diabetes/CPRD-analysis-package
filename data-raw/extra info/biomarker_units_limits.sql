@@ -16,8 +16,8 @@ SET numunitid = NULLIF(@numunitid,'');
 
 CREATE TABLE IF NOT EXISTS cprd_data.r_biomarker_acceptable_limits
 (biomarker VARCHAR(20),
-lower_limit BIGINT NOT NULL,
-upper_limit BIGINT NOT NULL,
+lower_limit DECIMAL(8,2),
+upper_limit DECIMAL(8,2),
 PRIMARY KEY (biomarker))
 ENGINE=MYISAM
 CHARSET=latin1 COLLATE=latin1_general_ci;

@@ -182,8 +182,8 @@ tables:
     create: |
       CREATE TABLE IF NOT EXISTS {dataDb}.{biomarkerAcceptableLimits}
       (biomarker VARCHAR(20),
-      lower_limit BIGINT NOT NULL,
-      upper_limit BIGINT NOT NULL,
+      lower_limit DECIMAL(8,2) NOT NULL,
+      upper_limit DECIMAL(8,2) NOT NULL,
       PRIMARY KEY (biomarker))
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci;
