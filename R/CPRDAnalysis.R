@@ -137,6 +137,12 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
     if (biomrkr=="hba1c") {
       message("If HbA1c values are not in mmol/mol, they will be removed")
     }
+    if (biomrkr=="weight") {
+      message("Weight limits used are for adults")
+    }
+    if (biomrkr=="height") {
+      message("Height limits used are for adults")
+    }
     message("Values <",lower_lmt, ", >", upper_lmt, " and missing values removed")
     return(
       dataset %>%
