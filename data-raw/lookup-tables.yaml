@@ -537,6 +537,7 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (signid, description);
+  validDateLookup:
   visionToEmisMigrators:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{visionToEmisMigrators};

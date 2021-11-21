@@ -109,7 +109,7 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
     # TODO: this assumes the correct database has been selected as default. For some reason (I think a bug in dplyr) if we try and specify
     # the database using in_schema() the resulting query is missing a space between the CREATE TABLE and the table name,
     queryDf %>% dplyr::compute(name=tmpTableName, temporary = FALSE, ...) %>% return()
-
+    
   },
   
   #' @description only keep measurements with 'acceptable' unit codes (numunitid) for specified biomarker
@@ -135,13 +135,13 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
     upper_limit <- cprd$tables$biomarkerAcceptableLimits %>% dplyr::filter(biomarker==local(biomrkr)) %>% dplyr::select(upper_limit)
     upper_lmt <- as.numeric(collect(upper_limit)[[1,1]])
     if (biomrkr=="hba1c") {
-      message("If HbA1c values are not in mmol/mol, they will be removed")
+      message("clean_biomarker_values will remove HbA1c values which are not in mmol/mol")
     }
     if (biomrkr=="weight") {
-      message("Weight limits used are for adults")
+      message("clean_biomarker_values uses weight limits for adults")
     }
     if (biomrkr=="height") {
-      message("Height limits used are for adults")
+      message("clean_biomarker_values uses height limits for adults")
     }
     message("Values <",lower_lmt, ", >", upper_lmt, " and missing values removed")
     return(
