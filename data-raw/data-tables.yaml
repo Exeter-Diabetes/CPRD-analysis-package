@@ -7,7 +7,7 @@ naming:
   problem: problem
   referral: referral
   staff: staff
-  linkageAvailability: linkage_availability
+  patidsWithLinkage: patids_with_linkage
   chess: chess
   hesAcp: hes_acp
   hesCcare: hes_ccare
@@ -264,25 +264,22 @@ tables:
       IGNORE 1 LINES
       (staffid, pracid, @orig_jobcatid)
       SET jobcatid = NULLIF(@orig_jobcatid,'')
-  linkageAvailability:
+  patidsWithLinkage:
     drop: |
-      DROP TABLE IF EXISTS {dataDb}.{linkageAvailability}
+      DROP TABLE IF EXISTS {dataDb}.{patidsWithLinkage}
     create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{linkageAvailability}
+      CREATE TABLE IF NOT EXISTS {dataDb}.{patidsWithLinkage}
       (patid BIGINT UNSIGNED NOT NULL,
-      hes_e BOOL NOT NULL DEFAULT 0,
-      death_e BOOL NOT NULL DEFAULT 0,
-      lsoa_e BOOL NOT NULL DEFAULT 0,
       PRIMARY KEY (patid))
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{linkageAvailability}
+      INTO TABLE {dataDb}.{patidsWithLinkage}
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, @pracid, @linkdate, hes_e, death_e, @cr_e, lsoa_e, @mh_e)
+      (patid, @pracid, @linkdate, @hes_e, @death_e, @cr_e, @lsoa_e, @mh_e)
   chess:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{chess}
@@ -1013,10 +1010,6 @@ indexes:
   - CREATE INDEX x_{referral}_refmodeid ON {dataDb}.{referral} (refmodeid);
   - CREATE INDEX x_{staff}_jobcatid ON {dataDb}.{staff} (jobcatid);
   # Linkage data (index all fields except chess where there are too many)
-  # linkageAvailability
-  - CREATE INDEX x_{linkageAvailability}_hes_e ON {dataDb}.{linkageAvailability} (hes_e);
-  - CREATE INDEX x_{linkageAvailability}_death_e ON {dataDb}.{linkageAvailability} (death_e);
-  - CREATE INDEX x_{linkageAvailability}_lsoa_e ON {dataDb}.{linkageAvailability} (lsoa_e);
   # chess
   - CREATE INDEX x_{chess}_patid ON {dataDb}.{chess} (patid);
   - CREATE INDEX x_{chess}_pracid ON {dataDb}.{chess} (pracid);
