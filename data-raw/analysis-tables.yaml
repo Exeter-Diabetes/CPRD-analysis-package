@@ -1,5 +1,5 @@
 naming:
-  cohort: "{analysis}_cohort"
+#  cohort: "{analysis}_cohort"
 #  binaryFeature: "{analysis}_binary_feature"
 #  numericFeature: "{analysis}_numeric_feature"
 #  categoricFeature: "{analysis}_categoric_feature"
@@ -7,17 +7,17 @@ naming:
 #  codedFeature: "{analysis}_coded_feature"
 #  analysisTemp: "{analysis}_temp"
 tables:
-  cohort:
-    drop: |
-      DROP TABLE IF EXISTS {analysisDb}.{cohort}
-    create: |
-      CREATE TABLE IF NOT EXISTS {analysisDb}.{cohort}
-      (patid BIGINT UNSIGNED,
-      enterdate DATE,
-      censordate DATE,
-      PRIMARY KEY (patid))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci
+#  cohort:
+#    drop: |
+#      DROP TABLE IF EXISTS {analysisDb}.{cohort}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {analysisDb}.{cohort}
+#      (patid BIGINT UNSIGNED,
+#      enterdate DATE,
+#      censordate DATE,
+#      PRIMARY KEY (patid))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci
 
 #  binaryFeature:
 #    drop: |
