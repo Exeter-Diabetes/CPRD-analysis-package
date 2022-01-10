@@ -175,14 +175,14 @@ AbstractCPRDConnection = R6::R6Class("AbstractCPRDConnection", public=list(
   #' @description
   #' Shutdown the connection to the CPRD data table.
   #' @return nothing.
-  finalize = function() {
-    message("disconnecting from ",self$.dataDb)
-    DBI::dbDisconnect(self$.con)
-    variables = eapply(.GlobalEnv,class)
-    for(varName in names(variables)) {
-      if("tbl_sql" %in% variables[[varName]]) {rm(list=varName, envir=.GlobalEnv)}
-    }
-  },
+  #finalize = function() {
+  #  message("disconnecting from ",self$.dataDb)
+  #  DBI::dbDisconnect(self$.con)
+  #  variables = eapply(.GlobalEnv,class)
+  #  for(varName in names(variables)) {
+  #    if("tbl_sql" %in% variables[[varName]]) {rm(list=varName, envir=.GlobalEnv)}
+  #  }
+  #},
 
   #' @description
   #' Prints the database connection information.
