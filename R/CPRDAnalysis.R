@@ -186,13 +186,13 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
     sbp1 = sbp - vars$sbp_cons1
     town1 = town - vars$town_cons1
     
-    surv_varname = paste0("vars$survarray_val",surv+1)
+    surv_varname = paste0("vars$survarray",surv+1)
     survarray_val = eval(parse(text=surv_varname))
     
-    ethrisk_varname = paste0("vars$ethriskarray_val",ethrisk+1)
+    ethrisk_varname = paste0("vars$ethriskarray",ethrisk+1)
     ethriskarray_val = eval(parse(text=ethrisk_varname))
         
-    smoking_varname = paste0("vars$smokearray_val",smoking+1)    
+    smoking_varname = paste0("vars$smokearray",smoking+1)    
     smokearray_val = eval(parse(text=smoking_varname))
     
     d = (((((((((((((((((((((((((((((((((((((((((((0.0 + ethriskarray_val) + 
