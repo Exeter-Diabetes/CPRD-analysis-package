@@ -214,8 +214,8 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
                                ((age2 * bp_med) * vars$num35)) + 
                               ((age2 * type1) * vars$num36)) + 
                              ((age2 * type2) * vars$num37)) + 
-                            ((age2 * num5) * vars$num38)) + 
-                           ((age2 * num6) * vars$num39)) + 
+                            ((age2 * bmi2) * vars$num38)) + 
+                           ((age2 * bmi3) * vars$num39)) + 
                           ((age2 * fh_cvd) * vars$num40)) + 
                          ((age2 * sbp1) * vars$num41)) + 
                         ((age2 * town1) * vars$num42)) + 
