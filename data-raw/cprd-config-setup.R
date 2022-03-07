@@ -21,12 +21,14 @@ lookupSql = yaml::read_yaml(here::here("data-raw/lookup-tables.yaml"))
 dataSql = yaml::read_yaml(here::here("data-raw/data-tables.yaml"))
 analysisSql = yaml::read_yaml(here::here("data-raw/analysis-tables.yaml"))
 codeSetsSql = yaml::read_yaml(here::here("data-raw/codeset-tables.yaml"))
+qrisk2Constants = yaml::read_yaml(here::here("data-raw/qrisk2_constants.yaml"))
 
 usethis::use_data(operationalSql,overwrite = TRUE)
 usethis::use_data(lookupSql,overwrite = TRUE)
 usethis::use_data(dataSql,overwrite = TRUE)
 usethis::use_data(analysisSql,overwrite = TRUE)
 usethis::use_data(codeSetsSql,overwrite = TRUE)
+usethis::use_data(qrisk2Constants,overwrite = TRUE)
 
 # install this version of the setup.
 # devtools::install_local(here::here("."))
