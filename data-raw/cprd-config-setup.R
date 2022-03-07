@@ -32,3 +32,4 @@ usethis::use_data(qrisk2Constants,overwrite = TRUE)
 
 # install this version of the setup.
 # devtools::install_local(here::here("."))
+
