@@ -187,7 +187,7 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
     town1 = town - vars$town_cons1
     survarray_val = vars$survarray[surv+1]
     ethriskarray_val = vars$ethriskarray[ethrisk+1]
-    smokearray_val = vars$smokearray[smoke_cat+1]
+    smokearray_val = vars$smokearray[smoking+1]
     
     d = (((((((((((((((((((((((((((((((((((((((((((0.0 + ethriskarray_val) + 
                                                     smokearray_val) + 
