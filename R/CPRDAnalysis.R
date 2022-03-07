@@ -191,48 +191,48 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
     
     d = (((((((((((((((((((((((((((((((((((((((((((0.0 + ethriskarray_val) + 
                                                     smokearray_val) + 
-                                                   (age2 * eq_cons1)) + 
-                                                  (age3 * eq_cons2)) + 
-                                                 (bmi2 * eq_cons3)) + 
-                                                (bmi3 * eq_cons4)) + 
-                                               (rati1 * num19)) + 
-                                              (sbp1 * num20)) + 
-                                             (town1 * num21)) + 
-                                            (af * num22)) + 
-                                           (rheumatoid_arth * num23)) + 
-                                          (renal * num24)) + 
-                                         (bp_med * num25)) + 
-                                        (type1 * num26)) + 
-                                       (type2 * num27)) + 
-                                      (fh_cvd * num28)) + 
-                                     ((age2 * (smoking == 1)) * num29)) + 
-                                    ((age2 * (smoking == 2)) * num30)) + 
-                                   ((age2 * (smoking == 3)) * num31)) + 
-                                  ((age2 * (smoking == 4)) * num32)) + 
-                                 ((age2 * af) * num33)) + 
-                                ((age2 * renal) * num34)) + 
-                               ((age2 * bp_med) * num35)) + 
-                              ((age2 * type1) * num36)) + 
-                             ((age2 * type2) * num37)) + 
-                            ((age2 * num5) * num38)) + 
-                           ((age2 * num6) * num39)) + 
-                          ((age2 * fh_cvd) * num40)) + 
-                         ((age2 * sbp1) * num41)) + 
-                        ((age2 * town1) * num42)) + 
-                       ((age3 * (smoking == 1)) * num43)) + 
-                      ((age3 * (smoking == 2)) * num44)) + 
-                     ((age3 * (smoking == 3)) * num45)) + 
-                    ((age3 * (smoking == 4)) * num46)) + 
-                   ((age3 * af) * num47)) + 
-                  ((age3 * renal) * num48)) + 
-                 ((age3 * bp_med) * num49)) + 
-                ((age3 * type1) * num50)) + 
-               ((age3 * type2) * num51)) + 
-              ((age3 * num5) * num52)) + 
-             ((age3 * num6) * num53)) + 
-            ((age3* fh_cvd) * num54)) + 
-           ((age3* sbp1) * num55)) + 
-      ((age3* town1) * num56)
+                                                   (age2 * vars$eq_cons1)) + 
+                                                  (age3 * vars$eq_cons2)) + 
+                                                 (bmi2 * vars$eq_cons3)) + 
+                                                (bmi3 * vars$eq_cons4)) + 
+                                               (rati1 * vars$num19)) + 
+                                              (sbp1 * vars$num20)) + 
+                                             (town1 * vars$num21)) + 
+                                            (af * vars$num22)) + 
+                                           (rheumatoid_arth * vars$num23)) + 
+                                          (renal * vars$num24)) + 
+                                         (bp_med * vars$num25)) + 
+                                        (type1 * vars$num26)) + 
+                                       (type2 * vars$num27)) + 
+                                      (fh_cvd * vars$num28)) + 
+                                     ((age2 * (smoking == 1)) * vars$num29)) + 
+                                    ((age2 * (smoking == 2)) * vars$num30)) + 
+                                   ((age2 * (smoking == 3)) * vars$num31)) + 
+                                  ((age2 * (smoking == 4)) * vars$num32)) + 
+                                 ((age2 * af) * vars$num33)) + 
+                                ((age2 * renal) * vars$num34)) + 
+                               ((age2 * bp_med) * vars$num35)) + 
+                              ((age2 * type1) * vars$num36)) + 
+                             ((age2 * type2) * vars$num37)) + 
+                            ((age2 * num5) * vars$num38)) + 
+                           ((age2 * num6) * vars$num39)) + 
+                          ((age2 * fh_cvd) * vars$num40)) + 
+                         ((age2 * sbp1) * vars$num41)) + 
+                        ((age2 * town1) * vars$num42)) + 
+                       ((age3 * (smoking == 1)) * vars$num43)) + 
+                      ((age3 * (smoking == 2)) * vars$num44)) + 
+                     ((age3 * (smoking == 3)) * vars$num45)) + 
+                    ((age3 * (smoking == 4)) * vars$num46)) + 
+                   ((age3 * af) * vars$num47)) + 
+                  ((age3 * renal) * vars$num48)) + 
+                 ((age3 * bp_med) * vars$num49)) + 
+                ((age3 * type1) * vars$num50)) + 
+               ((age3 * type2) * vars$num51)) + 
+              ((age3 * num5) * vars$num52)) + 
+             ((age3 * num6) * vars$num53)) + 
+            ((age3* fh_cvd) * vars$num54)) + 
+           ((age3* sbp1) * vars$num55)) + 
+      ((age3* town1) * vars$num56)
     
     score = 100.0 * (1.0 - (survarray_val^exp(d)))
     
