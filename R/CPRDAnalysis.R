@@ -175,6 +175,7 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
     if (sex=="female") {
         vars <- lapply(aurum::qrisk2Constants$female, function(y) lapply(y, as.numeric))
     }
+    vars = unlist(vars, recursive="FALSE")
     age1 = age / 10.0
     bmi1 = bmi / 10.0
     age2 = (age1 ^ vars$age_cons1) - vars$age_cons2
