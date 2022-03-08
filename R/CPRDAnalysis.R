@@ -233,7 +233,7 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
             ((m_age3* fh_cvd) * vars_male$num54)) + 
            ((m_age3* m_sbp1) * vars_male$num55)) + 
       ((m_age3* m_town1) * vars_male$num56),
-      m_qrisk2_score = 100.0 * (1.0 - (m_survarray_val^exp(m_d)))
+      m_qrisk2_score = 100.0 * (1.0 - (m_survarray_val^exp(m_d))))
     
     dataset1 <- dataset1 %>% select(patid, m_qrisk2_score)
     
