@@ -168,78 +168,81 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
   #' @param bmi - BMI in kg/m2
   #' @param surv - how many years survival to use in model (default 10)
 
-  calculate_qrisk2 = function(dataset) {
-    vars_male <- unlist(lapply(aurum::qrisk2Constants$male, function(y) lapply(y, as.numeric)), recursive=FALSE)
-    vars_female <- unlist(lapply(aurum::qrisk2Constants$female, function(y) lapply(y, as.numeric)), recursive=FALSE)
+  calculate_qrisk2 = function(sex, age, ethrisk, townsend=0, smoking, type1, type2, fh_cvd, renal, af, bp_med, rheumatoid_arth, cholhdl, sbp, bmi, surv=10) {
+    if (sex=="male") {
+      vars <- lapply(aurum::qrisk2Constants$male, function(y) lapply(y, as.numeric))
+    }
+    if (sex=="female") {
+        vars <- lapply(aurum::qrisk2Constants$female, function(y) lapply(y, as.numeric))
+    }
+    vars = unlist(vars, recursive="FALSE")
+    age1 = age / 10.0
+    bmi1 = bmi / 10.0
+    age2 = (age1 ^ vars$age_cons1) - vars$age_cons2
+    age3 = (age1 ^ vars$age_cons3) - vars$age_cons4
+    bmi2 = (bmi1 ^ -2.0) - vars$bmi_cons1
+    bmi3 = ((bmi1 ^ -2.0) * log(bmi1)) - vars$bmi_cons2
+    rati1 = cholhdl - vars$rati_cons1
+    sbp1 = sbp - vars$sbp_cons1
+    town1 = town - vars$town_cons1
     
-    dataset1 <- dataset %>% dplyr::mutate(town=0,
-                                          surv=10,
-                                          m_age1 = age / 10.0,
-                                          m_bmi1 = bmi / 10.0,
-                                          m_age2 = (m_age1 ^ vars_male$age_cons1) - vars_male$age_cons2,
-                                          m_age3 = (m_age2 ^ vars_male$age_cons3) - vars_male$age_cons4,
-                                          m_bmi2 = (m_bmi1 ^ -2.0) - vars_male$bmi_cons1,
-                                          m_bmi3 = ((m_bmi1 ^ -2.0) * log(m_bmi1)) - vars_male$bmi_cons2,
-                                          m_rati1 = cholhdl - vars_male$rati_cons1,
-                                          m_sbp1 = sbp - vars_male$sbp_cons1,
-                                          m_town1 = town - vars_male$town_cons1,
-                                          m_surv_varname = paste0("vars_male$survarray",surv+1),
-                                          m_survarray_val = eval(parse(text=m_surv_varname)),
-                                          m_ethrisk_varname = paste0("vars_male$ethriskarray",ethrisk+1),
-                                          m_ethriskarray_val = eval(parse(text=m_ethrisk_varname)),
-                                          m_smoking_varname = paste0("vars_male$smokearray",smoking+1),
-                                          m_smokearray_val = eval(parse(text=m_smoking_varname)),
-                                          m_d = (((((((((((((((((((((((((((((((((((((((((((0.0 + m_ethriskarray_val) + 
-                                                    m_smokearray_val) + 
-                                                   (m_age2 * vars_male$eq_cons1)) + 
-                                                  (m_age3 * vars_male$eq_cons2)) + 
-                                                 (m_bmi2 * vars_male$eq_cons3)) + 
-                                                (m_bmi3 * vars_male$eq_cons4)) + 
-                                               (m_rati1 * vars_male$num19)) + 
-                                              (m_sbp1 * vars_male$num20)) + 
-                                             (m_town1 * vars_male$num21)) + 
-                                            (af * vars_male$num22)) + 
-                                           (rheumatoid_arth * vars_male$num23)) + 
-                                          (renal * vars_male$num24)) + 
-                                         (bp_med * vars_male$num25)) + 
-                                        (type1 * vars_male$num26)) + 
-                                       (type2 * vars_male$num27)) + 
-                                      (fh_cvd * vars_male$num28)) + 
-                                     ((m_age2 * (smoking == 1)) * vars_male$num29)) + 
-                                    ((m_age2 * (smoking == 2)) * vars_male$num30)) + 
-                                   ((m_age2 * (smoking == 3)) * vars_male$num31)) + 
-                                  ((m_age2 * (smoking == 4)) * vars_male$num32)) + 
-                                 ((m_age2 * af) * vars_male$num33)) + 
-                                ((m_age2 * renal) * vars_male$num34)) + 
-                               ((m_age2 * bp_med) * vars_male$num35)) + 
-                              ((m_age2 * type1) * vars_male$num36)) + 
-                             ((m_age2 * type2) * vars_male$num37)) + 
-                            ((m_age2 * m_bmi2) * vars_male$num38)) + 
-                           ((m_age2 * m_bmi3) * vars_male$num39)) + 
-                          ((m_age2 * fh_cvd) * vars_male$num40)) + 
-                         ((m_age2 * m_sbp1) * vars_male$num41)) + 
-                        ((m_age2 * m_town1) * vars_male$num42)) + 
-                       ((m_age3 * (smoking == 1)) * vars_male$num43)) + 
-                      ((m_age3 * (smoking == 2)) * vars_male$num44)) + 
-                     ((m_age3 * (smoking == 3)) * vars_male$num45)) + 
-                    ((m_age3 * (smoking == 4)) * vars_male$num46)) + 
-                   ((m_age3 * af) * vars_male$num47)) + 
-                  ((m_age3 * renal) * vars_male$num48)) + 
-                 ((m_age3 * bp_med) * vars_male$num49)) + 
-                ((m_age3 * type1) * vars_male$num50)) + 
-               ((m_age3 * type2) * vars_male$num51)) + 
-              ((m_age3 * m_bmi2) * vars_male$num52)) + 
-             ((m_age3 * m_bmi3) * vars_male$num53)) + 
-            ((m_age3* fh_cvd) * vars_male$num54)) + 
-           ((m_age3* m_sbp1) * vars_male$num55)) + 
-      ((m_age3* m_town1) * vars_male$num56),
-      m_qrisk2_score = 100.0 * (1.0 - (m_survarray_val^exp(m_d))))
+    surv_varname = paste0("vars$survarray",surv+1)
+    survarray_val = eval(parse(text=surv_varname))
     
-    dataset1 <- dataset1 %>% select(patid, m_qrisk2_score)
+    ethrisk_varname = paste0("vars$ethriskarray",ethrisk+1)
+    ethriskarray_val = eval(parse(text=ethrisk_varname))
+        
+    smoking_varname = paste0("vars$smokearray",smoking+1)    
+    smokearray_val = eval(parse(text=smoking_varname))
     
-    dataset <- dataset %>% left_join(dataset1, by="patid")
+    d = (((((((((((((((((((((((((((((((((((((((((((0.0 + ethriskarray_val) + 
+                                                    smokearray_val) + 
+                                                   (age2 * vars$eq_cons1)) + 
+                                                  (age3 * vars$eq_cons2)) + 
+                                                 (bmi2 * vars$eq_cons3)) + 
+                                                (bmi3 * vars$eq_cons4)) + 
+                                               (rati1 * vars$num19)) + 
+                                              (sbp1 * vars$num20)) + 
+                                             (town1 * vars$num21)) + 
+                                            (af * vars$num22)) + 
+                                           (rheumatoid_arth * vars$num23)) + 
+                                          (renal * vars$num24)) + 
+                                         (bp_med * vars$num25)) + 
+                                        (type1 * vars$num26)) + 
+                                       (type2 * vars$num27)) + 
+                                      (fh_cvd * vars$num28)) + 
+                                     ((age2 * (smoking == 1)) * vars$num29)) + 
+                                    ((age2 * (smoking == 2)) * vars$num30)) + 
+                                   ((age2 * (smoking == 3)) * vars$num31)) + 
+                                  ((age2 * (smoking == 4)) * vars$num32)) + 
+                                 ((age2 * af) * vars$num33)) + 
+                                ((age2 * renal) * vars$num34)) + 
+                               ((age2 * bp_med) * vars$num35)) + 
+                              ((age2 * type1) * vars$num36)) + 
+                             ((age2 * type2) * vars$num37)) + 
+                            ((age2 * bmi2) * vars$num38)) + 
+                           ((age2 * bmi3) * vars$num39)) + 
+                          ((age2 * fh_cvd) * vars$num40)) + 
+                         ((age2 * sbp1) * vars$num41)) + 
+                        ((age2 * town1) * vars$num42)) + 
+                       ((age3 * (smoking == 1)) * vars$num43)) + 
+                      ((age3 * (smoking == 2)) * vars$num44)) + 
+                     ((age3 * (smoking == 3)) * vars$num45)) + 
+                    ((age3 * (smoking == 4)) * vars$num46)) + 
+                   ((age3 * af) * vars$num47)) + 
+                  ((age3 * renal) * vars$num48)) + 
+                 ((age3 * bp_med) * vars$num49)) + 
+                ((age3 * type1) * vars$num50)) + 
+               ((age3 * type2) * vars$num51)) + 
+              ((age3 * bmi2) * vars$num52)) + 
+             ((age3 * bmi3) * vars$num53)) + 
+            ((age3* fh_cvd) * vars$num54)) + 
+           ((age3* sbp1) * vars$num55)) + 
+      ((age3* town1) * vars$num56)
     
-    return(dataset)
+    score = 100.0 * (1.0 - (survarray_val^exp(d)))
+    
+    return(score)
     
   },
 
