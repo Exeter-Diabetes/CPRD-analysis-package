@@ -168,13 +168,13 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
   #' @param bmi - BMI in kg/m2
   #' @param surv - how many years survival to use in model (default 10)
 
-  calculate_qrisk2 = function(dataset, sex, age, ethrisk, townsend=0, smoking, type1, type2, fh_cvd, renal, af, bp_med, rheumatoid_arth, cholhdl, sbp, bmi, surv=10) {
+  calculate_qrisk2 = function(dataset) {
     vars_male <- unlist(lapply(aurum::qrisk2Constants$male, function(y) lapply(y, as.numeric)), recursive=FALSE)
     vars_female <- unlist(lapply(aurum::qrisk2Constants$female, function(y) lapply(y, as.numeric)), recursive=FALSE)
     
-    
-    
-    dataset1 <- dataset %>% dplyr::mutate(m_age1 = age / 10.0,
+    dataset1 <- dataset %>% dplyr::mutate(town=0,
+                                          surv=10,
+                                          m_age1 = age / 10.0,
                                           m_bmi1 = bmi / 10.0,
                                           m_age2 = (m_age1 ^ vars_male$age_cons1) - vars_male$age_cons2,
                                           m_age3 = (m_age2 ^ vars_male$age_cons3) - vars_male$age_cons4,
