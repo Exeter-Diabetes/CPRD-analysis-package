@@ -169,14 +169,48 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
   #' @param surv - how many years survival to use in model (default 10)
 
   calculate_qrisk2 = function(sex, age, ethrisk, town=0, smoking, type1, type2, fh_cvd, renal, af, bp_med, rheumatoid_arth, cholhdl, sbp, bmi, surv=10) {
+    
     if (sex=="male") {
       vars <- lapply(aurum::qrisk2Constants$male, function(y) lapply(y, as.numeric))
     }
+    
     if (sex=="female") {
         vars <- lapply(aurum::qrisk2Constants$female, function(y) lapply(y, as.numeric))
     }
+    
     vars = unlist(vars, recursive="FALSE")
     age1 = age / 10.0
+    
+    if (is.na(bmi)) {
+      bmi_ethrisk_varname = paste0("vars$bmi_predict_ethriskarray",ethrisk+1)
+      bmi_ethriskarray_val = eval(parse(text=bmi_ethrisk_varname))
+      
+      bmi_smoking_varname = paste0("vars$bmi_predict_smokearray",smoking+1)
+      bmi_smokearray_val = eval(parse(text=bmi_smoking_varname))
+      
+      bmi = (((((((((0.0 + bmi_ethriskarray_val) + bmi_smokearray_val) + ((age1 - vars$bmi_predict_eq_cons1) * vars$bmi_predict_eq_cons2)) + (((age1^2.0) - vars$bmi_predict_eq_cons3) * vars$bmi_predict_eq_cons4))) + (bp_med * vars$bmi_predict_num10)) + (type1 * vars$bmi_predict_num11)) + (type2 * vars$bmi_predict_num12)) + vars$bmi_predict_eq_cons5)
+    }
+    
+    if (is.na(sbp)) {
+      sbp_ethrisk_varname = paste0("vars$sbp_predict_ethriskarray",ethrisk+1)
+      sbp_ethriskarray_val = eval(parse(text=sbp_ethrisk_varname))
+      
+      sbp_smoking_varname = paste0("vars$sbp_predict_smokearray",smoking+1)
+      sbp_smokearray_val = eval(parse(text=sbp_smoking_varname))
+      
+      sbp = (((((((((0.0 + sbp_ethriskarray_val) + sbp_smokearray_val) + (((age1^3.0) - vars$sbp_predict_eq_cons1) * vars$sbp_predict_eq_cons2)) + ((((age1^3.0) * log(age1)) - vars$sbp_predict_eq_cons3) * vars$sbp_predict_eq_cons4))) + (bp_med * vars$sbp_predict_num10)) + (type1 * vars$sbp_predict_num11)) + (type2 * vars$sbp_predict_num12)) + vars$sbp_predict_eq_cons5)
+    }
+    
+    if (is.na(cholhdl)) {
+      ratio_ethrisk_varname = paste0("vars$ratio_predict_ethriskarray",ethrisk+1)
+      ratio_ethriskarray_val = eval(parse(text=ratio_ethrisk_varname))
+      
+      ratio_smoking_varname = paste0("vars$ratio_predict_smokearray",smoking+1)
+      ratio_smokearray_val = eval(parse(text=ratio_smoking_varname))
+      
+      cholhdl = (((((((((0.0 + ratio_ethriskarray_val) + ratio_smokearray_val) + (((age1^vars$ratio_predict_eq_cons1) - vars$ratio_predict_eq_cons2) * vars$ratio_predict_eq_cons3)) + ((((age1^vars$ratio_predict_eq_cons4) * (log(age1) - log(age1^vars$ratio_predict_eq_cons5) + vars$ratio_predict_eq_cons5)) - vars$ratio_predict_eq_cons6) * vars$ratio_predict_eq_cons7))) + (bp_med * vars$ratio_predict_num10)) + (type1 * vars$ratio_predict_num11)) + (type2 * vars$ratio_predict_num12)) + vars$ratio_predict_eq_cons8)
+    }
+    
     bmi1 = bmi / 10.0
     age2 = (age1 ^ vars$age_cons1) - vars$age_cons2
     age3 = (age1 ^ vars$age_cons3) - vars$age_cons4
