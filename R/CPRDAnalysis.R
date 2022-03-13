@@ -168,7 +168,7 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
   #' @param bmi - BMI in kg/m2
   #' @param surv - how many years survival to use in model (default 10)
 
-  calculate_qrisk2 = function(sex, age, ethrisk, town=0, smoking, type1, type2, fh_cvd, renal, af, bp_med, rheumatoid_arth, cholhdl, sbp, bmi, surv=10) {
+  calculate_qrisk2 = function(sex, age, ethrisk, town=0, smoking, type1, type2, fh_cvd, renal, af, bp_med, rheumatoid_arth, cholhdl=NA, sbp=NA, bmi=NA, surv=10) {
     
     if (sex=="male") {
       vars <- lapply(aurum::qrisk2Constants$male, function(y) lapply(y, as.numeric))
@@ -209,6 +209,10 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
       ratio_smokearray_val = eval(parse(text=ratio_smoking_varname))
       
       cholhdl = (((((((((0.0 + ratio_ethriskarray_val) + ratio_smokearray_val) + (((age1^vars$ratio_predict_eq_cons1) - vars$ratio_predict_eq_cons2) * vars$ratio_predict_eq_cons3)) + ((((age1^vars$ratio_predict_eq_cons4) * (log(age1) - log(age1^vars$ratio_predict_eq_cons5) + vars$ratio_predict_eq_cons5)) - vars$ratio_predict_eq_cons6) * vars$ratio_predict_eq_cons7))) + (bp_med * vars$ratio_predict_num10)) + (type1 * vars$ratio_predict_num11)) + (type2 * vars$ratio_predict_num12)) + vars$ratio_predict_eq_cons8)
+    }
+    
+    if (bmi>40) {
+      bmi=40
     }
     
     bmi1 = bmi / 10.0

@@ -109,7 +109,7 @@ female:
   bmi_predict_num10: "1.9430209286180171"
   bmi_predict_num11: "1.5389895450065985"
   bmi_predict_num12: "3.0388348411614095"
-  sbp_predict_ethrisk_array:
+  sbp_predict_ethriskarray:
   - "0.0"
   - "0.0"
   - "-2.9244679967049616"
@@ -273,7 +273,7 @@ male:
   bmi_predict_num10: "1.6737020218768797"
   bmi_predict_num11: "-0.044098732860948286"
   bmi_predict_num12: "2.2694506765685776"
-  sbp_predict_ethrisk_array:
+  sbp_predict_ethriskarray:
   - "0.0"
   - "0.0"
   - "-2.5145327622283427"
