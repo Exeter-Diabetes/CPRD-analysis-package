@@ -1,3 +1,3 @@
-NB: raw linkage data and lookups and diy lookups (oha_classes, biomarker_acceptable_units and biomarker_acceptable_limits) not located at same refPath as primary care data/lookups on Slade - need to amend code if re-running. Have also added columns to patids_with_linkage (n_patid_hes, n_patid_death, and n_patid_spec) which aren't in the raw text file (see patids_with_linkage.sql in 'extra info').
+NB: raw linkage data and lookups and diy lookups (oha_lookup, biomarker_acceptable_units and biomarker_acceptable_limits) not located at same refPath as primary care data/lookups on Slade - need to amend code if re-running. Have also added columns to patids_with_linkage (n_patid_hes, n_patid_death, and n_patid_spec) which aren't in the raw text file (see patids_with_linkage.sql in 'extra info').
 
 valid_date_lookup was made on MySQL (see valid_dates.sql in 'extra info') and therefore there is no raw text file.
