@@ -1,4 +1,4 @@
-#### Constructor ----
+#' calculate_qrisk2
 
 #' @description calculates QRISK2-2017 score
 #' @param sex - "male" or "female"

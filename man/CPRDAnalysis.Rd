@@ -40,7 +40,6 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \item \href{#method-cached}{\code{CPRDAnalysis$cached()}}
 \item \href{#method-clean_biomarker_units}{\code{CPRDAnalysis$clean_biomarker_units()}}
 \item \href{#method-clean_biomarker_values}{\code{CPRDAnalysis$clean_biomarker_values()}}
-\item \href{#method-calculate_qrisk2}{\code{CPRDAnalysis$calculate_qrisk2()}}
 \item \href{#method-print}{\code{CPRDAnalysis$print()}}
 \item \href{#method-clone}{\code{CPRDAnalysis$clone()}}
 }
@@ -221,71 +220,6 @@ only keep measurements within acceptable limits for specified biomarker
 \item{\code{dataset}}{- dataset containing biomarker observations}
 
 \item{\code{biomrkr}}{- name of biomarker to clean (acr/alt/ast/bmi/creatinine/dbp/fastingglucose/hba1c/hdl/height/ldl/pcr/sbp/totalcholesterol/triglyceride/weight)}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-calculate_qrisk2"></a>}}
-\if{latex}{\out{\hypertarget{method-calculate_qrisk2}{}}}
-\subsection{Method \code{calculate_qrisk2()}}{
-calculates QRISK2-2017 score
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$calculate_qrisk2(
-  dataframe,
-  sex,
-  age,
-  ethrisk,
-  town = NULL,
-  smoking,
-  type1,
-  type2,
-  fh_cvd,
-  renal,
-  af,
-  bp_med,
-  rheumatoid_arth,
-  cholhdl,
-  sbp,
-  bmi,
-  surv = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{sex}}{- "male" or "female"}
-
-\item{\code{age}}{- current age in years}
-
-\item{\code{ethrisk}}{- QRISK2 ethnicity category: 0=Missing, 1=White, 2=Indian, 3=Pakistani, 4=Bangladeshi, 5=Other Asian, 6=Black Caribbean, 7=Black African, 8=Chinese, 9=Other ethnic group}
-
-\item{\code{smoking}}{- QRISK2 smoking category: 0=Non-smoker, 1=Ex-smoker, 2=Current light smoker, 3=Current moderate smoker, 4=Current heavy smoker}
-
-\item{\code{type1}}{- Type 1 diabetes (binary)}
-
-\item{\code{type2}}{- Type 2 diabetes (binary)}
-
-\item{\code{fh_cvd}}{- family history of premature cardiovascular disease}
-
-\item{\code{renal}}{- CKD stage 4 or 5}
-
-\item{\code{af}}{- atrial fibrillation (binary)}
-
-\item{\code{bp_med}}{- on blood pressure medication (binary)}
-
-\item{\code{rheumatoid_arth}}{- rheumatoid arthritis (binary)}
-
-\item{\code{cholhdl}}{- cholesterol:HDL ratio}
-
-\item{\code{sbp}}{- systolic blood pressure in mmHg}
-
-\item{\code{bmi}}{- BMI in kg/m2}
-
-\item{\code{surv}}{- how many years survival to use in model (default 10)}
-
-\item{\code{townsend}}{- Townsend Deprivation Index (default 0 i.e. missing)}
 }
 \if{html}{\out{</div>}}
 }
