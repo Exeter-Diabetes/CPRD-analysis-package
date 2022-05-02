@@ -88,6 +88,7 @@ Two functions for cleaning biomarker values are included in this package, and ca
 `clean_biomarker_units` retains only values with appropriate unit codes, or missing unit code (appropriate unit codes found in ...).
 
 These functions can be applied to the following biomarkers:
+
 * Albumin-creatinine ratio (`acr`)
 * Alanine aminotransferase (`alt`)
 * Aspartate aminotransferase(`ast`)
