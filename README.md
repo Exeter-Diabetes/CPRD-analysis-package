@@ -97,12 +97,24 @@ MySQL.
 `clean_biomarker_units` retains only values with appropriate unit codes,
 or missing unit code (appropriate unit codes found in …).
 
-These functions can be applied to the following biomarkers: \*
-Albumin-creatinine ratio (`acr`) \* Alanine aminotransferase (`alt`) \*
-Aspartate aminotransferase(`ast`) \* BMI (adults only; `bmi`) \*
-Serum/plasma creatinine (`creatinine`) \* Diastolic blood pressure
-(`dbp`) \* Fasting glucose
-(’fastingglucose`) * HbA1c (`hba1c`) * HDL (`hdl`) * Height (adults only;`height`) * LDL (`ldl`) * Protein-creatinine ratio (`pcr`) * Systolic blood pressure (`sbp`) * Total cholesterol (`totalcholesterol`) * Triglycerides (`triglyceride`) * Weight (weight;`weight\`)
+These functions can be applied to the following biomarkers:
+
+-   Albumin-creatinine ratio (`acr`)
+-   Alanine aminotransferase (`alt`)
+-   Aspartate aminotransferase(`ast`)
+-   BMI (adults only; `bmi`)
+-   Serum/plasma creatinine (`creatinine`)
+-   Diastolic blood pressure (`dbp`)
+-   Fasting glucose (’fastingglucose\`)
+-   HbA1c (`hba1c`)
+-   HDL (`hdl`)
+-   Height (adults only; `height`)
+-   LDL (`ldl`)
+-   Protein-creatinine ratio (`pcr`)
+-   Systolic blood pressure (`sbp`)
+-   Total cholesterol (`totalcholesterol`)
+-   Triglycerides (`triglyceride`)
+-   Weight (weight; `weight`)
 
 Example:
 
