@@ -17,6 +17,7 @@
 #' @param sbp - systolic blood pressure in mmHg
 #' @param bmi - BMI in kg/m2
 #' @param surv - how many years survival to use in model (default 10)
+#' @export
 
 calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, type1, type2, fh_cvd, renal, af, bp_med, rheumatoid_arth, cholhdl, sbp, bmi, surv=NULL) {
   
