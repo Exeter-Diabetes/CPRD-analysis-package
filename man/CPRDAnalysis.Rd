@@ -13,7 +13,7 @@ This function sets up a connection to the cprd data databse, and provides a set 
 }
 \keyword{CPRD}
 \section{Super class}{
-\code{\link[aurum:AbstractCPRDConnection]{aurum::AbstractCPRDConnection}} -> \code{CPRDCAnalysis}
+\code{\link[aurum:AbstractCPRDConnection]{aurum::AbstractCPRDConnection}} -> \code{CPRDAnalysis}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -24,7 +24,7 @@ This function sets up a connection to the cprd data databse, and provides a set 
 
 \item{\code{name}}{- the name of the analysis}
 
-\item{\code{cohort}}{- the current cohort definition for this analysis}
+\item{\code{tables}}{- the tables defined for this analysis}
 }
 \if{html}{\out{</div>}}
 }
@@ -33,25 +33,31 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \itemize{
 \item \href{#method-new}{\code{CPRDAnalysis$new()}}
 \item \href{#method-namingConventions}{\code{CPRDAnalysis$namingConventions()}}
+\item \href{#method-execSql}{\code{CPRDAnalysis$execSql()}}
+\item \href{#method-fetchSql}{\code{CPRDAnalysis$fetchSql()}}
+\item \href{#method-lazySql}{\code{CPRDAnalysis$lazySql()}}
+\item \href{#method-delete}{\code{CPRDAnalysis$delete()}}
+\item \href{#method-cached}{\code{CPRDAnalysis$cached()}}
+\item \href{#method-clean_biomarker_units}{\code{CPRDAnalysis$clean_biomarker_units()}}
+\item \href{#method-clean_biomarker_values}{\code{CPRDAnalysis$clean_biomarker_values()}}
+\item \href{#method-calculate_qrisk2}{\code{CPRDAnalysis$calculate_qrisk2()}}
 \item \href{#method-print}{\code{CPRDAnalysis$print()}}
 \item \href{#method-clone}{\code{CPRDAnalysis$clone()}}
 }
 }
 \if{html}{
-\out{<details ><summary>Inherited methods</summary>}
+\out{<details open ><summary>Inherited methods</summary>}
 \itemize{
 \item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="appendDf">}\href{../../aurum/html/AbstractCPRDConnection.html#method-appendDf}{\code{aurum::AbstractCPRDConnection$appendDf()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="conv">}\href{../../aurum/html/AbstractCPRDConnection.html#method-conv}{\code{aurum::AbstractCPRDConnection$conv()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="enableAdmin">}\href{../../aurum/html/AbstractCPRDConnection.html#method-enableAdmin}{\code{aurum::AbstractCPRDConnection$enableAdmin()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="execSql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-execSql}{\code{aurum::AbstractCPRDConnection$execSql()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="fetchSql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-fetchSql}{\code{aurum::AbstractCPRDConnection$fetchSql()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="finalize">}\href{../../aurum/html/AbstractCPRDConnection.html#method-finalize}{\code{aurum::AbstractCPRDConnection$finalize()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="lazySql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-lazySql}{\code{aurum::AbstractCPRDConnection$lazySql()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="tableExists">}\href{../../aurum/html/AbstractCPRDConnection.html#method-tableExists}{\code{aurum::AbstractCPRDConnection$tableExists()}}\out{</span>}
 }
 \out{</details>}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Create a cprd analysis container.
 \subsection{Usage}{
@@ -61,7 +67,7 @@ Create a cprd analysis container.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{name}}{the name of the analysis.}
+\item{\code{name}}{the name of the analysis - convention dictates this should be a lowercase name with underscores instead of spaces.}
 
 \item{\code{cprdData}}{an existing cprd data container.}
 
@@ -75,6 +81,7 @@ A new CPRDAnalysis object.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-namingConventions"></a>}}
+\if{latex}{\out{\hypertarget{method-namingConventions}{}}}
 \subsection{Method \code{namingConventions()}}{
 Get the table names in use within this analysis.
 \subsection{Usage}{
@@ -90,7 +97,202 @@ Get the table names in use within this analysis.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-execSql"></a>}}
+\if{latex}{\out{\hypertarget{method-execSql}{}}}
+\subsection{Method \code{execSql()}}{
+Internal function to execute an SQL statement provided in the template substituting names as appropriate
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$execSql(template, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{template}}{an SQL glue template}
+
+\item{\code{...}}{additional name=value for the glue substitution}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-fetchSql"></a>}}
+\if{latex}{\out{\hypertarget{method-fetchSql}{}}}
+\subsection{Method \code{fetchSql()}}{
+Internal function to execute an SQL statement and fetch the query result provided in the template substituting names as appropriate
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$fetchSql(template, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{template}}{an SQL glue template}
+
+\item{\code{...}}{additional name=value for the glue substitution}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-lazySql"></a>}}
+\if{latex}{\out{\hypertarget{method-lazySql}{}}}
+\subsection{Method \code{lazySql()}}{
+Internal function to execute an SQL statement and wrap the query result in a lazy dataframe from the template substituting names as appropriate
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$lazySql(template, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{template}}{an SQL glue template}
+
+\item{\code{...}}{additional name=value for the glue substitution}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-delete"></a>}}
+\if{latex}{\out{\hypertarget{method-delete}{}}}
+\subsection{Method \code{delete()}}{
+delete this analysis. This will affect all users of the CPRD database.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$delete(sure = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+the CPRDData root
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-cached"></a>}}
+\if{latex}{\out{\hypertarget{method-cached}{}}}
+\subsection{Method \code{cached()}}{
+compute a query or retrieve a precomputed query
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$cached(queryDf, name, ..., recompute = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{queryDf}}{- a dplyr query dataframe}
+
+\item{\code{name}}{- the analysis local identifier}
+
+\item{\code{recompute}}{- force re-computation of the query}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clean_biomarker_units"></a>}}
+\if{latex}{\out{\hypertarget{method-clean_biomarker_units}{}}}
+\subsection{Method \code{clean_biomarker_units()}}{
+only keep measurements with 'acceptable' unit codes (numunitid) for specified biomarker
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$clean_biomarker_units(dataset, biomrkr)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataset}}{- dataset containing biomarker observations}
+
+\item{\code{biomrkr}}{- name of biomarker to clean (acr/alt/ast/bmi/creatinine/dbp/fastingglucose/hba1c/hdl/height/ldl/pcr/sbp/totalcholesterol/triglyceride/weight)}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clean_biomarker_values"></a>}}
+\if{latex}{\out{\hypertarget{method-clean_biomarker_values}{}}}
+\subsection{Method \code{clean_biomarker_values()}}{
+only keep measurements within acceptable limits for specified biomarker
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$clean_biomarker_values(dataset, biomrkr)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dataset}}{- dataset containing biomarker observations}
+
+\item{\code{biomrkr}}{- name of biomarker to clean (acr/alt/ast/bmi/creatinine/dbp/fastingglucose/hba1c/hdl/height/ldl/pcr/sbp/totalcholesterol/triglyceride/weight)}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-calculate_qrisk2"></a>}}
+\if{latex}{\out{\hypertarget{method-calculate_qrisk2}{}}}
+\subsection{Method \code{calculate_qrisk2()}}{
+calculates QRISK2-2017 score
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$calculate_qrisk2(
+  dataframe,
+  sex,
+  age,
+  ethrisk,
+  town = NULL,
+  smoking,
+  type1,
+  type2,
+  fh_cvd,
+  renal,
+  af,
+  bp_med,
+  rheumatoid_arth,
+  cholhdl,
+  sbp,
+  bmi,
+  surv = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{sex}}{- "male" or "female"}
+
+\item{\code{age}}{- current age in years}
+
+\item{\code{ethrisk}}{- QRISK2 ethnicity category: 0=Missing, 1=White, 2=Indian, 3=Pakistani, 4=Bangladeshi, 5=Other Asian, 6=Black Caribbean, 7=Black African, 8=Chinese, 9=Other ethnic group}
+
+\item{\code{smoking}}{- QRISK2 smoking category: 0=Non-smoker, 1=Ex-smoker, 2=Current light smoker, 3=Current moderate smoker, 4=Current heavy smoker}
+
+\item{\code{type1}}{- Type 1 diabetes (binary)}
+
+\item{\code{type2}}{- Type 2 diabetes (binary)}
+
+\item{\code{fh_cvd}}{- family history of premature cardiovascular disease}
+
+\item{\code{renal}}{- CKD stage 4 or 5}
+
+\item{\code{af}}{- atrial fibrillation (binary)}
+
+\item{\code{bp_med}}{- on blood pressure medication (binary)}
+
+\item{\code{rheumatoid_arth}}{- rheumatoid arthritis (binary)}
+
+\item{\code{cholhdl}}{- cholesterol:HDL ratio}
+
+\item{\code{sbp}}{- systolic blood pressure in mmHg}
+
+\item{\code{bmi}}{- BMI in kg/m2}
+
+\item{\code{surv}}{- how many years survival to use in model (default 10)}
+
+\item{\code{townsend}}{- Townsend Deprivation Index (default 0 i.e. missing)}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 Prints the database connection information.
 \subsection{Usage}{
@@ -103,6 +305,7 @@ nothing.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

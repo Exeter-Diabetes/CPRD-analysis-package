@@ -38,13 +38,14 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \item \href{#method-lazySql}{\code{AbstractCPRDConnection$lazySql()}}
 \item \href{#method-appendDf}{\code{AbstractCPRDConnection$appendDf()}}
 \item \href{#method-tableExists}{\code{AbstractCPRDConnection$tableExists()}}
-\item \href{#method-finalize}{\code{AbstractCPRDConnection$finalize()}}
+\item \href{#method-conv}{\code{AbstractCPRDConnection$conv()}}
 \item \href{#method-print}{\code{AbstractCPRDConnection$print()}}
 \item \href{#method-clone}{\code{AbstractCPRDConnection$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new CPRD data table connection.
 \subsection{Usage}{
@@ -72,6 +73,7 @@ A new AbstractCPRDConnection object.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-enableAdmin"></a>}}
+\if{latex}{\out{\hypertarget{method-enableAdmin}{}}}
 \subsection{Method \code{enableAdmin()}}{
 Internal function to switch to an admin role
 \subsection{Usage}{
@@ -81,6 +83,7 @@ Internal function to switch to an admin role
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-namingConventions"></a>}}
+\if{latex}{\out{\hypertarget{method-namingConventions}{}}}
 \subsection{Method \code{namingConventions()}}{
 get the set of table names for this database and analysis.
 \subsection{Usage}{
@@ -97,6 +100,7 @@ get the set of table names for this database and analysis.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-execSql"></a>}}
+\if{latex}{\out{\hypertarget{method-execSql}{}}}
 \subsection{Method \code{execSql()}}{
 Internal function to execute an SQL statement provided in the template substituting names as appropriate
 \subsection{Usage}{
@@ -105,7 +109,7 @@ Internal function to execute an SQL statement provided in the template substitut
   ...,
   analysisName = "test",
   varsList = self$namingConventions(analysisName),
-  debug = FALSE
+  debug = getOption("cprd.debug", FALSE)
 )}\if{html}{\out{</div>}}
 }
 
@@ -127,6 +131,7 @@ Internal function to execute an SQL statement provided in the template substitut
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-fetchSql"></a>}}
+\if{latex}{\out{\hypertarget{method-fetchSql}{}}}
 \subsection{Method \code{fetchSql()}}{
 Internal function to execute an SQL statement and fetch the query result provided in the template substituting names as appropriate
 \subsection{Usage}{
@@ -135,7 +140,7 @@ Internal function to execute an SQL statement and fetch the query result provide
   ...,
   analysisName = "test",
   varsList = self$namingConventions(analysisName),
-  debug = FALSE
+  debug = getOption("cprd.debug", FALSE)
 )}\if{html}{\out{</div>}}
 }
 
@@ -157,6 +162,7 @@ Internal function to execute an SQL statement and fetch the query result provide
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-lazySql"></a>}}
+\if{latex}{\out{\hypertarget{method-lazySql}{}}}
 \subsection{Method \code{lazySql()}}{
 Internal function to execute an SQL statement and wrap the query result in a lazy dataframe from the template substituting names as appropriate
 \subsection{Usage}{
@@ -165,7 +171,7 @@ Internal function to execute an SQL statement and wrap the query result in a laz
   ...,
   analysisName = "test",
   varsList = self$namingConventions(analysisName),
-  debug = FALSE
+  debug = getOption("cprd.debug", FALSE)
 )}\if{html}{\out{</div>}}
 }
 
@@ -187,6 +193,7 @@ Internal function to execute an SQL statement and wrap the query result in a laz
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-appendDf"></a>}}
+\if{latex}{\out{\hypertarget{method-appendDf}{}}}
 \subsection{Method \code{appendDf()}}{
 Internal function to append a dataframe to a SQL table
 \subsection{Usage}{
@@ -207,6 +214,7 @@ Internal function to append a dataframe to a SQL table
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-tableExists"></a>}}
+\if{latex}{\out{\hypertarget{method-tableExists}{}}}
 \subsection{Method \code{tableExists()}}{
 Internal function to check if a table exists
 \subsection{Usage}{
@@ -224,20 +232,21 @@ Internal function to check if a table exists
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-finalize"></a>}}
-\subsection{Method \code{finalize()}}{
-Shutdown the connection to the CPRD data table.
+\if{html}{\out{<a id="method-conv"></a>}}
+\if{latex}{\out{\hypertarget{method-conv}{}}}
+\subsection{Method \code{conv()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractCPRDConnection$finalize()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractCPRDConnection$conv(name)}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-nothing.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
+Shutdown the connection to the CPRD data table.
+
+
 Prints the database connection information.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractCPRDConnection$print()}\if{html}{\out{</div>}}
@@ -249,6 +258,7 @@ nothing.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

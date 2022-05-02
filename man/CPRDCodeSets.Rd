@@ -30,10 +30,13 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \item \href{#method-new}{\code{CPRDCodeSets$new()}}
 \item \href{#method-loadMedCodeSet}{\code{CPRDCodeSets$loadMedCodeSet()}}
 \item \href{#method-loadProdCodeSet}{\code{CPRDCodeSets$loadProdCodeSet()}}
+\item \href{#method-loadICD10CodeSet}{\code{CPRDCodeSets$loadICD10CodeSet()}}
+\item \href{#method-loadOPCS4CodeSet}{\code{CPRDCodeSets$loadOPCS4CodeSet()}}
 \item \href{#method-loadCodeSet}{\code{CPRDCodeSets$loadCodeSet()}}
 \item \href{#method-loadAll}{\code{CPRDCodeSets$loadAll()}}
 \item \href{#method-getCodeSetDetails}{\code{CPRDCodeSets$getCodeSetDetails()}}
 \item \href{#method-getCodeSet}{\code{CPRDCodeSets$getCodeSet()}}
+\item \href{#method-getAllCodeSetVersion}{\code{CPRDCodeSets$getAllCodeSetVersion()}}
 \item \href{#method-listCodeSets}{\code{CPRDCodeSets$listCodeSets()}}
 \item \href{#method-deleteCodeSetVersion}{\code{CPRDCodeSets$deleteCodeSetVersion()}}
 \item \href{#method-deleteCodeSet}{\code{CPRDCodeSets$deleteCodeSet()}}
@@ -45,10 +48,10 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \out{<details ><summary>Inherited methods</summary>}
 \itemize{
 \item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="appendDf">}\href{../../aurum/html/AbstractCPRDConnection.html#method-appendDf}{\code{aurum::AbstractCPRDConnection$appendDf()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="conv">}\href{../../aurum/html/AbstractCPRDConnection.html#method-conv}{\code{aurum::AbstractCPRDConnection$conv()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="enableAdmin">}\href{../../aurum/html/AbstractCPRDConnection.html#method-enableAdmin}{\code{aurum::AbstractCPRDConnection$enableAdmin()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="execSql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-execSql}{\code{aurum::AbstractCPRDConnection$execSql()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="fetchSql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-fetchSql}{\code{aurum::AbstractCPRDConnection$fetchSql()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="finalize">}\href{../../aurum/html/AbstractCPRDConnection.html#method-finalize}{\code{aurum::AbstractCPRDConnection$finalize()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="lazySql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-lazySql}{\code{aurum::AbstractCPRDConnection$lazySql()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="namingConventions">}\href{../../aurum/html/AbstractCPRDConnection.html#method-namingConventions}{\code{aurum::AbstractCPRDConnection$namingConventions()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="tableExists">}\href{../../aurum/html/AbstractCPRDConnection.html#method-tableExists}{\code{aurum::AbstractCPRDConnection$tableExists()}}\out{</span>}
@@ -57,6 +60,7 @@ This function sets up a connection to the cprd data databse, and provides a set 
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Get a new CPRD codes sets container.
 \subsection{Usage}{
@@ -76,16 +80,25 @@ A new CPRDCodeSets container.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-loadMedCodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-loadMedCodeSet}{}}}
 \subsection{Method \code{loadMedCodeSet()}}{
 load a new medcode set into the CPRD data from an R dataframe.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$loadMedCodeSet(codeSetDf, name, version, colname = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$loadMedCodeSet(
+  codeSetDf,
+  category = NULL,
+  name,
+  version,
+  colname = NULL
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{codeSetDf}}{a dataframe with minimally a single column of medcode ids.}
+
+\item{\code{category}}{(optional) column containing category code. If set to NULL, all values are NULL.}
 
 \item{\code{name}}{the name of the codeset}
 
@@ -101,16 +114,25 @@ A TRUE/FALSE depending on if the code set was successfully loaded.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-loadProdCodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-loadProdCodeSet}{}}}
 \subsection{Method \code{loadProdCodeSet()}}{
 load a new prodcode set into the CPRD data from an R dataframe.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$loadProdCodeSet(codeSetDf, name, version, colname = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$loadProdCodeSet(
+  codeSetDf,
+  category = NULL,
+  name,
+  version,
+  colname = NULL
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{codeSetDf}}{a dataframe with minimally a single column of prodcode ids.}
+
+\item{\code{category}}{(optional) column containing category code. If set to NULL, all values are NULL.}
 
 \item{\code{name}}{the name of the codeset}
 
@@ -125,17 +147,95 @@ A TRUE/FALSE depending on if the code set was successfully loaded.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-loadICD10CodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-loadICD10CodeSet}{}}}
+\subsection{Method \code{loadICD10CodeSet()}}{
+load a new ICD10 set into the CPRD data from an R dataframe.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$loadICD10CodeSet(
+  codeSetDf,
+  category = NULL,
+  name,
+  version,
+  colname = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{codeSetDf}}{a dataframe with minimally a single column of ICD10 codes.}
+
+\item{\code{category}}{(optional) column containing category code. If set to NULL, all values are NULL.}
+
+\item{\code{name}}{the name of the codeset}
+
+\item{\code{version}}{the version of the codeset}
+
+\item{\code{colname}}{(optional) the name of the column containing the ICD10 code If set to NULL defaults to the first column.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A TRUE/FALSE depending on if the code set was successfully loaded.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-loadOPCS4CodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-loadOPCS4CodeSet}{}}}
+\subsection{Method \code{loadOPCS4CodeSet()}}{
+load a new ICD10 set into the CPRD data from an R dataframe.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$loadOPCS4CodeSet(
+  codeSetDf,
+  category = NULL,
+  name,
+  version,
+  colname = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{codeSetDf}}{a dataframe with minimally a single column of ICD10 codes.}
+
+\item{\code{category}}{(optional) column containing category code. If set to NULL, all values are NULL.}
+
+\item{\code{name}}{the name of the codeset}
+
+\item{\code{version}}{the version of the codeset}
+
+\item{\code{colname}}{(optional) the name of the column containing the ICD10 code If set to NULL defaults to the first column.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A TRUE/FALSE depending on if the code set was successfully loaded.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-loadCodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-loadCodeSet}{}}}
 \subsection{Method \code{loadCodeSet()}}{
 load a new code set into the CPRD data from an R dataframe.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$loadCodeSet(codeSetDf, name, version, colname, type)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$loadCodeSet(
+  codeSetDf,
+  category = NULL,
+  name,
+  version,
+  colname = NULL,
+  type
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{codeSetDf}}{a dataframe with minimally a single column of medcode ids or prodcode ids.}
+
+\item{\code{category}}{(optional) column containing category code. If set to NULL defaults to the third column.}
 
 \item{\code{name}}{the name of the codeset}
 
@@ -153,8 +253,9 @@ A TRUE/FALSE depending on if the code set was successfully loaded.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-loadAll"></a>}}
+\if{latex}{\out{\hypertarget{method-loadAll}{}}}
 \subsection{Method \code{loadAll()}}{
-load a set of med codes from CSV or tab separated text files into the CPRD database.
+load a set of med codes from tab separated text files into the CPRD database.
 The names of the codesets will be defined by the filenames. Files will not be loaded if they have the same hash,
 name and version as an existing code set.
 \subsection{Usage}{
@@ -176,10 +277,11 @@ Nothing
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-getCodeSetDetails"></a>}}
+\if{latex}{\out{\hypertarget{method-getCodeSetDetails}{}}}
 \subsection{Method \code{getCodeSetDetails()}}{
 list the codes, and their descriptions, in a given named version of a code set. The medcodeid or prodcodeid
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$getCodeSetDetails(name, version)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$getCodeSetDetails(name, category = NULL, version = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -192,15 +294,16 @@ list the codes, and their descriptions, in a given named version of a code set. 
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-a lazy dataframe continaing the codes and their descriptions
+a lazy dataframe containing the codes and their descriptions
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-getCodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-getCodeSet}{}}}
 \subsection{Method \code{getCodeSet()}}{
 list the codes only in a named code set.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$getCodeSet(name, version = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$getCodeSet(name, category = NULL, version = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -217,7 +320,17 @@ a lazy dataframe containing the code only
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-getAllCodeSetVersion"></a>}}
+\if{latex}{\out{\hypertarget{method-getAllCodeSetVersion}{}}}
+\subsection{Method \code{getAllCodeSetVersion()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$getAllCodeSetVersion(version)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-listCodeSets"></a>}}
+\if{latex}{\out{\hypertarget{method-listCodeSets}{}}}
 \subsection{Method \code{listCodeSets()}}{
 list the codes only in a named code set.
 \subsection{Usage}{
@@ -225,11 +338,12 @@ list the codes only in a named code set.
 }
 
 \subsection{Returns}{
-a lazy dataframe continaing the code only
+a lazy dataframe containing the code only
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-deleteCodeSetVersion"></a>}}
+\if{latex}{\out{\hypertarget{method-deleteCodeSetVersion}{}}}
 \subsection{Method \code{deleteCodeSetVersion()}}{
 delete a code set version. This will affect all users of the CPRD database.
 \subsection{Usage}{
@@ -248,6 +362,7 @@ delete a code set version. This will affect all users of the CPRD database.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-deleteCodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-deleteCodeSet}{}}}
 \subsection{Method \code{deleteCodeSet()}}{
 delete all versions of a code set. This will affect all users of the CPRD database.
 \subsection{Usage}{
@@ -264,6 +379,7 @@ delete all versions of a code set. This will affect all users of the CPRD databa
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
 Prints the database connection information.
 \subsection{Usage}{
@@ -276,6 +392,7 @@ nothing.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

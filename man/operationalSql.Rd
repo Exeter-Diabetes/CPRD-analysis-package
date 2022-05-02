@@ -4,7 +4,9 @@
 \name{operationalSql}
 \alias{operationalSql}
 \title{config for the setup of of the CPRD database as installed by this package}
-\format{A list of lists:}
+\format{
+A list of lists:
+}
 \usage{
 operationalSql
 }
