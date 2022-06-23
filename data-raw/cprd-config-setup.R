@@ -22,6 +22,7 @@ dataSql = yaml::read_yaml(here::here("data-raw/data-tables.yaml"))
 analysisSql = yaml::read_yaml(here::here("data-raw/analysis-tables.yaml"))
 codeSetsSql = yaml::read_yaml(here::here("data-raw/codeset-tables.yaml"))
 qrisk2Constants = yaml::read_yaml(here::here("data-raw/qrisk2_constants.yaml"))
+qMissingPredictors = yaml::read_yaml(here::here("data-raw/q_missing_predictors.yaml"))
 
 usethis::use_data(operationalSql,overwrite = TRUE)
 usethis::use_data(lookupSql,overwrite = TRUE)

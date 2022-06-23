@@ -21,6 +21,8 @@
 
 calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, type1, type2, fh_cvd, renal, af, bp_med, rheumatoid_arth, cholhdl, sbp, bmi, surv=NULL) {
   
+  
+  # Get handles for columns with values in in data table
   age_col <- as.symbol(deparse(substitute(age)))
   ethrisk_col <- as.symbol(deparse(substitute(ethrisk)))
   smoking_col <- as.symbol(deparse(substitute(smoking)))
@@ -37,13 +39,17 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   town_col <- as.symbol(deparse(substitute(town)))
   surv_col <- as.symbol(deparse(substitute(surv)))
   
+  
+  # Make unique ID for each row so can join back on later
   dataframe <- dataframe %>%
     mutate(id_col=row_number())
   
   
+  # Copy dataframe to new dataframe
   new_dataframe <- dataframe
   
   
+  # If missing Townsend deprivation index, use '0' i.e. missing
   if (deparse(substitute(town)) %in% colnames(new_dataframe)) {
     new_dataframe <- new_dataframe %>% mutate(town_col = ifelse(is.na(!!town_col), 0, !!town_col))
   }
@@ -53,6 +59,7 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   }
   
   
+  # If missing survival time, use 10 years
   if (deparse(substitute(surv)) %in% colnames(new_dataframe)) {
     new_dataframe <- new_dataframe %>% mutate(surv_col = ifelse(is.na(!!surv_col), 10, !!surv_col))
   }
@@ -62,15 +69,32 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   }
   
   
+  # Fetch constants from Aurum package
   male_vars <- cbind(sex="male",data.frame(unlist(lapply(aurum::qrisk2Constants$male, function(y) lapply(y, as.numeric)), recursive="FALSE")))
   female_vars <- cbind(sex="female",data.frame(unlist(lapply(aurum::qrisk2Constants$female, function(y) lapply(y, as.numeric)), recursive="FALSE")))
   vars <- rbind(male_vars, female_vars)
   
+  male_missing_predictors <- cbind(sex="male",data.frame(unlist(lapply(aurum::qMissingPredictors$male, function(y) lapply(y, as.numeric)), recursive="FALSE")))
+  female_missing_predictors <- cbind(sex="male",data.frame(unlist(lapply(aurum::qMissingPredictors$female, function(y) lapply(y, as.numeric)), recursive="FALSE")))
+  
+  missingPredictors <- rbind(male_missing_predictors, female_missing_predictors)
+  
+  
+  # Join constants to data table
+  ## copy=TRUE as eed to copy constants to MySQL from package
   to_join_sex_var = deparse(substitute(sex))
   
   new_dataframe <- new_dataframe %>%
     
     inner_join(vars, by=setNames("sex",to_join_sex_var), copy=TRUE) %>%
+    
+    inner_join(missingPredictors, by=setNames("sex",to_join_sex_var), copy=TRUE)
+  
+  
+  # Do calculation
+    
+  new_dataframe <- new_dataframe %>%
+    
     mutate(age1 = !!age_col / 10.0,
            
            bmi_ethriskarray_val = case_when(
@@ -237,11 +261,14 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
                   ((age3 * sbp1) * num55)) + 
              ((age3 * town1) * num56),
            
-           qrisk2_score = 100.0 * (1.0 - (survarray_val^exp(d)))) %>%
-    
+           qrisk2_score = 100.0 * (1.0 - (survarray_val^exp(d))))
+  
+  
+  # Keep QRISK2 score and unique ID columns only%>%
+  new_dataframe <- new_dataframe %>%
     select(id_col, qrisk2_score)
   
-  
+# Join back on to original data table 
   dataframe <- dataframe %>%
     inner_join(new_dataframe, by="id_col") %>%
     select(-id_col)
