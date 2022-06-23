@@ -30,6 +30,7 @@ usethis::use_data(dataSql,overwrite = TRUE)
 usethis::use_data(analysisSql,overwrite = TRUE)
 usethis::use_data(codeSetsSql,overwrite = TRUE)
 usethis::use_data(qrisk2Constants,overwrite = TRUE)
+usethis::use_data(qMissingPredictors,overwrite = TRUE)
 
 # install this version of the setup.
 # devtools::install_local(here::here("."))
