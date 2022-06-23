@@ -75,7 +75,7 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   vars <- rbind(male_vars, female_vars)
   
   male_missing_predictors <- cbind(sex="male",data.frame(unlist(lapply(aurum::qMissingPredictors$male, function(y) lapply(y, as.numeric)), recursive="FALSE")))
-  female_missing_predictors <- cbind(sex=fe"male",data.frame(unlist(lapply(aurum::qMissingPredictors$female, function(y) lapply(y, as.numeric)), recursive="FALSE")))
+  female_missing_predictors <- cbind(sex="female",data.frame(unlist(lapply(aurum::qMissingPredictors$female, function(y) lapply(y, as.numeric)), recursive="FALSE")))
   
   missingPredictors <- rbind(male_missing_predictors, female_missing_predictors)
   
