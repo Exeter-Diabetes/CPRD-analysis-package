@@ -1,79 +1,14 @@
-#' calculate_qrisk2
+#' impute_missing_predictors
 
-#' @description calculates QRISK2-2017 score
-#' @param sex - "male" or "female"
-#' @param age - current age in years
-#' @param ethrisk - QRISK2 ethnicity category: 0=Missing, 1=White, 2=Indian, 3=Pakistani, 4=Bangladeshi, 5=Other Asian, 6=Black Caribbean, 7=Black African, 8=Chinese, 9=Other ethnic group
-#' @param townsend - Townsend Deprivation Index (default 0 i.e. missing)
-#' @param smoking - QRISK2 smoking category: 0=Non-smoker, 1=Ex-smoker, 2=Current light smoker, 3=Current moderate smoker, 4=Current heavy smoker
-#' @param type1 - Type 1 diabetes (binary)
-#' @param type2 - Type 2 diabetes (binary)
-#' @param fh_cvd - family history of premature cardiovascular disease
-#' @param renal - CKD stage 4 or 5
-#' @param af - atrial fibrillation (binary)
-#' @param bp_med - on blood pressure medication (binary)
-#' @param rheumatoid_arth - rheumatoid arthritis (binary)
-#' @param cholhdl - cholesterol:HDL ratio
-#' @param sbp - systolic blood pressure in mmHg
-#' @param bmi - BMI in kg/m2
-#' @param surv - how many years survival to use in model (default 10)
-#' @export
+#' @description impute BMI, SBP and chol_HDL ratio where missing for QRISK2-2017 and QDiabetes-HF-2015
+#' @param sex_col - column with sex
+#' @param cholhdl_col - column with cholesterol:HDL
+#' @param sbp_col - column with systolic blood pressure in mmHg
+#' @param bmi_col - column with BMI in kg/m2
 
-calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, type1, type2, fh_cvd, renal, af, bp_med, rheumatoid_arth, cholhdl, sbp, bmi, surv=NULL) {
-  
-  
-  # Get handles for columns with values in in data table
-  age_col <- as.symbol(deparse(substitute(age)))
-  ethrisk_col <- as.symbol(deparse(substitute(ethrisk)))
-  smoking_col <- as.symbol(deparse(substitute(smoking)))
-  type1_col <- as.symbol(deparse(substitute(type1)))
-  type2_col <- as.symbol(deparse(substitute(type2)))
-  fh_cvd_col <- as.symbol(deparse(substitute(fh_cvd)))
-  renal_col <- as.symbol(deparse(substitute(renal)))
-  af_col <- as.symbol(deparse(substitute(af)))
-  bp_med_col <- as.symbol(deparse(substitute(bp_med)))
-  rheumatoid_arth_col <- as.symbol(deparse(substitute(rheumatoid_arth)))
-  cholhdl_col <- as.symbol(deparse(substitute(cholhdl)))
-  sbp_col <- as.symbol(deparse(substitute(sbp)))
-  bmi_col <- as.symbol(deparse(substitute(bmi)))
-  town_col <- as.symbol(deparse(substitute(town)))
-  surv_col <- as.symbol(deparse(substitute(surv)))
-  
-  
-  # Make unique ID for each row so can join back on later
-  dataframe <- dataframe %>%
-    mutate(id_col=row_number())
-  
-  
-  # Copy dataframe to new dataframe
-  new_dataframe <- dataframe
-  
-  
-  # If missing Townsend deprivation index, use '0' i.e. missing
-  if (deparse(substitute(town)) %in% colnames(new_dataframe)) {
-    new_dataframe <- new_dataframe %>% mutate(town_col = ifelse(is.na(!!town_col), 0, !!town_col))
-  }
-  else {
-    new_dataframe <- new_dataframe %>% mutate(town_col=0)
-    message("Using average deprivation values as Townsend Deprivation Scores (town) missing")
-  }
-  
-  
-  # If missing survival time, use 10 years
-  if (deparse(substitute(surv)) %in% colnames(new_dataframe)) {
-    new_dataframe <- new_dataframe %>% mutate(surv_col = ifelse(is.na(!!surv_col), 10, !!surv_col))
-  }
-  else {
-    new_dataframe <- new_dataframe %>% mutate(surv_col=10)
-    message("Calculating 10-year risk as time period (surv) missing")
-  }
-  
+impute_missing_predictors = function(new_dataframe, age_col, sex_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, bmi_col, cholhdl_col, sbp_col) {
   
   # Fetch constants from Aurum package
-  male_vars <- cbind(sex="male",data.frame(unlist(lapply(aurum::qrisk2Constants$male, function(y) lapply(y, as.numeric)), recursive="FALSE")))
-  female_vars <- cbind(sex="female",data.frame(unlist(lapply(aurum::qrisk2Constants$female, function(y) lapply(y, as.numeric)), recursive="FALSE")))
-  vars <- rbind(male_vars, female_vars)
-  
   male_missing_predictors <- cbind(sex="male",data.frame(unlist(lapply(aurum::qMissingPredictors$male, function(y) lapply(y, as.numeric)), recursive="FALSE")))
   female_missing_predictors <- cbind(sex="female",data.frame(unlist(lapply(aurum::qMissingPredictors$female, function(y) lapply(y, as.numeric)), recursive="FALSE")))
   
@@ -81,22 +16,16 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   
   
   # Join constants to data table
-  ## copy=TRUE as eed to copy constants to MySQL from package
-  to_join_sex_var = deparse(substitute(sex))
-  
+  ## copy=TRUE as need to copy constants to MySQL from package
   new_dataframe <- new_dataframe %>%
-    
-    inner_join(vars, by=setNames("sex",to_join_sex_var), copy=TRUE) %>%
-    
-    inner_join(missingPredictors, by=setNames("sex",to_join_sex_var), copy=TRUE)
+    inner_join(missingPredictors, by=setNames("sex", deparse(sex_col)), copy=TRUE)
+
   
-  
-  # Do calculation
-    
+  # Calculate missing values
   new_dataframe <- new_dataframe %>%
-    
+  
     mutate(age1 = !!age_col / 10.0,
-           
+  
            bmi_ethriskarray_val = case_when(
              !!ethrisk_col==0 ~ bmi_predict_ethriskarray1,
              !!ethrisk_col==1 ~ bmi_predict_ethriskarray2,
@@ -165,7 +94,116 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
            ),
            new_cholhdl_col = ifelse(is.na(!!cholhdl_col),
                                     (((((((((0.0 + ratio_ethriskarray_val) + ratio_smokearray_val) + (((age1^ratio_predict_eq_cons1) - ratio_predict_eq_cons2) * ratio_predict_eq_cons3)) + ((((age1^ratio_predict_eq_cons4) * (log(age1) - log(age1^ratio_predict_eq_cons5) + ratio_predict_eq_cons5)) - ratio_predict_eq_cons6) * ratio_predict_eq_cons7))) + (!!bp_med_col * ratio_predict_num10)) + (!!type1_col * ratio_predict_num11)) + (!!type2_col * ratio_predict_num12)) + ratio_predict_eq_cons8),
-                                    !!cholhdl_col),
+                                    !!cholhdl_col))
+           
+  
+  return(new_dataframe)
+  
+}
+
+
+
+#' calculate_qrisk2
+
+#' @description calculates QRISK2-2017 score
+#' @param sex - "male" or "female"
+#' @param age - current age in years
+#' @param ethrisk - QRISK2 ethnicity category: 0=Missing, 1=White, 2=Indian, 3=Pakistani, 4=Bangladeshi, 5=Other Asian, 6=Black Caribbean, 7=Black African, 8=Chinese, 9=Other ethnic group
+#' @param townsend - Townsend Deprivation Index (default 0 i.e. missing)
+#' @param smoking - QRISK2 smoking category: 0=Non-smoker, 1=Ex-smoker, 2=Current light smoker, 3=Current moderate smoker, 4=Current heavy smoker
+#' @param type1 - Type 1 diabetes (binary)
+#' @param type2 - Type 2 diabetes (binary)
+#' @param fh_cvd - family history of premature cardiovascular disease
+#' @param renal - CKD stage 4 or 5
+#' @param af - atrial fibrillation (binary)
+#' @param bp_med - on blood pressure medication (binary)
+#' @param rheumatoid_arth - rheumatoid arthritis (binary)
+#' @param cholhdl - cholesterol:HDL ratio
+#' @param sbp - systolic blood pressure in mmHg
+#' @param bmi - BMI in kg/m2
+#' @param surv - how many years survival to use in model (default 10)
+#' @export
+
+calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, type1, type2, fh_cvd, renal, af, bp_med, rheumatoid_arth, cholhdl, sbp, bmi, surv=NULL) {
+  
+  
+  # Get handles for columns with values in in data table
+  sex_col <- as.symbol(deparse(substitute(sex)))
+  age_col <- as.symbol(deparse(substitute(age)))
+  ethrisk_col <- as.symbol(deparse(substitute(ethrisk)))
+  smoking_col <- as.symbol(deparse(substitute(smoking)))
+  type1_col <- as.symbol(deparse(substitute(type1)))
+  type2_col <- as.symbol(deparse(substitute(type2)))
+  fh_cvd_col <- as.symbol(deparse(substitute(fh_cvd)))
+  renal_col <- as.symbol(deparse(substitute(renal)))
+  af_col <- as.symbol(deparse(substitute(af)))
+  bp_med_col <- as.symbol(deparse(substitute(bp_med)))
+  rheumatoid_arth_col <- as.symbol(deparse(substitute(rheumatoid_arth)))
+  cholhdl_col <- as.symbol(deparse(substitute(cholhdl)))
+  sbp_col <- as.symbol(deparse(substitute(sbp)))
+  bmi_col <- as.symbol(deparse(substitute(bmi)))
+  town_col <- as.symbol(deparse(substitute(town)))
+  surv_col <- as.symbol(deparse(substitute(surv)))
+  
+
+    # Make unique ID for each row so can join back on later
+  dataframe <- dataframe %>%
+    mutate(id_col=row_number())
+  
+  
+  # Copy dataframe to new dataframe
+  new_dataframe <- dataframe
+  
+  
+  # If missing Townsend deprivation index, use '0' i.e. missing
+  if (deparse(substitute(town)) %in% colnames(new_dataframe)) {
+    new_dataframe <- new_dataframe %>% mutate(town_col = ifelse(is.na(!!town_col), 0, !!town_col))
+  }
+  else {
+    new_dataframe <- new_dataframe %>% mutate(town_col=0)
+    message("Using average deprivation values as Townsend Deprivation Scores (town) missing")
+  }
+  
+  
+  # If missing survival time, use 10 years
+  if (deparse(substitute(surv)) %in% colnames(new_dataframe)) {
+    new_dataframe <- new_dataframe %>% mutate(surv_col = ifelse(is.na(!!surv_col), 10, !!surv_col))
+  }
+  else {
+    new_dataframe <- new_dataframe %>% mutate(surv_col=10)
+    message("Calculating 10-year risk as time period (surv) missing")
+  }
+  
+  
+  # Fetch constants from Aurum package
+  male_vars <- cbind(sex="male",data.frame(unlist(lapply(aurum::qrisk2Constants$male, function(y) lapply(y, as.numeric)), recursive="FALSE")))
+  female_vars <- cbind(sex="female",data.frame(unlist(lapply(aurum::qrisk2Constants$female, function(y) lapply(y, as.numeric)), recursive="FALSE")))
+  vars <- rbind(male_vars, female_vars)
+
+  
+  
+  # Join constants to data table
+  ## copy=TRUE as need to copy constants to MySQL from package
+  to_join_sex_var <- deparse(substitute(sex))
+
+  new_dataframe <- new_dataframe %>%
+    
+    inner_join(vars, by=setNames("sex", to_join_sex_var), copy=TRUE)
+    
+  
+  
+  # Fill in missing BMI/SBP/chol:HDL
+  
+  new_dataframe <- new_dataframe %>%
+    
+    impute_missing_predictors(age_col, sex_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, bmi_col, cholhdl_col, sbp_col)
+  
+  
+  # Do calculation
+    
+  new_dataframe <- new_dataframe %>%
+    
+    mutate(age1 = !!age_col / 10.0,
            
            new_bmi_col = ifelse(new_bmi_col>40, 40, new_bmi_col),
            
@@ -267,7 +305,7 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   # Keep QRISK2 score and unique ID columns only%>%
   new_dataframe <- new_dataframe %>%
     select(id_col, qrisk2_score)
-  
+
 # Join back on to original data table 
   dataframe <- dataframe %>%
     inner_join(new_dataframe, by="id_col") %>%
