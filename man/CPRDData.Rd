@@ -25,31 +25,31 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{CPRDData$new()}}
-\item \href{#method-analysis}{\code{CPRDData$analysis()}}
-\item \href{#method-codesets}{\code{CPRDData$codesets()}}
-\item \href{#method-finalize}{\code{CPRDData$finalize()}}
-\item \href{#method-print}{\code{CPRDData$print()}}
-\item \href{#method-clone}{\code{CPRDData$clone()}}
+\item \href{#method-CPRDData-new}{\code{CPRDData$new()}}
+\item \href{#method-CPRDData-analysis}{\code{CPRDData$analysis()}}
+\item \href{#method-CPRDData-codesets}{\code{CPRDData$codesets()}}
+\item \href{#method-CPRDData-finalize}{\code{CPRDData$finalize()}}
+\item \href{#method-CPRDData-print}{\code{CPRDData$print()}}
+\item \href{#method-CPRDData-clone}{\code{CPRDData$clone()}}
 }
 }
-\if{html}{
-\out{<details ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="appendDf">}\href{../../aurum/html/AbstractCPRDConnection.html#method-appendDf}{\code{aurum::AbstractCPRDConnection$appendDf()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="conv">}\href{../../aurum/html/AbstractCPRDConnection.html#method-conv}{\code{aurum::AbstractCPRDConnection$conv()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="enableAdmin">}\href{../../aurum/html/AbstractCPRDConnection.html#method-enableAdmin}{\code{aurum::AbstractCPRDConnection$enableAdmin()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="execSql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-execSql}{\code{aurum::AbstractCPRDConnection$execSql()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="fetchSql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-fetchSql}{\code{aurum::AbstractCPRDConnection$fetchSql()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="lazySql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-lazySql}{\code{aurum::AbstractCPRDConnection$lazySql()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="namingConventions">}\href{../../aurum/html/AbstractCPRDConnection.html#method-namingConventions}{\code{aurum::AbstractCPRDConnection$namingConventions()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="tableExists">}\href{../../aurum/html/AbstractCPRDConnection.html#method-tableExists}{\code{aurum::AbstractCPRDConnection$tableExists()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="appendDf"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-appendDf'><code>aurum::AbstractCPRDConnection$appendDf()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="conv"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-conv'><code>aurum::AbstractCPRDConnection$conv()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="enableAdmin"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-enableAdmin'><code>aurum::AbstractCPRDConnection$enableAdmin()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="execSql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-execSql'><code>aurum::AbstractCPRDConnection$execSql()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="fetchSql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-fetchSql'><code>aurum::AbstractCPRDConnection$fetchSql()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="lazySql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-lazySql'><code>aurum::AbstractCPRDConnection$lazySql()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="namingConventions"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-namingConventions'><code>aurum::AbstractCPRDConnection$namingConventions()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="tableExists"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-tableExists'><code>aurum::AbstractCPRDConnection$tableExists()</code></a></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-CPRDData-new"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDData-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new CPRD data table connection.
 \subsection{Usage}{
@@ -78,8 +78,8 @@ A new CPRDData object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-analysis"></a>}}
-\if{latex}{\out{\hypertarget{method-analysis}{}}}
+\if{html}{\out{<a id="method-CPRDData-analysis"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDData-analysis}{}}}
 \subsection{Method \code{analysis()}}{
 Create or retrieve a cprd analysis container.
 \subsection{Usage}{
@@ -98,8 +98,8 @@ a cprd analysis container
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-codesets"></a>}}
-\if{latex}{\out{\hypertarget{method-codesets}{}}}
+\if{html}{\out{<a id="method-CPRDData-codesets"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDData-codesets}{}}}
 \subsection{Method \code{codesets()}}{
 Retrieve the cprd codesets container.
 \subsection{Usage}{
@@ -111,8 +111,8 @@ a cprd codesets container
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-finalize"></a>}}
-\if{latex}{\out{\hypertarget{method-finalize}{}}}
+\if{html}{\out{<a id="method-CPRDData-finalize"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDData-finalize}{}}}
 \subsection{Method \code{finalize()}}{
 Shutdown the connection to the CPRD data table.
 \subsection{Usage}{
@@ -124,8 +124,8 @@ nothing.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-CPRDData-print"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDData-print}{}}}
 \subsection{Method \code{print()}}{
 Prints the database connection information.
 \subsection{Usage}{
@@ -137,8 +137,8 @@ nothing.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-CPRDData-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDData-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

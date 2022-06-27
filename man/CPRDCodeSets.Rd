@@ -27,40 +27,40 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{CPRDCodeSets$new()}}
-\item \href{#method-loadMedCodeSet}{\code{CPRDCodeSets$loadMedCodeSet()}}
-\item \href{#method-loadProdCodeSet}{\code{CPRDCodeSets$loadProdCodeSet()}}
-\item \href{#method-loadICD10CodeSet}{\code{CPRDCodeSets$loadICD10CodeSet()}}
-\item \href{#method-loadOPCS4CodeSet}{\code{CPRDCodeSets$loadOPCS4CodeSet()}}
-\item \href{#method-loadCodeSet}{\code{CPRDCodeSets$loadCodeSet()}}
-\item \href{#method-loadAll}{\code{CPRDCodeSets$loadAll()}}
-\item \href{#method-getCodeSetDetails}{\code{CPRDCodeSets$getCodeSetDetails()}}
-\item \href{#method-getCodeSet}{\code{CPRDCodeSets$getCodeSet()}}
-\item \href{#method-getAllCodeSetVersion}{\code{CPRDCodeSets$getAllCodeSetVersion()}}
-\item \href{#method-listCodeSets}{\code{CPRDCodeSets$listCodeSets()}}
-\item \href{#method-deleteCodeSetVersion}{\code{CPRDCodeSets$deleteCodeSetVersion()}}
-\item \href{#method-deleteCodeSet}{\code{CPRDCodeSets$deleteCodeSet()}}
-\item \href{#method-print}{\code{CPRDCodeSets$print()}}
-\item \href{#method-clone}{\code{CPRDCodeSets$clone()}}
+\item \href{#method-CPRDCodeSets-new}{\code{CPRDCodeSets$new()}}
+\item \href{#method-CPRDCodeSets-loadMedCodeSet}{\code{CPRDCodeSets$loadMedCodeSet()}}
+\item \href{#method-CPRDCodeSets-loadProdCodeSet}{\code{CPRDCodeSets$loadProdCodeSet()}}
+\item \href{#method-CPRDCodeSets-loadICD10CodeSet}{\code{CPRDCodeSets$loadICD10CodeSet()}}
+\item \href{#method-CPRDCodeSets-loadOPCS4CodeSet}{\code{CPRDCodeSets$loadOPCS4CodeSet()}}
+\item \href{#method-CPRDCodeSets-loadCodeSet}{\code{CPRDCodeSets$loadCodeSet()}}
+\item \href{#method-CPRDCodeSets-loadAll}{\code{CPRDCodeSets$loadAll()}}
+\item \href{#method-CPRDCodeSets-getCodeSetDetails}{\code{CPRDCodeSets$getCodeSetDetails()}}
+\item \href{#method-CPRDCodeSets-getCodeSet}{\code{CPRDCodeSets$getCodeSet()}}
+\item \href{#method-CPRDCodeSets-getAllCodeSetVersion}{\code{CPRDCodeSets$getAllCodeSetVersion()}}
+\item \href{#method-CPRDCodeSets-listCodeSets}{\code{CPRDCodeSets$listCodeSets()}}
+\item \href{#method-CPRDCodeSets-deleteCodeSetVersion}{\code{CPRDCodeSets$deleteCodeSetVersion()}}
+\item \href{#method-CPRDCodeSets-deleteCodeSet}{\code{CPRDCodeSets$deleteCodeSet()}}
+\item \href{#method-CPRDCodeSets-print}{\code{CPRDCodeSets$print()}}
+\item \href{#method-CPRDCodeSets-clone}{\code{CPRDCodeSets$clone()}}
 }
 }
-\if{html}{
-\out{<details ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="appendDf">}\href{../../aurum/html/AbstractCPRDConnection.html#method-appendDf}{\code{aurum::AbstractCPRDConnection$appendDf()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="conv">}\href{../../aurum/html/AbstractCPRDConnection.html#method-conv}{\code{aurum::AbstractCPRDConnection$conv()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="enableAdmin">}\href{../../aurum/html/AbstractCPRDConnection.html#method-enableAdmin}{\code{aurum::AbstractCPRDConnection$enableAdmin()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="execSql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-execSql}{\code{aurum::AbstractCPRDConnection$execSql()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="fetchSql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-fetchSql}{\code{aurum::AbstractCPRDConnection$fetchSql()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="lazySql">}\href{../../aurum/html/AbstractCPRDConnection.html#method-lazySql}{\code{aurum::AbstractCPRDConnection$lazySql()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="namingConventions">}\href{../../aurum/html/AbstractCPRDConnection.html#method-namingConventions}{\code{aurum::AbstractCPRDConnection$namingConventions()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="tableExists">}\href{../../aurum/html/AbstractCPRDConnection.html#method-tableExists}{\code{aurum::AbstractCPRDConnection$tableExists()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="appendDf"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-appendDf'><code>aurum::AbstractCPRDConnection$appendDf()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="conv"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-conv'><code>aurum::AbstractCPRDConnection$conv()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="enableAdmin"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-enableAdmin'><code>aurum::AbstractCPRDConnection$enableAdmin()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="execSql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-execSql'><code>aurum::AbstractCPRDConnection$execSql()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="fetchSql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-fetchSql'><code>aurum::AbstractCPRDConnection$fetchSql()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="lazySql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-lazySql'><code>aurum::AbstractCPRDConnection$lazySql()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="namingConventions"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-namingConventions'><code>aurum::AbstractCPRDConnection$namingConventions()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="tableExists"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-tableExists'><code>aurum::AbstractCPRDConnection$tableExists()</code></a></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-new"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-new}{}}}
 \subsection{Method \code{new()}}{
 Get a new CPRD codes sets container.
 \subsection{Usage}{
@@ -79,8 +79,8 @@ A new CPRDCodeSets container.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-loadMedCodeSet"></a>}}
-\if{latex}{\out{\hypertarget{method-loadMedCodeSet}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-loadMedCodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-loadMedCodeSet}{}}}
 \subsection{Method \code{loadMedCodeSet()}}{
 load a new medcode set into the CPRD data from an R dataframe.
 \subsection{Usage}{
@@ -113,8 +113,8 @@ A TRUE/FALSE depending on if the code set was successfully loaded.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-loadProdCodeSet"></a>}}
-\if{latex}{\out{\hypertarget{method-loadProdCodeSet}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-loadProdCodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-loadProdCodeSet}{}}}
 \subsection{Method \code{loadProdCodeSet()}}{
 load a new prodcode set into the CPRD data from an R dataframe.
 \subsection{Usage}{
@@ -147,8 +147,8 @@ A TRUE/FALSE depending on if the code set was successfully loaded.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-loadICD10CodeSet"></a>}}
-\if{latex}{\out{\hypertarget{method-loadICD10CodeSet}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-loadICD10CodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-loadICD10CodeSet}{}}}
 \subsection{Method \code{loadICD10CodeSet()}}{
 load a new ICD10 set into the CPRD data from an R dataframe.
 \subsection{Usage}{
@@ -181,8 +181,8 @@ A TRUE/FALSE depending on if the code set was successfully loaded.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-loadOPCS4CodeSet"></a>}}
-\if{latex}{\out{\hypertarget{method-loadOPCS4CodeSet}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-loadOPCS4CodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-loadOPCS4CodeSet}{}}}
 \subsection{Method \code{loadOPCS4CodeSet()}}{
 load a new ICD10 set into the CPRD data from an R dataframe.
 \subsection{Usage}{
@@ -215,8 +215,8 @@ A TRUE/FALSE depending on if the code set was successfully loaded.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-loadCodeSet"></a>}}
-\if{latex}{\out{\hypertarget{method-loadCodeSet}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-loadCodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-loadCodeSet}{}}}
 \subsection{Method \code{loadCodeSet()}}{
 load a new code set into the CPRD data from an R dataframe.
 \subsection{Usage}{
@@ -252,8 +252,8 @@ A TRUE/FALSE depending on if the code set was successfully loaded.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-loadAll"></a>}}
-\if{latex}{\out{\hypertarget{method-loadAll}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-loadAll"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-loadAll}{}}}
 \subsection{Method \code{loadAll()}}{
 load a set of med codes from tab separated text files into the CPRD database.
 The names of the codesets will be defined by the filenames. Files will not be loaded if they have the same hash,
@@ -276,8 +276,8 @@ Nothing
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCodeSetDetails"></a>}}
-\if{latex}{\out{\hypertarget{method-getCodeSetDetails}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-getCodeSetDetails"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-getCodeSetDetails}{}}}
 \subsection{Method \code{getCodeSetDetails()}}{
 list the codes, and their descriptions, in a given named version of a code set. The medcodeid or prodcodeid
 \subsection{Usage}{
@@ -298,8 +298,8 @@ a lazy dataframe containing the codes and their descriptions
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getCodeSet"></a>}}
-\if{latex}{\out{\hypertarget{method-getCodeSet}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-getCodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-getCodeSet}{}}}
 \subsection{Method \code{getCodeSet()}}{
 list the codes only in a named code set.
 \subsection{Usage}{
@@ -320,8 +320,8 @@ a lazy dataframe containing the code only
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-getAllCodeSetVersion"></a>}}
-\if{latex}{\out{\hypertarget{method-getAllCodeSetVersion}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-getAllCodeSetVersion"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-getAllCodeSetVersion}{}}}
 \subsection{Method \code{getAllCodeSetVersion()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{CPRDCodeSets$getAllCodeSetVersion(version)}\if{html}{\out{</div>}}
@@ -329,8 +329,8 @@ a lazy dataframe containing the code only
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-listCodeSets"></a>}}
-\if{latex}{\out{\hypertarget{method-listCodeSets}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-listCodeSets"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-listCodeSets}{}}}
 \subsection{Method \code{listCodeSets()}}{
 list the codes only in a named code set.
 \subsection{Usage}{
@@ -342,8 +342,8 @@ a lazy dataframe containing the code only
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-deleteCodeSetVersion"></a>}}
-\if{latex}{\out{\hypertarget{method-deleteCodeSetVersion}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-deleteCodeSetVersion"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-deleteCodeSetVersion}{}}}
 \subsection{Method \code{deleteCodeSetVersion()}}{
 delete a code set version. This will affect all users of the CPRD database.
 \subsection{Usage}{
@@ -361,8 +361,8 @@ delete a code set version. This will affect all users of the CPRD database.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-deleteCodeSet"></a>}}
-\if{latex}{\out{\hypertarget{method-deleteCodeSet}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-deleteCodeSet"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-deleteCodeSet}{}}}
 \subsection{Method \code{deleteCodeSet()}}{
 delete all versions of a code set. This will affect all users of the CPRD database.
 \subsection{Usage}{
@@ -378,8 +378,8 @@ delete all versions of a code set. This will affect all users of the CPRD databa
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-print"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-print}{}}}
 \subsection{Method \code{print()}}{
 Prints the database connection information.
 \subsection{Usage}{
@@ -391,8 +391,8 @@ nothing.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-CPRDCodeSets-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-CPRDCodeSets-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

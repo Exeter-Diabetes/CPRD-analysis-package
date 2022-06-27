@@ -30,22 +30,22 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{AbstractCPRDConnection$new()}}
-\item \href{#method-enableAdmin}{\code{AbstractCPRDConnection$enableAdmin()}}
-\item \href{#method-namingConventions}{\code{AbstractCPRDConnection$namingConventions()}}
-\item \href{#method-execSql}{\code{AbstractCPRDConnection$execSql()}}
-\item \href{#method-fetchSql}{\code{AbstractCPRDConnection$fetchSql()}}
-\item \href{#method-lazySql}{\code{AbstractCPRDConnection$lazySql()}}
-\item \href{#method-appendDf}{\code{AbstractCPRDConnection$appendDf()}}
-\item \href{#method-tableExists}{\code{AbstractCPRDConnection$tableExists()}}
-\item \href{#method-conv}{\code{AbstractCPRDConnection$conv()}}
-\item \href{#method-print}{\code{AbstractCPRDConnection$print()}}
-\item \href{#method-clone}{\code{AbstractCPRDConnection$clone()}}
+\item \href{#method-AbstractCPRDConnection-new}{\code{AbstractCPRDConnection$new()}}
+\item \href{#method-AbstractCPRDConnection-enableAdmin}{\code{AbstractCPRDConnection$enableAdmin()}}
+\item \href{#method-AbstractCPRDConnection-namingConventions}{\code{AbstractCPRDConnection$namingConventions()}}
+\item \href{#method-AbstractCPRDConnection-execSql}{\code{AbstractCPRDConnection$execSql()}}
+\item \href{#method-AbstractCPRDConnection-fetchSql}{\code{AbstractCPRDConnection$fetchSql()}}
+\item \href{#method-AbstractCPRDConnection-lazySql}{\code{AbstractCPRDConnection$lazySql()}}
+\item \href{#method-AbstractCPRDConnection-appendDf}{\code{AbstractCPRDConnection$appendDf()}}
+\item \href{#method-AbstractCPRDConnection-tableExists}{\code{AbstractCPRDConnection$tableExists()}}
+\item \href{#method-AbstractCPRDConnection-conv}{\code{AbstractCPRDConnection$conv()}}
+\item \href{#method-AbstractCPRDConnection-print}{\code{AbstractCPRDConnection$print()}}
+\item \href{#method-AbstractCPRDConnection-clone}{\code{AbstractCPRDConnection$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-new"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new CPRD data table connection.
 \subsection{Usage}{
@@ -72,8 +72,8 @@ A new AbstractCPRDConnection object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-enableAdmin"></a>}}
-\if{latex}{\out{\hypertarget{method-enableAdmin}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-enableAdmin"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-enableAdmin}{}}}
 \subsection{Method \code{enableAdmin()}}{
 Internal function to switch to an admin role
 \subsection{Usage}{
@@ -82,8 +82,8 @@ Internal function to switch to an admin role
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-namingConventions"></a>}}
-\if{latex}{\out{\hypertarget{method-namingConventions}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-namingConventions"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-namingConventions}{}}}
 \subsection{Method \code{namingConventions()}}{
 get the set of table names for this database and analysis.
 \subsection{Usage}{
@@ -99,8 +99,8 @@ get the set of table names for this database and analysis.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-execSql"></a>}}
-\if{latex}{\out{\hypertarget{method-execSql}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-execSql"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-execSql}{}}}
 \subsection{Method \code{execSql()}}{
 Internal function to execute an SQL statement provided in the template substituting names as appropriate
 \subsection{Usage}{
@@ -130,8 +130,8 @@ Internal function to execute an SQL statement provided in the template substitut
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-fetchSql"></a>}}
-\if{latex}{\out{\hypertarget{method-fetchSql}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-fetchSql"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-fetchSql}{}}}
 \subsection{Method \code{fetchSql()}}{
 Internal function to execute an SQL statement and fetch the query result provided in the template substituting names as appropriate
 \subsection{Usage}{
@@ -161,8 +161,8 @@ Internal function to execute an SQL statement and fetch the query result provide
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-lazySql"></a>}}
-\if{latex}{\out{\hypertarget{method-lazySql}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-lazySql"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-lazySql}{}}}
 \subsection{Method \code{lazySql()}}{
 Internal function to execute an SQL statement and wrap the query result in a lazy dataframe from the template substituting names as appropriate
 \subsection{Usage}{
@@ -192,8 +192,8 @@ Internal function to execute an SQL statement and wrap the query result in a laz
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-appendDf"></a>}}
-\if{latex}{\out{\hypertarget{method-appendDf}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-appendDf"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-appendDf}{}}}
 \subsection{Method \code{appendDf()}}{
 Internal function to append a dataframe to a SQL table
 \subsection{Usage}{
@@ -213,8 +213,8 @@ Internal function to append a dataframe to a SQL table
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-tableExists"></a>}}
-\if{latex}{\out{\hypertarget{method-tableExists}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-tableExists"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-tableExists}{}}}
 \subsection{Method \code{tableExists()}}{
 Internal function to check if a table exists
 \subsection{Usage}{
@@ -232,8 +232,8 @@ Internal function to check if a table exists
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-conv"></a>}}
-\if{latex}{\out{\hypertarget{method-conv}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-conv"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-conv}{}}}
 \subsection{Method \code{conv()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractCPRDConnection$conv(name)}\if{html}{\out{</div>}}
@@ -241,8 +241,8 @@ Internal function to check if a table exists
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-print"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-print}{}}}
 \subsection{Method \code{print()}}{
 Shutdown the connection to the CPRD data table.
 
@@ -257,8 +257,8 @@ nothing.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

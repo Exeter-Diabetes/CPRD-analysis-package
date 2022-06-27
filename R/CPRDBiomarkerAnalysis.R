@@ -1,12 +1,18 @@
 #' impute_missing_predictors
 
 #' @description impute BMI, SBP and chol_HDL ratio where missing for QRISK2-2017 and QDiabetes-HF-2015
-#' @param sex_col - column with sex
-#' @param cholhdl_col - column with cholesterol:HDL
+#' @param sex_col - column with "male" or "female"
+#' @param age_col - column with current age in years
+#' @param ethrisk_col - column with QRISK2 ethnicity category: 0=Missing, 1=White, 2=Indian, 3=Pakistani, 4=Bangladeshi, 5=Other Asian, 6=Black Caribbean, 7=Black African, 8=Chinese, 9=Other ethnic group
+#' @param smoking_col - column with QRISK2 smoking category: 0=Non-smoker, 1=Ex-smoker, 2=Current light smoker, 3=Current moderate smoker, 4=Current heavy smoker
+#' @param type1_col - column with Type 1 diabetes (binary)
+#' @param type2_col - column with Type 2 diabetes (binary)
+#' @param bp_med_col - column with whether on blood pressure medication (binary)
+#' @param cholhdl_col - column with cholesterol:HDL ratio
 #' @param sbp_col - column with systolic blood pressure in mmHg
 #' @param bmi_col - column with BMI in kg/m2
 
-impute_missing_predictors = function(new_dataframe, age_col, sex_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, bmi_col, cholhdl_col, sbp_col) {
+impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, cholhdl_col, sbp_col, bmi_col) {
   
   # Fetch constants from Aurum package
   male_missing_predictors <- cbind(sex="male",data.frame(unlist(lapply(aurum::qMissingPredictors$male, function(y) lapply(y, as.numeric)), recursive="FALSE")))
@@ -109,7 +115,7 @@ impute_missing_predictors = function(new_dataframe, age_col, sex_col, ethrisk_co
 #' @param sex - "male" or "female"
 #' @param age - current age in years
 #' @param ethrisk - QRISK2 ethnicity category: 0=Missing, 1=White, 2=Indian, 3=Pakistani, 4=Bangladeshi, 5=Other Asian, 6=Black Caribbean, 7=Black African, 8=Chinese, 9=Other ethnic group
-#' @param townsend - Townsend Deprivation Index (default 0 i.e. missing)
+#' @param town - Townsend Deprivation Index (default 0 i.e. missing)
 #' @param smoking - QRISK2 smoking category: 0=Non-smoker, 1=Ex-smoker, 2=Current light smoker, 3=Current moderate smoker, 4=Current heavy smoker
 #' @param type1 - Type 1 diabetes (binary)
 #' @param type2 - Type 2 diabetes (binary)
@@ -196,17 +202,16 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   
   new_dataframe <- new_dataframe %>%
     
-    impute_missing_predictors(age_col, sex_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, bmi_col, cholhdl_col, sbp_col)
+    impute_missing_predictors(sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, cholhdl_col, sbp_col, bmi_col)
   
   
   # Do calculation
     
   new_dataframe <- new_dataframe %>%
     
-    mutate(age1 = !!age_col / 10.0,
+    mutate(new_bmi_col = ifelse(new_bmi_col>40, 40, new_bmi_col),
            
-           new_bmi_col = ifelse(new_bmi_col>40, 40, new_bmi_col),
-           
+           age1 = !!age_col / 10.0,
            bmi1 = new_bmi_col / 10.0,
            age2 = (age1 ^ age_cons1) - age_cons2,
            age3 = (age1 ^ age_cons3) - age_cons4,
@@ -234,6 +239,7 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
              surv_col==14 ~ survarray15,
              surv_col==15 ~ survarray16
            ),
+           
            ethriskarray_val = case_when(
              !!ethrisk_col==0 ~ ethriskarray1,
              !!ethrisk_col==1 ~ ethriskarray2,
@@ -246,6 +252,7 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
              !!ethrisk_col==8 ~ ethriskarray9,
              !!ethrisk_col==9 ~ ethriskarray10
            ),
+           
            smokearray_val = case_when(
              !!smoking_col==0 ~ smokearray1,
              !!smoking_col==1 ~ smokearray2,
@@ -312,6 +319,207 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
     select(-id_col)
   
   message("New column 'qrisk2_score' added")
+  
+  return(dataframe)
+  
+}
+
+
+#' calculate_qdiabeteshf
+
+#' @description calculates QDiabetes-HF 2015 score
+#' @param sex - "male" or "female"
+#' @param age - current age in years
+#' @param ethrisk - QRISK2 ethnicity category: 0=Missing, 1=White, 2=Indian, 3=Pakistani, 4=Bangladeshi, 5=Other Asian, 6=Black Caribbean, 7=Black African, 8=Chinese, 9=Other ethnic group
+#' @param town - Townsend Deprivation Index (default 0 i.e. missing)
+#' @param smoking - QRISK2 smoking category: 0=Non-smoker, 1=Ex-smoker, 2=Current light smoker, 3=Current moderate smoker, 4=Current heavy smoker
+#' @param duration - diabetes duration: 0=within the last year, 1=1-3 years, 2=4-6 years, 3=7-10 years, 4=11 or more
+#' @param type1 - Type 1 diabetes (binary) - otherwise Type 2 assumed
+#' @param cvd - history of angina, heart attack or stroke
+#' @param af - atrial fibrillation (binary)
+#' @param renal - CKD stage 4 or 5
+#' @param hba1c - last HbA1c in mmol/mol
+#' @param cholhdl - cholesterol:HDL ratio
+#' @param sbp - systolic blood pressure in mmHg
+#' @param bmi - BMI in kg/m2
+#' @param surv - how many years survival to use in model (default 10)
+#' @export
+
+calculate_qdiabeteshf = function(dataframe, sex, age, ethrisk, town=NULL, smoking, duration, type1, cvd, af, renal, hba1c, cholhdl, sbp, bmi, surv=NULL) {
+  
+  
+  # Get handles for columns with values in in data table
+  sex_col <- as.symbol(deparse(substitute(sex)))
+  age_col <- as.symbol(deparse(substitute(age)))
+  ethrisk_col <- as.symbol(deparse(substitute(ethrisk)))
+  smoking_col <- as.symbol(deparse(substitute(smoking)))
+  duration_col <- as.symbol(deparse(substitute(duration)))
+  type1_col <- as.symbol(deparse(substitute(type1)))
+  cvd_col <- as.symbol(deparse(substitute(cvd)))
+  af_col <- as.symbol(deparse(substitute(af)))
+  renal_col <- as.symbol(deparse(substitute(renal)))
+  hba1c_col <- as.symbol(deparse(substitute(hba1c)))
+  cholhdl_col <- as.symbol(deparse(substitute(cholhdl)))
+  sbp_col <- as.symbol(deparse(substitute(sbp)))
+  bmi_col <- as.symbol(deparse(substitute(bmi)))
+  town_col <- as.symbol(deparse(substitute(town)))
+  surv_col <- as.symbol(deparse(substitute(surv)))
+  
+  
+  # Make unique ID for each row so can join back on later
+  dataframe <- dataframe %>%
+    mutate(id_col=row_number())
+  
+  
+  # Copy dataframe to new dataframe
+  new_dataframe <- dataframe
+  
+  
+  # If missing Townsend deprivation index, use '0' i.e. missing
+  if (deparse(substitute(town)) %in% colnames(new_dataframe)) {
+    new_dataframe <- new_dataframe %>% mutate(town_col = ifelse(is.na(!!town_col), 0, !!town_col))
+  }
+  else {
+    new_dataframe <- new_dataframe %>% mutate(town_col=0)
+    message("Using average deprivation values as Townsend Deprivation Scores (town) missing")
+  }
+  
+  
+  # If missing survival time, use 10 years
+  if (deparse(substitute(surv)) %in% colnames(new_dataframe)) {
+    new_dataframe <- new_dataframe %>% mutate(surv_col = ifelse(is.na(!!surv_col), 10, !!surv_col))
+  }
+  else {
+    new_dataframe <- new_dataframe %>% mutate(surv_col=10)
+    message("Calculating 10-year risk as time period (surv) missing")
+  }
+  
+  
+  # Fetch constants from Aurum package
+  male_vars <- cbind(sex="male",data.frame(unlist(lapply(aurum::qdiabeteshfConstants$male, function(y) lapply(y, as.numeric)), recursive="FALSE")))
+  female_vars <- cbind(sex="female",data.frame(unlist(lapply(aurum::qdiabeteshfConstants$female, function(y) lapply(y, as.numeric)), recursive="FALSE")))
+  vars <- rbind(male_vars, female_vars)
+  
+  
+  
+  # Join constants to data table
+  ## copy=TRUE as need to copy constants to MySQL from package
+  to_join_sex_var <- deparse(substitute(sex))
+  
+  new_dataframe <- new_dataframe %>%
+    
+    inner_join(vars, by=setNames("sex", to_join_sex_var), copy=TRUE)
+  
+  
+  
+  # Fill in missing BMI/SBP/chol:HDL
+  
+  new_dataframe <- new_dataframe %>%
+    
+    impute_missing_predictors(sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, cholhdl_col, sbp_col, bmi_col)
+  
+  
+  # Do calculation
+  
+  new_dataframe <- new_dataframe %>%
+    
+    mutate(new_bmi_col = ifelse(new_bmi_col>40, 40, new_bmi_col),
+           
+           bmi1 = new_bmi_col/10,
+           bmi2 = (bmi1 ^ bmi_cons1) + bmi_cons4,
+           bmi3 = (((bmi1 ^ bmi_cons2) - bmi_cons3) + (log(bmi1) * bmi_cons3) + bmi_cons5),
+           
+           sbp1 = new_sbp_col/100,
+           sbp2 = ((sbp1 ^ sbp_cons1) - sbp_cons2) + (log(sbp1) * sbp_cons2) + sbp_cons5,
+           sbp3 = ((sbp1 ^ sbp_cons3) - sbp_cons4) + (log(sbp1) * sbp_cons4) + sbp+cons6,
+           
+           rati1 = new_cholhdl_col - rati_cons1,
+           
+           hba1c1 = !!hba1c_col/100,
+           hba1c2 = (hba1c1 ^ -2) + hba1c_cons1,
+           hba1c3 = ((hba1c1 ^ -2) * log(hba1c1)) + hba1c_cons2,
+           
+           age1 = !!age_col - age_cons1,
+           
+           survarray_val = case_when(
+             surv_col==0 ~ survarray1,
+             surv_col==1 ~ survarray2,
+             surv_col==2 ~ survarray3,
+             surv_col==3 ~ survarray4,
+             surv_col==4 ~ survarray5,
+             surv_col==5 ~ survarray6,
+             surv_col==6 ~ survarray7,
+             surv_col==7 ~ survarray8,
+             surv_col==8 ~ survarray9,
+             surv_col==9 ~ survarray10,
+             surv_col==10 ~ survarray11,
+             surv_col==11 ~ survarray12,
+             surv_col==12 ~ survarray13,
+             surv_col==13 ~ survarray14,
+             surv_col==14 ~ survarray15,
+             surv_col==15 ~ survarray16
+           ),
+           
+           durationarray_val = case_when(
+             !!duration_col==0 ~ durationarray1,
+             !!duration_col==1 ~ durationarray2,
+             !!duration_col==2 ~ durationarray3,
+             !!duration_col==3 ~ durationarray4,
+             !!duration_col==4 ~ durationarray5
+           ),
+           
+           ethriskarray_val = case_when(
+             !!ethrisk_col==0 ~ ethriskarray1,
+             !!ethrisk_col==1 ~ ethriskarray2,
+             !!ethrisk_col==2 ~ ethriskarray3,
+             !!ethrisk_col==3 ~ ethriskarray4,
+             !!ethrisk_col==4 ~ ethriskarray5,
+             !!ethrisk_col==5 ~ ethriskarray6,
+             !!ethrisk_col==6 ~ ethriskarray7,
+             !!ethrisk_col==7 ~ ethriskarray8,
+             !!ethrisk_col==8 ~ ethriskarray9,
+             !!ethrisk_col==9 ~ ethriskarray10
+           ),
+           
+           smokearray_val = case_when(
+             !!smoking_col==0 ~ smokearray1,
+             !!smoking_col==1 ~ smokearray2,
+             !!smoking_col==2 ~ smokearray3,
+             !!smoking_col==3 ~ smokearray4,
+             !!smoking_col==4 ~ smokearray5
+           ),
+           
+           a = 0.0 +
+             durationarray_val +
+             ethriskarray_val +
+             smokearray_val +
+             (age1 * age_cons2) +
+             (bmi2 * bmi_cons6) +
+             (bmi3 * bmi_cons7) +
+             (hba1c2 * hba1c_cons3) +
+             (hba1c3 * hba1c_cons4) +
+             (rati1 * rati_cons2) +
+             (sbp2 * sbp_cons7) +
+             (sbp3 * sbp_cons8) +
+             (town_col * town_cons) +
+             (!!af_col * af_cons) +
+             (!!cvd_col * cvd_cons) +
+             (!!renal_col * renal_cons) +
+             (!!type1_col * type1cons),
+           
+           qdiabeteshf_score = 100.0 * (1.0 - (survarray_val^exp(a))))
+  
+  
+  # Keep QRISK2 score and unique ID columns only%>%
+  new_dataframe <- new_dataframe %>%
+    select(id_col, qdiabeteshf_score)
+  
+  # Join back on to original data table 
+  dataframe <- dataframe %>%
+    inner_join(new_dataframe, by="id_col") %>%
+    select(-id_col)
+  
+  message("New column 'qdiabeteshf_score' added")
   
   return(dataframe)
   
