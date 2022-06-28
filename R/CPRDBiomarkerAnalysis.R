@@ -1,5 +1,49 @@
-#' impute_missing_predictors
+#' Clean biomarker units: only keep values with acceptable unit codes (includes missing unit code for all)
+#' 
+#' @description only keep measurements with 'acceptable' unit codes (numunitid) for specified biomarker
+#' @param dataset - dataset containing biomarker observations
+#' @param biomrkr - name of biomarker to clean (acr/alt/ast/bmi/creatinine/dbp/fastingglucose/hba1c/hdl/height/ldl/pcr/sbp/totalcholesterol/triglyceride/weight)
+clean_biomarker_units = function(dataset,biomrkr) {
+  unit_codes <- cprd$tables$biomarkerAcceptableUnits %>% dplyr::filter(biomarker==local(biomrkr))
+  return(
+    dataset %>%
+      dplyr::inner_join(
+        unit_codes,
+        by = "numunitid",
+        na_matches="na"
+      ))
+}
 
+
+#' Clean biomarker values: only keep values within acceptable limits
+#' 
+#' @description only keep measurements within acceptable limits for specified biomarker
+#' @param dataset - dataset containing biomarker observations
+#' @param biomrkr - name of biomarker to clean (acr/alt/ast/bmi/creatinine/dbp/fastingglucose/hba1c/hdl/height/ldl/pcr/sbp/totalcholesterol/triglyceride/weight)
+clean_biomarker_values = function(dataset,biomrkr) {
+  lower_limit <- cprd$tables$biomarkerAcceptableLimits %>% dplyr::filter(biomarker==local(biomrkr)) %>% dplyr::select(lower_limit)
+  lower_lmt <- as.numeric(collect(lower_limit)[[1,1]])
+  upper_limit <- cprd$tables$biomarkerAcceptableLimits %>% dplyr::filter(biomarker==local(biomrkr)) %>% dplyr::select(upper_limit)
+  upper_lmt <- as.numeric(collect(upper_limit)[[1,1]])
+  if (biomrkr=="hba1c") {
+    message("clean_biomarker_values will remove HbA1c values which are not in mmol/mol")
+  }
+  if (biomrkr=="weight") {
+    message("clean_biomarker_values uses weight limits for adults")
+  }
+  if (biomrkr=="height") {
+    message("clean_biomarker_values uses height limits for adults")
+  }
+  message("Values <",lower_lmt, ", >", upper_lmt, " and missing values removed")
+  return(
+    dataset %>%
+      dplyr::filter(testvalue>=lower_lmt & testvalue<=upper_lmt)
+  )
+}
+
+
+#' Impute missing predictors for QRISK2 and QDiabetes-HF
+#' 
 #' @description impute BMI, SBP and chol_HDL ratio where missing for QRISK2-2017 and QDiabetes-HF-2015
 #' @param sex_col - column with "male" or "female"
 #' @param age_col - column with current age in years
@@ -107,9 +151,8 @@ impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_co
 }
 
 
-
-#' calculate_qrisk2
-
+#' Calculate QRISK2-2017
+#'
 #' @description calculates QRISK2-2017 score
 #' @param sex - "male" or "female"
 #' @param age - current age in years
@@ -324,8 +367,8 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
 }
 
 
-#' calculate_qdiabeteshf
-
+#' Calculate QDiabetes-HF 2015
+#' 
 #' @description calculates QDiabetes-HF 2015 score
 #' @param sex - "male" or "female"
 #' @param age - current age in years
@@ -521,7 +564,7 @@ calculate_qdiabeteshf = function(dataframe, sex, age, ethrisk, town=NULL, smokin
   
   # Keep QRISK2 score and unique ID columns only%>%
   new_dataframe <- new_dataframe %>%
-    select(id_col, new_bmi_col, new_sbp_col, new_cholhdl_col, qdiabeteshf_score)
+    select(id_col, qdiabeteshf_score)
   
   # Join back on to original data table 
   dataframe <- dataframe %>%
