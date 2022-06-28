@@ -51,7 +51,6 @@ impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_co
              !!smoking_col==3 ~ bmi_predict_smokearray4,
              !!smoking_col==4 ~ bmi_predict_smokearray5
            ),
-           
            new_bmi_col = ifelse(is.na(!!bmi_col), 
                                 (((((((((0.0 + bmi_ethriskarray_val) + bmi_smokearray_val) + ((age1 - bmi_predict_eq_cons1) * bmi_predict_eq_cons2)) + (((age1^2.0) - bmi_predict_eq_cons3) * bmi_predict_eq_cons4))) + (!!bp_med_col * bmi_predict_num10)) + (!!type1_col * bmi_predict_num11)) + (!!type2_col * bmi_predict_num12)) + bmi_predict_eq_cons5),
                                 !!bmi_col),
