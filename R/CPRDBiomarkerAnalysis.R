@@ -562,9 +562,9 @@ calculate_qdiabeteshf = function(dataframe, sex, age, ethrisk, town=NULL, smokin
            qdiabeteshf_score = 100.0 * (1.0 - (survarray_val^exp(a))))
   
   
-  # Keep QRISK2 score and unique ID columns only%>%
+  # Keep QDiabetes-HF score and unique ID columns only%>%
   new_dataframe <- new_dataframe %>%
-    select(id_col, qdiabeteshf_score)
+    select(id_col, new_bmi_col, new_sbp_col, new_cholhdl_col, qdiabeteshf_score)
   
   # Join back on to original data table 
   dataframe <- dataframe %>%
