@@ -52,7 +52,7 @@ impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_co
              !!smoking_col==4 ~ bmi_predict_smokearray5
            ),
            
-           new_bmi_col = ifelse(is.na(!!bmi_col),
+           new_bmi_col = ifelse(is.na(!!bmi_col), 
                                 (((((((((0.0 + bmi_ethriskarray_val) + bmi_smokearray_val) + ((age1 - bmi_predict_eq_cons1) * bmi_predict_eq_cons2)) + (((age1^2.0) - bmi_predict_eq_cons3) * bmi_predict_eq_cons4))) + (!!bp_med_col * bmi_predict_num10)) + (!!type1_col * bmi_predict_num11)) + (!!type2_col * bmi_predict_num12)) + bmi_predict_eq_cons5),
                                 !!bmi_col),
            
@@ -375,6 +375,15 @@ calculate_qdiabeteshf = function(dataframe, sex, age, ethrisk, town=NULL, smokin
   new_dataframe <- dataframe
   
   
+  # Add bp_med and type_2 cols for missing variables
+  new_dataframe <- dataframe %>%
+    mutate(new_bp_med_col = 0,
+           new_type2_col = ifelse(!!type1_col==0, 1, 0))
+  
+    bp_med_col <- as.symbol("new_bp_med_col")
+    type2_col <- as.symbol("new_type2_col")
+  
+  
   # If missing Townsend deprivation index, use '0' i.e. missing
   if (deparse(substitute(town)) %in% colnames(new_dataframe)) {
     new_dataframe <- new_dataframe %>% mutate(town_col = ifelse(is.na(!!town_col), 0, !!town_col))
@@ -418,6 +427,7 @@ calculate_qdiabeteshf = function(dataframe, sex, age, ethrisk, town=NULL, smokin
     
     impute_missing_predictors(sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, cholhdl_col, sbp_col, bmi_col)
   
+
   
   # Do calculation
   
@@ -431,15 +441,15 @@ calculate_qdiabeteshf = function(dataframe, sex, age, ethrisk, town=NULL, smokin
            
            sbp1 = new_sbp_col/100,
            sbp2 = ((sbp1 ^ sbp_cons1) - sbp_cons2) + (log(sbp1) * sbp_cons2) + sbp_cons5,
-           sbp3 = ((sbp1 ^ sbp_cons3) - sbp_cons4) + (log(sbp1) * sbp_cons4) + sbp+cons6,
+           sbp3 = ((sbp1 ^ sbp_cons3) - sbp_cons4) + (log(sbp1) * sbp_cons4) + sbp_cons6,
            
-           rati1 = new_cholhdl_col - rati_cons1,
+           rati1 = new_cholhdl_col + rati_cons1,
            
            hba1c1 = !!hba1c_col/100,
            hba1c2 = (hba1c1 ^ -2) + hba1c_cons1,
            hba1c3 = ((hba1c1 ^ -2) * log(hba1c1)) + hba1c_cons2,
            
-           age1 = !!age_col - age_cons1,
+           age1 = !!age_col + age_cons1,
            
            survarray_val = case_when(
              surv_col==0 ~ survarray1,
@@ -505,14 +515,14 @@ calculate_qdiabeteshf = function(dataframe, sex, age, ethrisk, town=NULL, smokin
              (!!af_col * af_cons) +
              (!!cvd_col * cvd_cons) +
              (!!renal_col * renal_cons) +
-             (!!type1_col * type1cons),
+             (!!type1_col * type1_cons),
            
            qdiabeteshf_score = 100.0 * (1.0 - (survarray_val^exp(a))))
   
   
   # Keep QRISK2 score and unique ID columns only%>%
   new_dataframe <- new_dataframe %>%
-    select(id_col, qdiabeteshf_score)
+    select(id_col, new_bmi_col, new_sbp_col, new_cholhdl_col, qdiabeteshf_score)
   
   # Join back on to original data table 
   dataframe <- dataframe %>%
