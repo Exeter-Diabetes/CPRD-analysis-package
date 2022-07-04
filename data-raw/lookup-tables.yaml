@@ -6,6 +6,7 @@ naming:
   biomarkerAcceptableUnits: r_biomarker_acceptable_units
   commonDose: r_common_dose
   consSource: r_cons_source
+  drugSubstanceClassLookup: r_drug_substance_class_lookup
   emisCodeCat: r_emis_code_cat
   jobCat: r_job_cat
   gender: r_gender
@@ -67,6 +68,7 @@ paths:
   biomarkerAcceptableUnits: "{refPath}/biomarker_acceptable_units.txt"
   commonDose: "{refPath}/common_dosages.txt"
   consSource: "{refPath}/ConsSource.txt"
+  drugSubstanceClassLookup: "{refPath}/drug_substance_class_lookup.txt"
   emisCodeCat: "{refPath}/EmisCodeCat.txt"
   jobCat: "{refPath}/JobCat.txt"
   gender: "{refPath}/Gender.txt"
@@ -257,6 +259,31 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (conssourceid, description);
+  drugSubstanceClassLookup:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{drugSubstanceClassLookup};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{drugSubstanceClassLookup}
+      (Acarbose BOOL,
+      DPP4 BOOL,
+      Glinide BOOL,
+      GLP1 BOOL,
+      MFN BOOL,
+      SGLT2 BOOL,
+      SU BOOL,
+      TZD BOOL,
+      INS BOOL,
+      drug_substance varchar(30),
+      PRIMARY KEY (drug_substance))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{drugSubstanceClassLookup}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (Acarbose, DPP4, Glinide, GLP1, MFN, SGLT2, SU, TZD, INS, drug_substance);
   emisCodeCat:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{emisCodeCat};
@@ -368,7 +395,8 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (prodcodeid, Acarbose, DPP4, Glinide, GLP1, MFN, SGLT2, SU, TZD, INS, drug_substance1, drug_substance2);
+      (prodcodeid, Acarbose, DPP4, Glinide, GLP1, MFN, SGLT2, SU, TZD, INS, drug_substance1, @drug_substance2)
+      SET drug_substance2=NULLIF(@drug_substance2,'');
   orgType:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{orgType};
