@@ -8,11 +8,12 @@
 
 library(tidyverse)
 # setwd("~/Git/aurum")
- setwd("C:/Users/ky279/OneDrive - University of Exeter/CPRD/Exeter_Diabetes_aurum_package")
+ setwd("C:/Users/pamzy/OneDrive - University of Exeter/CPRD/Exeter_Diabetes_aurum_package")
 # check for dependencies and install them if needed
 if (!"here" %in% rownames(installed.packages()))
   install.packages("here", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
 
+ 
 # define the path to the current file
 here::i_am("data-raw/cprd-config-setup.R")
 

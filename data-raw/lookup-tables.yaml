@@ -264,9 +264,9 @@ tables:
       DROP TABLE IF EXISTS {dataDb}.{drugSubstanceClassLookup};
     create: |
       CREATE TABLE IF NOT EXISTS {dataDb}.{drugSubstanceClassLookup}
-      (drug_substance varchar(30),
-      drug_class varchar(10),
-      PRIMARY KEY (drug_substance))
+      (drugsubstance varchar(30),
+      drugclass varchar(10),
+      PRIMARY KEY (drugsubstance))
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci;
     load: |
@@ -275,7 +275,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (drug_substance, drug_class);
+      (drugsubstance, drugclass);
   emisCodeCat:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{emisCodeCat};
