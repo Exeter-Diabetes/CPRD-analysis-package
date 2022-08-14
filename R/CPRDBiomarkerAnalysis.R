@@ -56,7 +56,7 @@ clean_biomarker_values = function(dataset,biomrkr) {
 #' @param sbp_col - column with systolic blood pressure in mmHg
 #' @param bmi_col - column with BMI in kg/m2
 
-impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, cholhdl_col, sbp_col, bmi_col) {
+impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, cvd_col, bp_med_col, cholhdl_col, sbp_col, bmi_col) {
   
   # Fetch constants from Aurum package
   male_missing_predictors <- cbind(sex="male",data.frame(unlist(lapply(aurum::qMissingPredictors$male, function(y) lapply(y, as.numeric)), recursive="FALSE")))
@@ -96,7 +96,7 @@ impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_co
              !!smoking_col==4 ~ bmi_predict_smokearray5
            ),
            new_bmi_col = ifelse(is.na(!!bmi_col), 
-                                (((((((((0.0 + bmi_ethriskarray_val) + bmi_smokearray_val) + ((age1 - bmi_predict_eq_cons1) * bmi_predict_eq_cons2)) + (((age1^2.0) - bmi_predict_eq_cons3) * bmi_predict_eq_cons4))) + (!!bp_med_col * bmi_predict_num10)) + (!!type1_col * bmi_predict_num11)) + (!!type2_col * bmi_predict_num12)) + bmi_predict_eq_cons5),
+                                bmi_ethriskarray_val + bmi_smokearray_val + ((age1 - bmi_predict_eq_cons1) * bmi_predict_eq_cons2) + (((age1^2.0) - bmi_predict_eq_cons3) * bmi_predict_eq_cons4) + (!!bp_med_col * bmi_predict_num10) + (!!type1_col * bmi_predict_num11) + (!!type2_col * bmi_predict_num12) + (!!cvd_col * bmi_predict_num13) + bmi_predict_eq_cons5),
                                 !!bmi_col),
            
            sbp_ethriskarray_val = case_when(
@@ -119,7 +119,7 @@ impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_co
              !!smoking_col==4 ~ sbp_predict_smokearray5
            ),
            new_sbp_col = ifelse(is.na(!!sbp_col),
-                                (((((((((0.0 + sbp_ethriskarray_val) + sbp_smokearray_val) + (((age1^3.0) - sbp_predict_eq_cons1) * sbp_predict_eq_cons2)) + ((((age1^3.0) * log(age1)) - sbp_predict_eq_cons3) * sbp_predict_eq_cons4))) + (!!bp_med_col * sbp_predict_num10)) + (!!type1_col * sbp_predict_num11)) + (!!type2_col * sbp_predict_num12)) + sbp_predict_eq_cons5),
+                                sbp_ethriskarray_val + sbp_smokearray_val + (((age1^3.0) - sbp_predict_eq_cons1) * sbp_predict_eq_cons2) + ((((age1^3.0) * log(age1)) - sbp_predict_eq_cons3) * sbp_predict_eq_cons4) + (!!bp_med_col * sbp_predict_num10) + (!!type1_col * sbp_predict_num11) + (!!type2_col * sbp_predict_num12) + (!!cvd_col * sbp_predict_num13) + sbp_predict_eq_cons5,
                                 !!sbp_col),
            
            ratio_ethriskarray_val = case_when(
@@ -142,7 +142,7 @@ impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_co
              !!smoking_col==4 ~ ratio_predict_smokearray5
            ),
            new_cholhdl_col = ifelse(is.na(!!cholhdl_col),
-                                    (((((((((0.0 + ratio_ethriskarray_val) + ratio_smokearray_val) + (((age1^ratio_predict_eq_cons1) - ratio_predict_eq_cons2) * ratio_predict_eq_cons3)) + ((((age1^ratio_predict_eq_cons4) * (log(age1) - log(age1^ratio_predict_eq_cons5) + ratio_predict_eq_cons5)) - ratio_predict_eq_cons6) * ratio_predict_eq_cons7))) + (!!bp_med_col * ratio_predict_num10)) + (!!type1_col * ratio_predict_num11)) + (!!type2_col * ratio_predict_num12)) + ratio_predict_eq_cons8),
+                                    ratio_ethriskarray_val + ratio_smokearray_val + (((age1^ratio_predict_eq_cons1) - ratio_predict_eq_cons2) * ratio_predict_eq_cons3) + ((((age1^ratio_predict_eq_cons4) * (log(age1) - log(age1^ratio_predict_eq_cons5) + ratio_predict_eq_cons5)) - ratio_predict_eq_cons6) * ratio_predict_eq_cons7) + (!!bp_med_col * ratio_predict_num10) + (!!type1_col * ratio_predict_num11) + (!!type2_col * ratio_predict_num12) + (!!cvd_col * ratio_predict_num13) + ratio_predict_eq_cons8),
                                     !!cholhdl_col))
            
   
@@ -201,6 +201,13 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   
   # Copy dataframe to new dataframe
   new_dataframe <- dataframe
+  
+  
+  # Add cvd col for missing variables
+  new_dataframe <- dataframe %>%
+    mutate(new_cvd_col = 0)
+  
+  cvd_col <- as.symbol("new_cvd_col")
   
   
   # If missing Townsend deprivation index, use '0' i.e. missing
@@ -467,7 +474,7 @@ calculate_qdiabeteshf = function(dataframe, sex, age, ethrisk, town=NULL, smokin
   
   new_dataframe <- new_dataframe %>%
     
-    impute_missing_predictors(sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, cholhdl_col, sbp_col, bmi_col)
+    impute_missing_predictors(sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, cvd_col, bp_med_col, cholhdl_col, sbp_col, bmi_col)
   
 
   

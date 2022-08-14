@@ -24,6 +24,7 @@ female:
   bmi_predict_num10: "1.9430209286180171"
   bmi_predict_num11: "1.5389895450065985"
   bmi_predict_num12: "3.0388348411614095"
+  bmi_predict_num13: "0.213"
   sbp_predict_ethriskarray:
   - "0.0"
   - "0.0"
@@ -49,6 +50,7 @@ female:
   sbp_predict_num10: "5.8044795979959956"
   sbp_predict_num11: "3.3164395675234255"
   sbp_predict_num12: "-0.18958421034329653"
+  sbp_predict_num13: "-3.1"
   ratio_predict_ethriskarray:
   - "0.0"
   - "0.0"
@@ -77,6 +79,7 @@ female:
   ratio_predict_num10: "0.027488223839621889"
   ratio_predict_num11: "-0.32080116840328615"
   ratio_predict_num12: "0.013298189635001999"
+  ratio_predict_num13: "-0.26"
 male:
   bmi_predict_ethriskarray:
   - "0.0"
@@ -103,6 +106,7 @@ male:
   bmi_predict_num10: "1.6737020218768797"
   bmi_predict_num11: "-0.044098732860948286"
   bmi_predict_num12: "2.2694506765685776"
+  bmi_predict_num13: "0.287"
   sbp_predict_ethriskarray:
   - "0.0"
   - "0.0"
@@ -128,6 +132,7 @@ male:
   sbp_predict_num10: "5.0805376278651329"
   sbp_predict_num11: "0.32345447407026284"
   sbp_predict_num12: "-0.83344551144075041"
+  sbp_predict_num13: "-4.6"
   ratio_predict_ethriskarray:
   - "0.0"
   - "0.0"
@@ -156,3 +161,4 @@ male:
   ratio_predict_num10: "-0.1095609032107525"
   ratio_predict_num11: "-0.84929955596452711"
   ratio_predict_num12: "-0.11795730465817204"
+  ratio_predict_num13: "-0.2335"
