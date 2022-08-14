@@ -96,7 +96,7 @@ impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_co
              !!smoking_col==4 ~ bmi_predict_smokearray5
            ),
            new_bmi_col = ifelse(is.na(!!bmi_col), 
-                                bmi_ethriskarray_val + bmi_smokearray_val + ((age1 - bmi_predict_eq_cons1) * bmi_predict_eq_cons2) + (((age1^2.0) - bmi_predict_eq_cons3) * bmi_predict_eq_cons4) + (!!bp_med_col * bmi_predict_num10) + (!!type1_col * bmi_predict_num11) + (!!type2_col * bmi_predict_num12) + (!!cvd_col * bmi_predict_num13) + bmi_predict_eq_cons5),
+                                bmi_ethriskarray_val + bmi_smokearray_val + ((age1 - bmi_predict_eq_cons1) * bmi_predict_eq_cons2) + (((age1^2.0) - bmi_predict_eq_cons3) * bmi_predict_eq_cons4) + (!!bp_med_col * bmi_predict_num10) + (!!type1_col * bmi_predict_num11) + (!!type2_col * bmi_predict_num12) + (!!cvd_col * bmi_predict_num13) + bmi_predict_eq_cons5,
                                 !!bmi_col),
            
            sbp_ethriskarray_val = case_when(
@@ -142,7 +142,7 @@ impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_co
              !!smoking_col==4 ~ ratio_predict_smokearray5
            ),
            new_cholhdl_col = ifelse(is.na(!!cholhdl_col),
-                                    ratio_ethriskarray_val + ratio_smokearray_val + (((age1^ratio_predict_eq_cons1) - ratio_predict_eq_cons2) * ratio_predict_eq_cons3) + ((((age1^ratio_predict_eq_cons4) * (log(age1) - log(age1^ratio_predict_eq_cons5) + ratio_predict_eq_cons5)) - ratio_predict_eq_cons6) * ratio_predict_eq_cons7) + (!!bp_med_col * ratio_predict_num10) + (!!type1_col * ratio_predict_num11) + (!!type2_col * ratio_predict_num12) + (!!cvd_col * ratio_predict_num13) + ratio_predict_eq_cons8),
+                                    ratio_ethriskarray_val + ratio_smokearray_val + (((age1^ratio_predict_eq_cons1) - ratio_predict_eq_cons2) * ratio_predict_eq_cons3) + ((((age1^ratio_predict_eq_cons4) * (log(age1) - log(age1^ratio_predict_eq_cons5) + ratio_predict_eq_cons5)) - ratio_predict_eq_cons6) * ratio_predict_eq_cons7) + (!!bp_med_col * ratio_predict_num10) + (!!type1_col * ratio_predict_num11) + (!!type2_col * ratio_predict_num12) + (!!cvd_col * ratio_predict_num13) + ratio_predict_eq_cons8,
                                     !!cholhdl_col))
            
   
