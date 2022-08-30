@@ -25,6 +25,8 @@ codeSetsSql = yaml::read_yaml(here::here("data-raw/codeset-tables.yaml"))
 qMissingPredictors = yaml::read_yaml(here::here("data-raw/q_missing_predictors.yaml"))
 qrisk2Constants = yaml::read_yaml(here::here("data-raw/qrisk2_constants.yaml"))
 qdiabeteshfConstants = yaml::read_yaml(here::here("data-raw/qdiabeteshf_constants.yaml"))
+biomarkerAcceptableLimits = yaml::read_yaml(here::here("data-raw/biomarker_acceptable_limits.yaml"))
+biomarkerAcceptableUnits = yaml::read_yaml(here::here("data-raw/biomarker_acceptable_units.yaml"))
 
 usethis::use_data(operationalSql,overwrite = TRUE)
 usethis::use_data(lookupSql,overwrite = TRUE)
@@ -34,6 +36,8 @@ usethis::use_data(codeSetsSql,overwrite = TRUE)
 usethis::use_data(qMissingPredictors,overwrite = TRUE)
 usethis::use_data(qrisk2Constants,overwrite = TRUE)
 usethis::use_data(qdiabeteshfConstants,overwrite = TRUE)
+usethis::use_data(biomarkerAcceptableLimits,overwrite = TRUE)
+usethis::use_data(biomarkerAcceptableUnits,overwrite = TRUE)
 
 # install this version of the setup.
 # devtools::install_local(here::here("."))
