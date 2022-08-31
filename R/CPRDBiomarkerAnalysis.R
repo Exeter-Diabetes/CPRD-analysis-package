@@ -29,8 +29,10 @@ clean_biomarker_units = function(dataset, numunitid_col, biomrkr) {
 #' @export
 
 clean_biomarker_values = function(dataset, biomrkr_col, biomrkr) {
+  
   lower_limit <- unlist(lapply(aurum::biomarkerAcceptableLimits[biomrkr], function(y) lapply(y, as.numeric)))[1]
   upper_limit <- unlist(lapply(aurum::biomarkerAcceptableLimits[biomrkr], function(y) lapply(y, as.numeric)))[2]
+  
   if (biomrkr=="hba1c") {
     message("clean_biomarker_values will remove HbA1c values which are not in mmol/mol")
   }
@@ -46,7 +48,7 @@ clean_biomarker_values = function(dataset, biomrkr_col, biomrkr) {
   
   return(
     dataset %>%
-      dplyr::filter(!!biomrkr_column>=lower_limit & !!biomrkr_column<=upper_limit)
+      dplyr::filter(!!biomrkr_column>=lower_limit & !!biomrkr_column<=upper_limit, copy=TRUE)
   )
 }
 
