@@ -2,7 +2,7 @@
 % Please edit documentation in R/CPRDBiomarkerAnalysis.R
 \name{impute_missing_predictors}
 \alias{impute_missing_predictors}
-\title{impute_missing_predictors}
+\title{Impute missing predictors for QRISK2 and QDiabetes-HF}
 \usage{
 impute_missing_predictors(
   new_dataframe,
@@ -12,6 +12,7 @@ impute_missing_predictors(
   smoking_col,
   type1_col,
   type2_col,
+  cvd_col,
   bp_med_col,
   cholhdl_col,
   sbp_col,

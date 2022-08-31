@@ -2,7 +2,7 @@
 % Please edit documentation in R/CPRDBiomarkerAnalysis.R
 \name{calculate_qdiabeteshf}
 \alias{calculate_qdiabeteshf}
-\title{calculate_qdiabeteshf}
+\title{Calculate QDiabetes-HF 2015}
 \usage{
 calculate_qdiabeteshf(
   dataframe,

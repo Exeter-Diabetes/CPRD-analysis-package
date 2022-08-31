@@ -2,7 +2,7 @@
 % Please edit documentation in R/CPRDBiomarkerAnalysis.R
 \name{calculate_qrisk2}
 \alias{calculate_qrisk2}
-\title{calculate_qrisk2}
+\title{Calculate QRISK2-2017}
 \usage{
 calculate_qrisk2(
   dataframe,
