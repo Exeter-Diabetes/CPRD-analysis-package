@@ -48,7 +48,7 @@ clean_biomarker_values = function(dataset, biomrkr_col, biomrkr) {
   
   return(
     dataset %>%
-      dplyr::filter(!!biomrkr_column>=lower_limit & !!biomrkr_column<=upper_limit, copy=TRUE)
+      dbplyr::filter(!!biomrkr_column>=lower_limit & !!biomrkr_column<=upper_limit, copy=TRUE)
   )
 }
 
