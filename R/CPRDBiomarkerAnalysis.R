@@ -15,7 +15,8 @@ clean_biomarker_units = function(dataset, numunitid_col, biomrkr) {
       dplyr::inner_join(
         unit_codes,
         by = setNames("numunitid", numunitid_column),
-        na_matches="na"
+        na_matches="na",
+        copy=TRUE
       ))
 }
 
