@@ -371,14 +371,14 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   
   # Keep QRISK2 score and unique ID columns only%>%
   new_dataframe <- new_dataframe %>%
-    select(id_col, qrisk2_score)
+    select(id_col, qrisk2_score, qrisk2_lin_predictor=d)
 
 # Join back on to original data table 
   dataframe <- dataframe %>%
     inner_join(new_dataframe, by="id_col") %>%
     select(-id_col)
   
-  message("New column 'qrisk2_score' added")
+  message("New columns 'qrisk2_score' and 'qrisk2_lin_predictor' added")
   
   return(dataframe)
   
@@ -582,14 +582,14 @@ calculate_qdiabeteshf = function(dataframe, sex, age, ethrisk, town=NULL, smokin
   
   # Keep QDiabetes-HF score and unique ID columns only%>%
   new_dataframe <- new_dataframe %>%
-    select(id_col, new_bmi_col, new_sbp_col, new_cholhdl_col, qdiabeteshf_score)
+    select(id_col, qdiabeteshf_score, qdiabeteshf_lin_predictor=a)
   
   # Join back on to original data table 
   dataframe <- dataframe %>%
     inner_join(new_dataframe, by="id_col") %>%
     select(-id_col)
   
-  message("New column 'qdiabeteshf_score' added")
+  message("New columns 'qdiabeteshf_score' and 'qdiabeteshf_lin_predictor' added")
   
   return(dataframe)
   
