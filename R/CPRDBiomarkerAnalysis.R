@@ -292,9 +292,9 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   
   new_dataframe <- new_dataframe %>%
     
-    impute_missing_predictors(sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, bp_med_col, cholhdl_col, sbp_col, bmi_col)
-  
-  
+    impute_missing_predictors(sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, cvd_col, bp_med_col, cholhdl_col, sbp_col, bmi_col)
+
+   
   # Do calculation
     
   new_dataframe <- new_dataframe %>%
@@ -399,11 +399,11 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
            qrisk2_score = 100.0 * (1.0 - (survarray_val^exp(d))))
   
   
-  # Keep QRISK2 score and unique ID columns only%>%
+  # Keep QRISK2 score and unique ID columns only
   new_dataframe <- new_dataframe %>%
     select(id_col, qrisk2_score, qrisk2_lin_predictor=d)
 
-# Join back on to original data table 
+  # Join back on to original data table 
   dataframe <- dataframe %>%
     inner_join(new_dataframe, by="id_col") %>%
     select(-id_col)
@@ -412,6 +412,7 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   
   return(dataframe)
   
+
 }
 
 
