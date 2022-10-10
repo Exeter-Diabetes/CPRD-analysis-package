@@ -14,9 +14,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Notes
+
+Server names and addresses (<dbservername>, <dbserver>, <jumphost>) have been redacted for security reasons - ask KGY or look at private Github repo https://github.com/drkgyoung/CPRD_Aurum/R package archive and scripts/vignettes/getting-started.Rmd for details
+
+
 # Configuration and environments
 
-Configuration is stored in a private file in the users account on slade - which by default is named `~/.aurum.yaml`. 
+Configuration is stored in a private file in the users account on <dbservername> - which by default is named `~/.aurum.yaml`. 
 
 The aurum database is connected to via the mysql driver which needs a bit of configuration, in terms of username, password and server. 
 The config file also defines the possible CPRD environments you will be using, e.g. `analysis` or `test-analysis`. 
@@ -53,7 +58,7 @@ In this example both are defined and can be selected when the connection to CPRD
 
 ### Different connections
 
-The example above assumes all R analysis is running on Slade, as well as any database queries the R analysis entails. This may or may not be desirable, depending on what your connection to Slade is like.
+The example above assumes all R analysis is running on <dbservername>, as well as any database queries the R analysis entails. This may or may not be desirable, depending on what your connection to <dbservername> is like.
 Over a lower bandwidth connection, e.g. for remotely testing the analysis over an SSH tunnel you can combine this `~/.aurum.yaml` config
 
 ```YAML
@@ -68,11 +73,11 @@ with this SSH configuration (`~/.ssh/config`)
 
 ```console
 host hashbang
-    HostName 144.173.6.146
+    HostName <jumphost>
     User <your exeter username>
 
-host slade
-    HostName slade.ex.ac.uk
+host <dbservername>
+    HostName <dbserver>
     User <your exeter username>
     Cipher chacha20-poly1305@openssh.com
     ForwardX11 yes
@@ -87,7 +92,7 @@ If you are using VPN it should be possible to do the same thing with:
 test-vpn:
   dataDatabase: cprd_data
   analysisDatabase: cprd_analysis_dev
-  server: slade.ex.ac.uk
+  server: <dbserver>
   port: 3306
 ```
 

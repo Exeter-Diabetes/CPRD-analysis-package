@@ -58,7 +58,7 @@ test-remote:
 test-vpn:
   dataDatabase: cprd_data
   analysisDatabase: cprd_analysis_dev
-  server: slade.ex.ac.uk
+  server: <dbserver>
   port: 3306
 ```
 

@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Exeter\_Diabetes\_aurum\_package
+# Exeter_Diabetes_aurum_package
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -31,8 +31,8 @@ and data-raw/lookup-tables.yaml.
 As per vignettes/getting-started.Rmd, users must make a configuration
 text file containing username, password and server details to connect to
 the MySQL server. The example below will use CPRD Aurum data in a MySQL
-database called ‘cprd\_data’ and store outputs in a database called
-‘cprd\_analysis\_dev’.
+database called ‘cprd_data’ and store outputs in a database called
+‘cprd_analysis_dev’.
 
 ``` yaml
 default:
@@ -54,7 +54,7 @@ test-remote:
 test-vpn:
   dataDatabase: cprd_data
   analysisDatabase: cprd_analysis_dev
-  server: slade.ex.ac.uk
+  server: <dbserver>
   port: 3306
 ```
 
@@ -77,7 +77,7 @@ Codelists (e.g. of medcodeids or prodcodeids) for use with CPRD Aurum
 can be added and deleted from MySQL as outlined in
 vignettes/loading-and-using-codesets.Rmd. Codelists developed by the
 Exeter Diabetes team can be found at
-[Exeter\_Diabetes\_codelists](https://github.com/drkgyoung/Exeter_Diabetes_codelists).
+[Exeter_Diabetes_codelists](https://github.com/drkgyoung/Exeter_Diabetes_codelists).
 
 ### Analysis functions
 
