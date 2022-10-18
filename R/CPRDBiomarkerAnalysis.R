@@ -33,6 +33,12 @@ clean_biomarker_values = function(dataset, biomrkr_col, biomrkr) {
   lower_limit <- unname(unlist(lapply(aurum::biomarkerAcceptableLimits[biomrkr], function(y) lapply(y, as.numeric)))[1])
   upper_limit <- unname(unlist(lapply(aurum::biomarkerAcceptableLimits[biomrkr], function(y) lapply(y, as.numeric)))[2])
   
+  if (biomrkr=="haematocrit") {
+    message("clean_biomarker_values will remove haematocrit values which are not in proportion out of 1")
+  }
+  if (biomrkr=="haemoglobin") {
+    message("clean_biomarker_values will remove haemoglobin values which are not in g/L")
+  }
   if (biomrkr=="hba1c") {
     message("clean_biomarker_values will remove HbA1c values which are not in mmol/mol")
   }

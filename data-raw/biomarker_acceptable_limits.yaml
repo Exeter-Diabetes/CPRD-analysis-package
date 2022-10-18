@@ -4,13 +4,19 @@ acr:
 alt:
   lower: "0"
   upper: "200"
+albumin_blood:
+  lower: "10"
+  upper: "60"
 ast:
   lower: "0"
   upper: "300"
+bilirubin:
+  lower: "1"
+  upper: "250"
 bmi:
   lower: "15"
   upper: "100"
-creatinine:
+creatinine_blood:
   lower: "20"
   upper: "2500"
 dbp:
@@ -19,6 +25,13 @@ dbp:
 fastingglucose:
   lower: "2.5"
   upper: "30"
+haematocrit:
+  lower: "0.2"
+  upper: "0.6"
+  
+haemoglobin:
+  lower: "30"
+  upper: "250"
 hba1c:
   lower: "20"
   upper: "195"
