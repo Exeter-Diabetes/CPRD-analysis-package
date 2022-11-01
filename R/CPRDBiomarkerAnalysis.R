@@ -116,7 +116,7 @@ impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_co
   ## copy=TRUE as need to copy constants to MySQL from package
   new_dataframe <- new_dataframe %>%
     inner_join(missingPredictors, by=setNames("sex", deparse(sex_col)), copy=TRUE)
-
+  
   
   # Calculate missing values
   new_dataframe <- new_dataframe %>%
@@ -142,9 +142,10 @@ impute_missing_predictors = function(new_dataframe, sex_col, age_col, ethrisk_co
              !!smoking_col==3 ~ bmi_predict_smokearray4,
              !!smoking_col==4 ~ bmi_predict_smokearray5
            ),
-           new_bmi_col = ifelse(is.na(!!bmi_col), 
-                                bmi_ethriskarray_val + bmi_smokearray_val + ((age1 - bmi_predict_eq_cons1) * bmi_predict_eq_cons2) + (((age1^2.0) - bmi_predict_eq_cons3) * bmi_predict_eq_cons4) + (!!bp_med_col * bmi_predict_num10) + (!!type1_col * bmi_predict_num11) + (!!type2_col * bmi_predict_num12) + (!!cvd_col * bmi_predict_num13) + bmi_predict_eq_cons5,
-                                !!bmi_col),
+           
+            new_bmi_col = ifelse(is.na(!!bmi_col), 
+                                 bmi_ethriskarray_val + bmi_smokearray_val + ((age1 - bmi_predict_eq_cons1) * bmi_predict_eq_cons2) + (((age1^2.0) - bmi_predict_eq_cons3) * bmi_predict_eq_cons4) + (!!bp_med_col * bmi_predict_num10) + (!!type1_col * bmi_predict_num11) + (!!type2_col * bmi_predict_num12) + (!!cvd_col * bmi_predict_num13) + bmi_predict_eq_cons5,
+                                 !!bmi_col),
            
            sbp_ethriskarray_val = case_when(
              !!ethrisk_col==0 ~ sbp_predict_ethriskarray1,
@@ -299,7 +300,7 @@ calculate_qrisk2 = function(dataframe, sex, age, ethrisk, town=NULL, smoking, ty
   new_dataframe <- new_dataframe %>%
     
     impute_missing_predictors(sex_col, age_col, ethrisk_col, smoking_col, type1_col, type2_col, cvd_col, bp_med_col, cholhdl_col, sbp_col, bmi_col)
-
+  
    
   # Do calculation
     
