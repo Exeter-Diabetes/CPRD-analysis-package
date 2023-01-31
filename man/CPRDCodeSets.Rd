@@ -47,14 +47,14 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="appendDf"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-appendDf'><code>aurum::AbstractCPRDConnection$appendDf()</code></a></li>
-<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="conv"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-conv'><code>aurum::AbstractCPRDConnection$conv()</code></a></li>
-<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="enableAdmin"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-enableAdmin'><code>aurum::AbstractCPRDConnection$enableAdmin()</code></a></li>
-<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="execSql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-execSql'><code>aurum::AbstractCPRDConnection$execSql()</code></a></li>
-<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="fetchSql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-fetchSql'><code>aurum::AbstractCPRDConnection$fetchSql()</code></a></li>
-<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="lazySql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-lazySql'><code>aurum::AbstractCPRDConnection$lazySql()</code></a></li>
-<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="namingConventions"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-namingConventions'><code>aurum::AbstractCPRDConnection$namingConventions()</code></a></li>
-<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="tableExists"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-tableExists'><code>aurum::AbstractCPRDConnection$tableExists()</code></a></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="appendDf"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-appendDf'><code>aurum::AbstractCPRDConnection$appendDf()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="conv"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-conv'><code>aurum::AbstractCPRDConnection$conv()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="enableAdmin"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-enableAdmin'><code>aurum::AbstractCPRDConnection$enableAdmin()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="execSql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-execSql'><code>aurum::AbstractCPRDConnection$execSql()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="fetchSql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-fetchSql'><code>aurum::AbstractCPRDConnection$fetchSql()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="lazySql"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-lazySql'><code>aurum::AbstractCPRDConnection$lazySql()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="namingConventions"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-namingConventions'><code>aurum::AbstractCPRDConnection$namingConventions()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="aurum" data-topic="AbstractCPRDConnection" data-id="tableExists"><a href='../../aurum/html/AbstractCPRDConnection.html#method-AbstractCPRDConnection-tableExists'><code>aurum::AbstractCPRDConnection$tableExists()</code></a></span></li>
 </ul>
 </details>
 }}
