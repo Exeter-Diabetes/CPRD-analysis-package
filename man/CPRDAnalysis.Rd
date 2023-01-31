@@ -38,8 +38,6 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \item \href{#method-CPRDAnalysis-lazySql}{\code{CPRDAnalysis$lazySql()}}
 \item \href{#method-CPRDAnalysis-delete}{\code{CPRDAnalysis$delete()}}
 \item \href{#method-CPRDAnalysis-cached}{\code{CPRDAnalysis$cached()}}
-\item \href{#method-CPRDAnalysis-clean_biomarker_units}{\code{CPRDAnalysis$clean_biomarker_units()}}
-\item \href{#method-CPRDAnalysis-clean_biomarker_values}{\code{CPRDAnalysis$clean_biomarker_values()}}
 \item \href{#method-CPRDAnalysis-print}{\code{CPRDAnalysis$print()}}
 \item \href{#method-CPRDAnalysis-clone}{\code{CPRDAnalysis$clone()}}
 }
@@ -182,44 +180,6 @@ compute a query or retrieve a precomputed query
 \item{\code{name}}{- the analysis local identifier}
 
 \item{\code{recompute}}{- force re-computation of the query}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-CPRDAnalysis-clean_biomarker_units"></a>}}
-\if{latex}{\out{\hypertarget{method-CPRDAnalysis-clean_biomarker_units}{}}}
-\subsection{Method \code{clean_biomarker_units()}}{
-only keep measurements with 'acceptable' unit codes (numunitid) for specified biomarker
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$clean_biomarker_units(dataset, biomrkr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dataset}}{- dataset containing biomarker observations}
-
-\item{\code{biomrkr}}{- name of biomarker to clean (acr/alt/ast/bmi/creatinine/dbp/fastingglucose/hba1c/hdl/height/ldl/pcr/sbp/totalcholesterol/triglyceride/weight)}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-CPRDAnalysis-clean_biomarker_values"></a>}}
-\if{latex}{\out{\hypertarget{method-CPRDAnalysis-clean_biomarker_values}{}}}
-\subsection{Method \code{clean_biomarker_values()}}{
-only keep measurements within acceptable limits for specified biomarker
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CPRDAnalysis$clean_biomarker_values(dataset, biomrkr)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dataset}}{- dataset containing biomarker observations}
-
-\item{\code{biomrkr}}{- name of biomarker to clean (acr/alt/ast/bmi/creatinine/dbp/fastingglucose/hba1c/hdl/height/ldl/pcr/sbp/totalcholesterol/triglyceride/weight)}
 }
 \if{html}{\out{</div>}}
 }
