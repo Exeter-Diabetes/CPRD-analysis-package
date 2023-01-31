@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Exeter_Diabetes_aurum_package
+# CPRD-analysis-package
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -13,12 +13,12 @@ run/stored on the remote server.
 
 ## Installation
 
-You can install the `CPRD-analysis-package` from
+You can install the `Exeter_Diabetes_aurum_package` from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("Exeter-Diabetes/CPRD-analysis-package")
+devtools::install_github("drkgyoung/Exeter_diabetes_aurum_package")
 ```
 
 ## Configuration
@@ -77,11 +77,10 @@ Codelists (e.g. of medcodeids or prodcodeids) for use with CPRD Aurum
 can be added and deleted from MySQL as outlined in
 vignettes/loading-and-using-codesets.Rmd. Codelists developed by the
 Exeter Diabetes team can be found at
-[Exeter_Diabetes_codelists](https://github.com/drkgyoung/Exeter_Diabetes_codelists).
+[CPRD-Codelists](https://github.com/Exeter-Diabetes/CPRD-Codelists).
 
 ### Analysis functions
 
 Analysis functions e.g. computing and caching results are stored in
 CPRDAnalysis.R and explained in vignettes/setting-up-an-analysis.Rmd.
 These can only be executed when connected to a MySQL server.
-
