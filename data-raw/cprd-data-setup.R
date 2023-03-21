@@ -34,6 +34,8 @@ if (!"here" %in% rownames(installed.packages()))
   install.packages("here", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
 if (!"openssl" %in% rownames(installed.packages()))
   install.packages("openssl", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
+if (!"archive" %in% rownames(installed.packages()))
+  install.packages("archive", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
 
 # define the path to the current file
 here::i_am("data-raw/cprd-data-setup.R")
@@ -68,6 +70,7 @@ for(tbl in names(operationalSql$tables)) {
   if(
     !is.null(operationalSql$tables[[tbl]][["create"]])
   ) {
+    # check table already exists
     if(!operationalSql$naming[tbl] %in% tables) {
       result = operationalSql %>% execSql(tbl,"create")
       message("creating ",tbl)
