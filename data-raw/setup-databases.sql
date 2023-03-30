@@ -11,16 +11,17 @@ CREATE SCHEMA IF NOT EXISTS `full_cprd_analysis_dev` DEFAULT CHARACTER SET latin
 CREATE SCHEMA IF NOT EXISTS `full_cprd_analysis` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
 
 # Create the roles:
-# 1) Loader role 
+# 1) Loader role
 # ideally this should only exist on localhost to stop people from trying to load data remotely
 # but it will fail for other reasons if it can't find the data.
 CREATE ROLE IF NOT EXISTS `role_cprd_loader`;
-# Loads data from CSV files held locally on slade. 
+# Loads data from CSV files held locally on slade.
 GRANT ALL privileges ON `full_cprd_data_dev`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `full_cprd_data`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `full_cprd_analysis_dev`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `full_cprd_analysis`.* TO `role_cprd_loader`@`%`;
-# Loads data from CSV files held locally on slade. 
+GRANT FILE ON *.* TO `role_cprd_loader`@`%;
+# Loads data from CSV files held locally on slade.
 GRANT ALL privileges ON `cprd_data_dev`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `cprd_data`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `cprd_analysis_dev`.* TO `role_cprd_loader`@`%`;
@@ -39,7 +40,7 @@ GRANT ALL privileges ON `full_cprd_analysis`.* TO `role_cprd_admin`@`%`;
 # GRANT ALL privileges ON `cprd_analysis_dev` TO `role_cprd_admin`@`%`;
 # GRANT ALL privileges ON `cprd_analysis` TO `role_cprd_admin`@`%`;
 
-# 3) Reader role 
+# 3) Reader role
 CREATE ROLE IF NOT EXISTS `role_cprd_read`;
 # creates specific queries for an analysis using existing code sets.
 # Can create interim tables in the dev analysis database

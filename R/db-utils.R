@@ -15,7 +15,12 @@ execSql = function(sqlTemplates, tableName, cmd, params=sqlTemplates$naming, ver
   }
   sql = glue::glue_data(params, sqlTemplate,.envir = env)
   if(debug) message("sql: ",sql)
-  tmp = DBI::dbSendStatement(con,sql)
+  tmp = tryCatch(
+    DBI::dbSendStatement(con,sql),
+    error = function(e) {
+      message("sql: ",sql)
+      stop(e$message)
+    })
   return(tmp)
 }
 
@@ -55,9 +60,11 @@ logOutcome = function(result, sourcepath, hash, filedate, tablename) {
   success = DBI::dbQuoteLiteral(DBI::ANSI(), DBI::dbHasCompleted(result))
   rowsloaded = DBI::dbQuoteLiteral(DBI::ANSI(), DBI::dbGetRowsAffected(result))
   sourcepath = DBI::dbQuoteString(DBI::ANSI(), sourcepath)
+  tablename = DBI::dbQuoteString(DBI::ANSI(), tablename)
   hash = DBI::dbQuoteString(DBI::ANSI(), hash)
   DBI::dbClearResult(result)
-  operationalSql %>% execSql("loadLog","insert") %>% DBI::dbClearResult()
+  tmp = operationalSql %>% execSql("loadLog","insert")
+  tmp %>% DBI::dbClearResult()
 }
 
 dbQuoteDate = function(date) {

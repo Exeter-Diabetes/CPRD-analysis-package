@@ -252,7 +252,7 @@ tables:
       CREATE TABLE IF NOT EXISTS {dataDb}.{staff}
       (staffid BIGINT NOT NULL,
       pracid MEDIUMINT,
-      jobcatid MEDIUMINT,
+      jobid MEDIUMINT,
       PRIMARY KEY (staffid))
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
@@ -269,8 +269,7 @@ tables:
       DROP TABLE IF EXISTS {dataDb}.{patidsWithLinkage}
     create: |
       CREATE TABLE IF NOT EXISTS {dataDb}.{patidsWithLinkage}
-      (patid BIGINT UNSIGNED NOT NULL,
-      PRIMARY KEY (patid))
+      (patid BIGINT UNSIGNED NOT NULL)
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
@@ -478,8 +477,7 @@ tables:
       gen_hesid BIGINT UNSIGNED,
       n_patid_hes SMALLINT,
       gen_ethnicity TINYINT,
-      match_rank TINYINT,
-      PRIMARY KEY (patid))
+      match_rank TINYINT)
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -948,7 +946,6 @@ tables:
       specimen_date = STR_TO_DATE(@specimen_date,'%d/%m/%Y'),
       care_home = IF(@care_home='FALSE',0,IF(@care_home='TRUE',1,IF(@care_home='',NULL,@care_home)))
 indexes:
-  # Primary care data
   # patid
   - CREATE INDEX x_{consultation}_patid ON {dataDb}.{consultation} (patid);
   - CREATE INDEX x_{drugIssue}_patid ON {dataDb}.{drugIssue} (patid);
@@ -979,7 +976,7 @@ indexes:
   - CREATE INDEX x_{patient}_regenddate ON {dataDb}.{patient} (regenddate);
   - CREATE INDEX x_{patient}_regstartdate ON {dataDb}.{patient} (regstartdate);
   - CREATE INDEX x_{problem}_probenddate ON {dataDb}.{problem} (probenddate);
-  - CREATE INDEX x_{staff}_lcd ON {dataDb}.{staff} (lcd);
+  # - CREATE INDEX x_{staff}_lcd ON {dataDb}.{staff} (lcd);
   # medCodes / prodCodes and associated
   - CREATE INDEX x_{consultation}_consmedcodeid ON {dataDb}.{consultation} (consmedcodeid);
   - CREATE INDEX x_{drugIssue}_prodcodeid ON {dataDb}.{drugIssue} (prodcodeid);
@@ -1015,7 +1012,7 @@ indexes:
   - CREATE INDEX x_{chess}_pracid ON {dataDb}.{chess} (pracid);
   - CREATE INDEX x_{chess}_n_chess_patid ON {dataDb}.{chess} (n_chess_patid);
   - CREATE INDEX x_{chess}_trustid ON {dataDb}.{chess} (trustid);
-  - CREATE INDEX x_{chess}_weekofadmission,yearofadmission ON {dataDb}.{chess} (weekofadmission,yearofadmission);
+  - CREATE INDEX x_{chess}_weekofadmission_yearofadmission ON {dataDb}.{chess} (weekofadmission,yearofadmission);
   - CREATE INDEX x_{chess}_estimateddateonset ON {dataDb}.{chess} (estimateddateonset);
   - CREATE INDEX x_{chess}_infectionswabdate ON {dataDb}.{chess} (infectionswabdate);
   - CREATE INDEX x_{chess}_labtestdate ON {dataDb}.{chess} (labtestdate);

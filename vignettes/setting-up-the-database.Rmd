@@ -32,14 +32,13 @@ default:
     - /slade/DBs/mysql-files/CPRD/master_females
   sessionConfig:
     SESSION sort_buffer_size: 2*1024*1024-1
-    SESSION myisam_sort_buffer_size: 2*1024*1024-1
     SESSION read_buffer_size: 1024*1024*1024-1
     SESSION read_rnd_buffer_size: 1024*1024*1024-1
     SESSION join_buffer_size: 256*1024*1024-1
     SESSION max_heap_table_size: 4*1024*1024*1024-1
     SESSION tmp_table_size: 4*1024*1024*1024-1
     SESSION myisam_sort_buffer_size: 32*1024*1024*1024-1
-    SESSION myisam-repair-threads: 4
+    SESSION myisam_repair_-_threads: 4
 
 dev:
   dataDatabase: cprd_data_dev
@@ -55,6 +54,8 @@ prod:
 ```
 
 Loading must be done locally on the database server (in our case Slade)
+
+For loading Slade needs a set of modules enabled:
 
 The load scripts are designed to be interruptible and non destructive, however this has not been extensively tested. 
 It should also not repeat actions that it has already taken unless the source datafiles have changed. 
@@ -81,7 +82,8 @@ cd Git/aurum/data-raw/
 N.b. in reality for production you are going to want to combine this with something that lets to disconnect from Slade without terminating the script, e.g. `nohup`:
 
 ```console
-cd Git/aurum/data-raw/
+cd ~/Git/CPRD-analysis-package/data-raw/
+chmod a+x cprd-data-setup.R
 nohup ./cprd-data-setup.R prod & > ~/loadProgress.txt
 ```
 
