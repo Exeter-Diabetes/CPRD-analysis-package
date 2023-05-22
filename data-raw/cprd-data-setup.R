@@ -83,12 +83,12 @@ DBI::dbSendStatement(con,"SET ROLE 'role_cprd_loader'") %>% DBI::dbClearResult()
 
 dataDb = cfg$dataDatabase
 
-sessionConfig = cfg$sessionConfig
-for (name in names(sessionConfig)) {
-  value=sessionConfig[[name]]
-  message("setting option... ",name,": ",value)
-  DBI::dbSendStatement(con,glue::glue("SET {name}={value};", name=name, value=value)) %>% DBI::dbClearResult()
-}
+# sessionConfig = cfg$sessionConfig
+# for (name in names(sessionConfig)) {
+#  value=sessionConfig[[name]]
+#  message("setting option... ",name,": ",value)
+#  DBI::dbSendStatement(con,glue::glue("SET {name}={value};", name=name, value=value)) %>% DBI::dbClearResult()
+#}
 
 ## Setup operation tables including log table ----
 

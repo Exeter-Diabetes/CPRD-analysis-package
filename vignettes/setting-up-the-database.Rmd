@@ -84,7 +84,7 @@ N.b. in reality for production you are going to want to combine this with someth
 ```console
 cd ~/Git/CPRD-analysis-package/data-raw/
 chmod a+x cprd-data-setup.R
-nohup ./cprd-data-setup.R prod & > ~/loadProgress.txt
+nohup ./cprd-data-setup.R prod > ~/loadProgress.txt &
 ```
 
 If the indexing needs to be done separately the following script can be used. This is unlikely to be needed, as the load script should do all of this.
@@ -92,7 +92,7 @@ As with the main load script this should be interruptible and resumable, but thi
 
 ```console
 cd Git/aurum/data-raw/
-nohup ./cprd-index-setup.R dev & > ~/indexProgress.txt
+nohup ./cprd-index-setup.R dev > ~/indexProgress.txt &
 ```
 
 ## Issues

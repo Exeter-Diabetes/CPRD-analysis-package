@@ -252,7 +252,7 @@ tables:
       CREATE TABLE IF NOT EXISTS {dataDb}.{staff}
       (staffid BIGINT NOT NULL,
       pracid MEDIUMINT,
-      jobid MEDIUMINT,
+      jobcatid MEDIUMINT,
       PRIMARY KEY (staffid))
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
@@ -946,18 +946,37 @@ tables:
       specimen_date = STR_TO_DATE(@specimen_date,'%d/%m/%Y'),
       care_home = IF(@care_home='FALSE',0,IF(@care_home='TRUE',1,IF(@care_home='',NULL,@care_home)))
 indexes:
+  # Primary care data
+  # These indexes are creates in order so most important ones are done first
   # patid
   - CREATE INDEX x_{consultation}_patid ON {dataDb}.{consultation} (patid);
   - CREATE INDEX x_{drugIssue}_patid ON {dataDb}.{drugIssue} (patid);
   - CREATE INDEX x_{observation}_patid ON {dataDb}.{observation} (patid);
   - CREATE INDEX x_{problem}_patid ON {dataDb}.{problem} (patid);
   - CREATE INDEX x_{referral}_patid ON {dataDb}.{referral} (patid);
-  # obsid / problemid
-  - CREATE INDEX x_{referral}_obsid ON {dataDb}.{referral} (obsid);
-  - CREATE INDEX x_{observation}_parentobsid ON {dataDb}.{observation} (parentsobsid);
-  - CREATE INDEX x_{problem}_parentprobobsid ON {dataDb}.{problem} (parentprobobsid);
-  - CREATE INDEX x_{drugIssue}_probobsid ON {dataDb}.{drugIssue} (probobsid);
-  - CREATE INDEX x_{observation}_probobsid ON {dataDb}.{observation} (probobsid);
+  # core medCodes / prodCodes and associated
+  - CREATE INDEX x_{drugIssue}_prodcodeid ON {dataDb}.{drugIssue} (prodcodeid);
+  - CREATE INDEX x_{observation}_medcodeid ON {dataDb}.{observation} (medcodeid);
+  # core dates
+  - CREATE INDEX x_{consultation}_consdate ON {dataDb}.{consultation} (consdate);
+  - CREATE INDEX x_{drugIssue}_issuedate ON {dataDb}.{drugIssue} (issuedate);
+  - CREATE INDEX x_{observation}_obsdate ON {dataDb}.{observation} (obsdate);
+  - CREATE INDEX x_{patient}_dob ON {dataDb}.{patient} (yob,mob);
+  # non core medcodes
+  - CREATE INDEX x_{consultation}_consmedcodeid ON {dataDb}.{consultation} (consmedcodeid);
+  - CREATE INDEX x_{drugIssue}_dosageid ON {dataDb}.{drugIssue} (dosageid);
+  - CREATE INDEX x_{drugIssue}_quantunitid ON {dataDb}.{drugIssue} (quantunitid);
+  - CREATE INDEX x_{observation}_numunitid ON {dataDb}.{observation} (numunitid);
+  - CREATE INDEX x_{patient}_patienttypeid ON {dataDb}.{patient} (patienttypeid);
+  - CREATE INDEX x_{problem}_probstatusid ON {dataDb}.{problem} (probstatusid);
+  - CREATE INDEX x_{referral}_refservicetypeid ON {dataDb}.{referral} (refservicetypeid);
+  # non core dates
+  - CREATE INDEX x_{patient}_cprd_ddate ON {dataDb}.{patient} (cprd_ddate);
+  - CREATE INDEX x_{patient}_emis_ddate ON {dataDb}.{patient} (emis_ddate);
+  - CREATE INDEX x_{patient}_regenddate ON {dataDb}.{patient} (regenddate);
+  - CREATE INDEX x_{patient}_regstartdate ON {dataDb}.{patient} (regstartdate);
+  - CREATE INDEX x_{problem}_probenddate ON {dataDb}.{problem} (probenddate);
+  - CREATE INDEX x_{staff}_lcd ON {dataDb}.{staff} (lcd);
   # pracid
   - CREATE INDEX x_{consultation}_pracid ON {dataDb}.{consultation} (pracid);
   - CREATE INDEX x_{drugIssue}_pracid ON {dataDb}.{drugIssue} (pracid);
@@ -966,33 +985,18 @@ indexes:
   - CREATE INDEX x_{problem}_pracid ON {dataDb}.{problem} (pracid);
   - CREATE INDEX x_{referral}_pracid ON {dataDb}.{referral} (pracid);
   - CREATE INDEX x_{staff}_pracid ON {dataDb}.{staff} (pracid);
-  # dates
-  - CREATE INDEX x_{consultation}_consdate ON {dataDb}.{consultation} (consdate);
-  - CREATE INDEX x_{drugIssue}_issuedate ON {dataDb}.{drugIssue} (issuedate);
-  - CREATE INDEX x_{observation}_obsdate ON {dataDb}.{observation} (obsdate);
-  - CREATE INDEX x_{patient}_dob ON {dataDb}.{patient} (yob,mob);
-  - CREATE INDEX x_{patient}_cprd_ddate ON {dataDb}.{patient} (cprd_ddate);
-  - CREATE INDEX x_{patient}_emis_ddate ON {dataDb}.{patient} (emis_ddate);
-  - CREATE INDEX x_{patient}_regenddate ON {dataDb}.{patient} (regenddate);
-  - CREATE INDEX x_{patient}_regstartdate ON {dataDb}.{patient} (regstartdate);
-  - CREATE INDEX x_{problem}_probenddate ON {dataDb}.{problem} (probenddate);
-  # - CREATE INDEX x_{staff}_lcd ON {dataDb}.{staff} (lcd);
-  # medCodes / prodCodes and associated
-  - CREATE INDEX x_{consultation}_consmedcodeid ON {dataDb}.{consultation} (consmedcodeid);
-  - CREATE INDEX x_{drugIssue}_prodcodeid ON {dataDb}.{drugIssue} (prodcodeid);
-  - CREATE INDEX x_{drugIssue}_dosageid ON {dataDb}.{drugIssue} (dosageid);
-  - CREATE INDEX x_{drugIssue}_quantunitid ON {dataDb}.{drugIssue} (quantunitid);
-  - CREATE INDEX x_{observation}_medcodeid ON {dataDb}.{observation} (medcodeid);
-  - CREATE INDEX x_{observation}_numunitid ON {dataDb}.{observation} (numunitid);
-  - CREATE INDEX x_{patient}_patienttypeid ON {dataDb}.{patient} (patienttypeid);
-  - CREATE INDEX x_{problem}_probstatusid ON {dataDb}.{problem} (probstatusid);
-  - CREATE INDEX x_{referral}_refservicetypeid ON {dataDb}.{referral} (refservicetypeid);
   # staffid
   - CREATE INDEX x_{consultation}_staffid ON {dataDb}.{consultation} (staffid);
   - CREATE INDEX x_{drugIssue}_staffid ON {dataDb}.{drugIssue} (staffid);
   - CREATE INDEX x_{observation}_staffid ON {dataDb}.{observation} (staffid);
   - CREATE INDEX x_{patient}_usualgpstaffid ON {dataDb}.{patient} (usualgpstaffid);
   - CREATE INDEX x_{problem}_lastrevstaffid ON {dataDb}.{problem} (lastrevstaffid);
+  # obsid / problemid
+  - CREATE INDEX x_{referral}_obsid ON {dataDb}.{referral} (obsid);
+  - CREATE INDEX x_{observation}_parentobsid ON {dataDb}.{observation} (parentsobsid);
+  - CREATE INDEX x_{problem}_parentprobobsid ON {dataDb}.{problem} (parentprobobsid);
+  - CREATE INDEX x_{drugIssue}_probobsid ON {dataDb}.{drugIssue} (probobsid);
+  - CREATE INDEX x_{observation}_probobsid ON {dataDb}.{observation} (probobsid);
   # other fields with lookups/used in definitions
   - CREATE INDEX x_{consultation}_conssourceid ON {dataDb}.{consultation} (conssourceid);
   - CREATE INDEX x_{observation}_obstypeid ON {dataDb}.{observation} (obstypeid);
