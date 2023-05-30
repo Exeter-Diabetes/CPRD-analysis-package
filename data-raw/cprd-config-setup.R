@@ -8,7 +8,7 @@
 
 library(tidyverse)
 # setwd("~/Git/aurum")
- setwd("C:/Users/ky279/OneDrive - University of Exeter/CPRD/Exeter_Diabetes_aurum_package")
+ setwd("C:/Users/ky279/OneDrive - University of Exeter/CPRD/CPRD-analysis-package")
 # check for dependencies and install them if needed
 if (!"here" %in% rownames(installed.packages()))
   install.packages("here", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
@@ -22,22 +22,12 @@ lookupSql = yaml::read_yaml(here::here("data-raw/lookup-tables.yaml"))
 dataSql = yaml::read_yaml(here::here("data-raw/data-tables.yaml"))
 analysisSql = yaml::read_yaml(here::here("data-raw/analysis-tables.yaml"))
 codeSetsSql = yaml::read_yaml(here::here("data-raw/codeset-tables.yaml"))
-qMissingPredictors = yaml::read_yaml(here::here("data-raw/q_missing_predictors.yaml"))
-qrisk2Constants = yaml::read_yaml(here::here("data-raw/qrisk2_constants.yaml"))
-qdiabeteshfConstants = yaml::read_yaml(here::here("data-raw/qdiabeteshf_constants.yaml"))
-biomarkerAcceptableLimits = yaml::read_yaml(here::here("data-raw/biomarker_acceptable_limits.yaml"))
-biomarkerAcceptableUnits = yaml::read_yaml(here::here("data-raw/biomarker_acceptable_units.yaml"))
 
 usethis::use_data(operationalSql,overwrite = TRUE)
 usethis::use_data(lookupSql,overwrite = TRUE)
 usethis::use_data(dataSql,overwrite = TRUE)
 usethis::use_data(analysisSql,overwrite = TRUE)
 usethis::use_data(codeSetsSql,overwrite = TRUE)
-usethis::use_data(qMissingPredictors,overwrite = TRUE)
-usethis::use_data(qrisk2Constants,overwrite = TRUE)
-usethis::use_data(qdiabeteshfConstants,overwrite = TRUE)
-usethis::use_data(biomarkerAcceptableLimits,overwrite = TRUE)
-usethis::use_data(biomarkerAcceptableUnits,overwrite = TRUE)
 
 # install this version of the setup.
 # devtools::install_local(here::here("."))
