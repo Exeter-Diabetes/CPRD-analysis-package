@@ -1,11 +1,12 @@
 naming:
+  drugIssueTest: drug_issue_test
+  observationTest: observation_test
+  patientTest: patient_test
+  practiceTest: practice_test
   consultation: consultation
   drugIssue: drug_issue
-  drugIssueTest: drug_issue_test
   observation: observation
-  observationTest: observation_test
   patient: patient
-  patientTest: patient_test
   practice: practice
   problem: problem
   referral: referral
@@ -26,6 +27,10 @@ naming:
   practiceImd: practice_imd
   sgss: sgss
 tables:
+  drugIssueTest:
+  observationTest:
+  patientTest:
+  practiceTest:
   consultation:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{consultation}
