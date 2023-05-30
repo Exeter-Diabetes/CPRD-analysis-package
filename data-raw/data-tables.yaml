@@ -1,8 +1,11 @@
 naming:
   consultation: consultation
   drugIssue: drug_issue
+  drugIssueTest: drug_issue_test
   observation: observation
+  observationTest: observation_test
   patient: patient
+  patientTest: patient_test
   practice: practice
   problem: problem
   referral: referral
