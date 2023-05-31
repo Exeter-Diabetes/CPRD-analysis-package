@@ -138,7 +138,9 @@ CPRDCodeSets = R6::R6Class("CPRDCodeSets", inherit = AbstractCPRDConnection, pub
     # no previous version exists
 
     codeSetDf %>% self$appendDf(table = aurum::codeSetsSql$naming$codeSets, database = self$.analysisDb)
-
+    
+    message("Code set loaded")
+    
     return(TRUE)
   },
 
