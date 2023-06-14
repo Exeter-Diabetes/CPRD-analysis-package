@@ -354,7 +354,7 @@ anyHBA1CTest = cprd$tables$observation %>%
   semi_join(t1t2computed, by="patid") %>%
   inner_join(codes$hba1c_medcodes, by="medcodeid") %>%
   excludeInvalidDates(issuedate) %>%
-  mutate(testvalue = ifelse(testvalue <-20, (testvalue*-2.152)/0.09148), testvalue) %>%
+  mutate(testvalue = ifelse(testvalue <=20, (testvalue-2.152)/0.09148), testvalue) %>%
   filter(testvalue > 47.5 & testvalue <= 195) %>%
   select(patid,date=issuedate) %>%
   mutate(source = "Diabetes drug issue")
