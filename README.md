@@ -18,7 +18,7 @@ You can install the `Exeter_Diabetes_aurum_package` from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("drkgyoung/Exeter_diabetes_aurum_package")
+devtools::install_github("Exeter-Diabetes/CPRD-analysis-package")
 ```
 
 ## Configuration
