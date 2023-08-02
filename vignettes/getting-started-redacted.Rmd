@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 # Notes
 
-Server names and addresses (<dbservername>, <dbserver>, <jumphost>) have been redacted for security reasons - ask KGY or look at private Github repo https://github.com/drkgyoung/CPRD_Aurum/R package archive and scripts/vignettes/getting-started.Rmd for details
+Server names and addresses (<dbservername>, <dbserver>, <jumphost>) have been redacted for security reasons - ask KGY.
 
 
 # Configuration and environments
