@@ -13,7 +13,7 @@ run/stored on the remote server.
 
 ## Installation
 
-You can install the `Exeter_Diabetes_aurum_package` from
+You can install the `aurum` package from
 [GitHub](https://github.com/) with:
 
 ``` r
