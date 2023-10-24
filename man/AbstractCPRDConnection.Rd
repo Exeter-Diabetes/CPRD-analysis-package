@@ -39,6 +39,7 @@ This function sets up a connection to the cprd data databse, and provides a set 
 \item \href{#method-AbstractCPRDConnection-appendDf}{\code{AbstractCPRDConnection$appendDf()}}
 \item \href{#method-AbstractCPRDConnection-tableExists}{\code{AbstractCPRDConnection$tableExists()}}
 \item \href{#method-AbstractCPRDConnection-conv}{\code{AbstractCPRDConnection$conv()}}
+\item \href{#method-AbstractCPRDConnection-finalize}{\code{AbstractCPRDConnection$finalize()}}
 \item \href{#method-AbstractCPRDConnection-print}{\code{AbstractCPRDConnection$print()}}
 \item \href{#method-AbstractCPRDConnection-clone}{\code{AbstractCPRDConnection$clone()}}
 }
@@ -241,12 +242,22 @@ Internal function to check if a table exists
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractCPRDConnection-finalize"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-finalize}{}}}
+\subsection{Method \code{finalize()}}{
+Shutdown the connection to the CPRD data table.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractCPRDConnection$finalize()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+nothing.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractCPRDConnection-print"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractCPRDConnection-print}{}}}
 \subsection{Method \code{print()}}{
-Shutdown the connection to the CPRD data table.
-
-
 Prints the database connection information.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractCPRDConnection$print()}\if{html}{\out{</div>}}
