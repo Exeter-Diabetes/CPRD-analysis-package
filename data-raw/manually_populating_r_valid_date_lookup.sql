@@ -29,7 +29,7 @@ e on c.patid=e.patid left join
 (select patid, discharged as hes_death from cprd_data.hes_hospital where dismeth=4 and disdest=79)
 g on f.patid=g.patid where n_patid_hes<=20)
 as T2 group by patid)
-h on c.patid=h.patid;
+h on c.patid=h.patid ENGINE=MyISAM;
 
 update cprd_data.r_valid_date_lookup set gp_ons_death_date=NULL where gp_ons_death_date=str_to_date('1/1/2050','%d/%m/%Y');
 
@@ -62,7 +62,7 @@ create table full_cprd_data.r_valid_date_lookup as select patid, min_dob,
 least(if(cprd_ddate is null,str_to_date('1/1/2050','%d/%m/%Y'),cprd_ddate), 
 if(regenddate is null,str_to_date('1/1/2050','%d/%m/%Y'),regenddate), 
 if(lcd is null,str_to_date('1/1/2050','%d/%m/%Y'),lcd)) as gp_end_date from 
-(select a.patid, if(a.mob is NULL, str_to_date(concat('1/1/',a.yob),'%d/%m/%Y'), str_to_date(concat('1/',a.mob,'/',a.yob),'%d/%m/%Y')) as min_dob, a.cprd_ddate, a.regenddate, b.lcd from full_cprd_data.patient a left join full_cprd_data.practice b on a.pracid=b.pracid) as T1;
+(select a.patid, if(a.mob is NULL, str_to_date(concat('1/1/',a.yob),'%d/%m/%Y'), str_to_date(concat('1/',a.mob,'/',a.yob),'%d/%m/%Y')) as min_dob, a.cprd_ddate, a.regenddate, b.lcd from full_cprd_data.patient a left join full_cprd_data.practice b on a.pracid=b.pracid) as T1 ENGINE=MyISAM;
 
 
 create unique index x_patid_r_valid_date_lookup on full_cprd_data.r_valid_date_lookup (patid);
