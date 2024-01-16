@@ -995,7 +995,6 @@ indexes:
   - CREATE INDEX x_{patient}_usualgpstaffid ON {dataDb}.{patient} (usualgpstaffid);
   - CREATE INDEX x_{problem}_lastrevstaffid ON {dataDb}.{problem} (lastrevstaffid);
   # obsid / problemid
-  - CREATE INDEX x_{referral}_obsid ON {dataDb}.{referral} (obsid);
   - CREATE INDEX x_{observation}_parentobsid ON {dataDb}.{observation} (parentsobsid);
   - CREATE INDEX x_{problem}_parentprobobsid ON {dataDb}.{problem} (parentprobobsid);
   - CREATE INDEX x_{drugIssue}_probobsid ON {dataDb}.{drugIssue} (probobsid);
