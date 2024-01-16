@@ -985,8 +985,8 @@ indexes:
   - CREATE INDEX x_{patient}_emis_ddate ON {dataDb}.{patient} (emis_ddate);
   - CREATE INDEX x_{patient}_regenddate ON {dataDb}.{patient} (regenddate);
   - CREATE INDEX x_{patient}_regstartdate ON {dataDb}.{patient} (regstartdate);
+  - CREATE INDEX x_{practice}_lcd ON {dataDb}.{practice} (lcd);
   - CREATE INDEX x_{problem}_probenddate ON {dataDb}.{problem} (probenddate);
-  - CREATE INDEX x_{staff}_lcd ON {dataDb}.{staff} (lcd);
   # medCodes / prodCodes and associated
   - CREATE INDEX x_{consultation}_consmedcodeid ON {dataDb}.{consultation} (consmedcodeid);
   - CREATE INDEX x_{drugIssue}_prodcodeid ON {dataDb}.{drugIssue} (prodcodeid);
