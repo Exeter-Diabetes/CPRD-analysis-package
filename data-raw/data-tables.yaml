@@ -979,6 +979,7 @@ indexes:
   - CREATE INDEX x_{patient}_regenddate ON {dataDb}.{patient} (regenddate);
   - CREATE INDEX x_{patient}_regstartdate ON {dataDb}.{patient} (regstartdate);
   - CREATE INDEX x_{problem}_probenddate ON {dataDb}.{problem} (probenddate);
+  - CREATE INDEX x_{practice}_lcd ON {dataDb}.{practice} (lcd);
   # pracid
   - CREATE INDEX x_{consultation}_pracid ON {dataDb}.{consultation} (pracid);
   - CREATE INDEX x_{drugIssue}_pracid ON {dataDb}.{drugIssue} (pracid);
