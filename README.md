@@ -75,3 +75,10 @@ Exeter Diabetes team can be found at
 Analysis functions e.g. computing and caching results are stored in
 CPRDAnalysis.R and explained in vignettes/setting-up-an-analysis.Rmd.
 These can only be executed when connected to a MySQL server.
+
+### Loading data into MySQL
+
+Note that this package contains different branches which were used
+to load the raw CPRD data into MySQL for various different downloads.
+For info about the different downloads and the names of the databases
+they're stored in (which need to be in the ~/.aurum.yaml), see:
