@@ -40,10 +40,8 @@ default:
   password: <sql password>
   server: "localhost"
   port: 3306
-
-test-analysis:
-  dataDatabase: cprd_data
-  analysisDatabase: cprd_analysis_dev
+  sessionConfig:
+    SESSION default_storage_engine: "MyISAM"
 
 test-remote:
   dataDatabase: cprd_data
@@ -51,17 +49,10 @@ test-remote:
   server: 127.0.0.1
   port: 3307
 
-test-vpn:
-  dataDatabase: cprd_data
-  analysisDatabase: cprd_analysis_dev
-  server: <dbserver>
-  port: 3306
 ```
 
-Use ‘test-analysis’ to connect to MySQL on a local server, ‘test-remote’
-when to connect with MySQL on a remote server to which an SSH connection
-has been established, and ‘test-vpn’ to connect with MySQL on a remote
-server to which a VPN connection has been established.
+Use ‘test-remote’ to connect with MySQL on a remote server to which an SSH
+connection has been established.
 
 Users can then connect by running e.g.
 
