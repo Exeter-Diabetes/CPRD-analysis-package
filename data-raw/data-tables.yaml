@@ -132,7 +132,7 @@ tables:
       numrangelow = NULLIF(@orig_numrangelow,''),
       numrangehigh = NULLIF(@orig_numrangehigh,''),
       probobsid = NULLIF(@orig_probobsid,'')
-  patient:
+  patient:  #NB: yob, regstartdate and gender can be NULL if acceptable==0
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{patient}
     create: |
