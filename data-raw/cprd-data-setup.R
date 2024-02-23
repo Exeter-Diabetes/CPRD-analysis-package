@@ -12,7 +12,7 @@ args = commandArgs(trailingOnly=TRUE)
 # Running this as a script on the command line gave me some issues because
 # the easybuild system does not correctly configure the libPaths.
 # TODO: This is probably possible to fix somehow but results in package version conflicts
-.libPaths(c("~/R/x86_64-pc-linux-gnu-library/4.0",
+.libPaths(c("~/R/x86_64-pc-linux-gnu-library/4.2",
             "/software/easybuild/software/R-bundle-Packages/4.0.3-foss-2020a",
             "/software/easybuild/software/R/4.0.3-foss-2020a/lib64/R/library"))
 
