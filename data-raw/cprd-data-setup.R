@@ -35,7 +35,7 @@ if(!file.exists(cprdConf)) stop("config file not found: ",cprdConf)
 # Check needed libraries are set up and if no set them up:
 # check for dependencies and install them if needed
 library(tidyverse)
-here::i_am("data-raw/cprd-data-setup.R")
+here::i_am("CPRD-analysis-package/data-raw/cprd-data-setup.R")
 setwd(here::here())
 
 if (!"config" %in% rownames(installed.packages()))
@@ -48,9 +48,9 @@ if (!"slackr" %in% rownames(installed.packages()))
   install.packages("slackr", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
 
 # load utilities functions from the rest of the package
-source(here::here("R/db-utils.R"))
-source(here::here("R/7zip.R"))
-source(here::here("data-raw/load-utils.R"))
+source(here::here("CPRD-analysis-package/R/db-utils.R"))
+source(here::here("CPRD-analysis-package/R/7zip.R"))
+source(here::here("CPRD-analysis-package/data-raw/load-utils.R"))
 
 # load configuration and set up the slack bot.
 message("Initialising... using config: ",cprdConf,"; option:",cprdEnv)
@@ -99,7 +99,7 @@ dataDb = cfg$dataDatabase
 # source data and information about the file date and md5 of the files to
 # enable identifying files that have already been loaded.
 
-operationalSql = yaml::read_yaml(here::here("data-raw/operational-tables.yaml"))
+operationalSql = yaml::read_yaml(here::here("CPRD-analysis-package/data-raw/operational-tables.yaml"))
 
 # This drops the log data essentially resetting all progress to zero.
 # TODO: make this a command line option
@@ -135,7 +135,7 @@ log = dplyr::tbl(con, operationalSql$naming$loadLog)
 # is fully defined in the lookup-tables.yaml files and loading happens in
 # a single step.
 
-lookupSql = yaml::read_yaml(here::here("data-raw/lookup-tables.yaml"))
+lookupSql = yaml::read_yaml(here::here("CPRD-analysis-package/data-raw/lookup-tables.yaml"))
 refPath = cfg$lookupSourceDirectory
 for(tbl in names(lookupSql$tables)) {
   #tbl = names(lookupSql$tables)[[1]]
