@@ -21,7 +21,6 @@ naming:
   refUrgency: r_ref_urgency
   region: r_region
   sign: r_sign
-  validDateLookup: r_valid_date_lookup
   visionToEmisMigrators: r_vision_to_emis_migrators
   acpdisp: rl_acpdisp
   acploc: rl_acploc
@@ -60,17 +59,17 @@ keys:
   icd10Dict: "icd10"
   opcs4Dict: "opcs4"
 paths:
-  medDict: "{refPath}/202005_EMISMedicalDictionary.txt"
-  productDict: "{refPath}/202005_EMISProductDictionary.txt"
+  medDict: "{refPath}/202312_EMISMedicalDictionary.txt"
+  productDict: "{refPath}/202312_EMISProductDictionary.txt"
   commonDose: "{refPath}/common_dosages.txt"
   consSource: "{refPath}/ConsSource.txt"
-  drugSubstanceClassLookup: "{refPath}/drug_substance_class_lookup.txt"
+  drugSubstanceClassLookup: "{refPath}/drug_substance_class_lookup_jan24.txt"
   emisCodeCat: "{refPath}/EmisCodeCat.txt"
   jobCat: "{refPath}/JobCat.txt"
   gender: "{refPath}/Gender.txt"
   numUnit: "{refPath}/NumUnit.txt"
   obsType: "{refPath}/ObsType.txt"
-  ohaLookup: "{refPath}/oha_lookup.txt"
+  ohaLookup: "{refPath}/oha_lookup_jan24.txt"
   orgType: "{refPath}/OrgType.txt"
   parentProbRel: "{refPath}/ParentProbRel.txt"
   patientType: "{refPath}/PatientType.txt"
@@ -82,37 +81,37 @@ paths:
   region: "{refPath}/Region.txt"
   sign: "{refPath}/Sign.txt"
   visionToEmisMigrators: "{refPath}/VisionToEmisMigrators.txt"
-  acpdisp: "{refPath}/acpdisp.txt"
-  acploc: "{refPath}/acploc.txt"
-  acpout: "{refPath}/acpout.txt"
-  acpplan: "{refPath}/acpplan.txt"
-  acpsour: "{refPath}/acpsour.txt"
-  acpspef: "{refPath}/acpspef.txt"
-  admimeth: "{refPath}/admimeth.txt"
-  admisorc: "{refPath}/admisorc.txt"
-  ccadmisorc: "{refPath}/ccadmisorc.txt"
-  ccadmitype: "{refPath}/ccadmitype.txt"
-  ccapcrel: "{refPath}/ccapcrel.txt"
-  ccdisdest: "{refPath}/ccdisdest.txt"
-  ccdisloc: "{refPath}/ccdisloc.txt"
-  ccdisstat: "{refPath}/ccdisstat.txt"
-  ccsorcloc: "{refPath}/ccsorcloc.txt"
-  ccunitfun: "{refPath}/ccunitfun.txt"
-  classpat: "{refPath}/classpat.txt"
-  disdest: "{refPath}/disdest.txt"
-  dismeth: "{refPath}/dismeth.txt"
-  epitype: "{refPath}/epitype.txt"
-  firstreg: "{refPath}/firstreg.txt"
-  gen_ethnicity: "{refPath}/gen_ethnicity.txt"
-  intmanig: "{refPath}/intmanig.txt"
-  icd10Dict: "{refPath}/icd10_dict.txt"
-  mainspef: "{refPath}/mainspef.txt"
-  nhs_indicator: "{refPath}/nhs_indicator.txt"
-  opcs4Dict: "{refPath}/opcs4_dict.txt"
-  orgsup: "{refPath}/orgsup.txt"
-  tretspef: "{refPath}/tretspef.txt"
-  trustid: "{refPath}/trustid.txt"
-  unitbedconfig: "{refPath}/unitbedconfig.txt"
+#  acpdisp: "{refPath}/acpdisp.txt"
+#  acploc: "{refPath}/acploc.txt"
+#  acpout: "{refPath}/acpout.txt"
+#  acpplan: "{refPath}/acpplan.txt"
+#  acpsour: "{refPath}/acpsour.txt"
+#  acpspef: "{refPath}/acpspef.txt"
+#  admimeth: "{refPath}/admimeth.txt"
+#  admisorc: "{refPath}/admisorc.txt"
+#  ccadmisorc: "{refPath}/ccadmisorc.txt"
+#  ccadmitype: "{refPath}/ccadmitype.txt"
+#  ccapcrel: "{refPath}/ccapcrel.txt"
+#  ccdisdest: "{refPath}/ccdisdest.txt"
+#  ccdisloc: "{refPath}/ccdisloc.txt"
+#  ccdisstat: "{refPath}/ccdisstat.txt"
+#  ccsorcloc: "{refPath}/ccsorcloc.txt"
+#  ccunitfun: "{refPath}/ccunitfun.txt"
+#  classpat: "{refPath}/classpat.txt"
+#  disdest: "{refPath}/disdest.txt"
+#  dismeth: "{refPath}/dismeth.txt"
+#  epitype: "{refPath}/epitype.txt"
+#  firstreg: "{refPath}/firstreg.txt"
+#  gen_ethnicity: "{refPath}/gen_ethnicity.txt"
+#  intmanig: "{refPath}/intmanig.txt"
+#  icd10Dict: "{refPath}/icd10_dict.txt"
+#  mainspef: "{refPath}/mainspef.txt"
+#  nhs_indicator: "{refPath}/nhs_indicator.txt"
+#  opcs4Dict: "{refPath}/opcs4_dict.txt"
+#  orgsup: "{refPath}/orgsup.txt"
+#  tretspef: "{refPath}/tretspef.txt"
+#  trustid: "{refPath}/trustid.txt"
+#  unitbedconfig: "{refPath}/unitbedconfig.txt"
 tables:
   medDict:
     drop: |
@@ -520,7 +519,6 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (signid, description);
-  validDateLookup:
   visionToEmisMigrators:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{visionToEmisMigrators};
@@ -545,550 +543,550 @@ tables:
       SET gold_lcdate = STR_TO_DATE(@orig_gold_lcdate,'%d/%m/%Y'),
       emis_join_date = STR_TO_DATE(@orig_emis_join_date,'%d/%m/%Y'),
       emis_fdcdate = STR_TO_DATE(@orig_emis_fdcdate,'%d/%m/%Y');
-  acpdisp:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{acpdisp};
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{acpdisp}
-      (acpdisp TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (acpdisp))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{acpdisp}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (acpdisp, description);
-  acploc:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{acploc}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{acploc}
-      (acploc TINYINT,
-      description VARCHAR(300),
-      PRIMARY KEY (acploc))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{acploc}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (acploc, description);
-  acpout:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{acpout}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{acpout}
-      (acpout TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (acpout))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{acpout}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (acpout, description);
-  acpplan:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{acpplan}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{acpplan}
-      (acpplan TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (acpplan))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{acpplan}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (acpplan, description);
-  acpsour:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{acpsour}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{acpsour}
-      (acpsour TINYINT,
-      description VARCHAR(200),
-      PRIMARY KEY (acpsour))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{acpsour}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (acpsour, description);
-  acpspef:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{acpspef}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{acpspef}
-      (acpspef CHAR(4),
-      description VARCHAR(100),
-      PRIMARY KEY (acpspef))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{acpspef}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (acpspef, description);
-  admimeth:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{admimeth}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{admimeth}
-      (admimeth CHAR(2),
-      admimeth_type VARCHAR(19),
-      description VARCHAR(500),
-      PRIMARY KEY (admimeth))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE cprd_data.rl_admimeth
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (admimeth,admimeth_type, description);
-  admisorc:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{admisorc}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{admisorc}
-      (admisorc TINYINT,
-      description VARCHAR(400),
-      PRIMARY KEY (admisorc))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{admisorc}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (admisorc, description);
-  ccadmisorc:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccadmisorc}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccadmisorc}
-      (ccadmisorc TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (ccadmisorc))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccadmisorc}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccadmisorc, description);
-  ccadmitype:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccadmitype}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccadmitype}
-      (ccadmitype TINYINT,
-      description VARCHAR(600),
-      PRIMARY KEY (ccadmitype))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccadmitype}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccadmitype, description);
-  ccapcrel:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccapcrel}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccapcrel}
-      (ccapcrel TINYINT,
-      description VARCHAR(200),
-      PRIMARY KEY (ccapcrel))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccapcrel}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccapcrel, description);
-  ccdisdest:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccdisdest}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccdisdest}
-      (ccdisdest TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (ccdisdest))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccdisdest}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccdisdest, description);
-  ccdisloc:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccdisloc}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccdisloc}
-      (ccdisloc TINYINT,
-      description VARCHAR(200),
-      PRIMARY KEY (ccdisloc))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccdisloc}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccdisloc, description);
-  ccdisstat:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccdisstat}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccdisstat}
-      (ccdisstat TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (ccdisstat))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccdisstat}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccdisstat, description);
-  ccsorcloc:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccsorcloc}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccsorcloc}
-      (ccsorcloc TINYINT,
-      description VARCHAR(200),
-      PRIMARY KEY (ccsorcloc))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccsorcloc}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccsorcloc, description);
-  ccunitfun:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccunitfun}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccunitfun}
-      (ccunitfun TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (ccunitfun))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccunitfun}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccunitfun, description);
-  classpat:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{classpat}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{classpat}
-      (classpat TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (classpat))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{classpat}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (classpat, description);
-  disdest:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{disdest}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{disdest}
-      (disdest TINYINT,
-      description VARCHAR(200),
-      PRIMARY KEY (disdest))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{disdest}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (disdest, description);
-  dismeth:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{dismeth}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{dismeth}
-      (dismeth TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (dismeth))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{dismeth}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (dismeth, description);
-  epitype:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{epitype}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{epitype}
-      (epitype TINYINT,
-      description VARCHAR(300),
-      PRIMARY KEY (epitype))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{epitype}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (epitype, description);
-  firstreg:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{firstreg}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{firstreg}
-      (firstreg TINYINT,
-      description VARCHAR(300),
-      PRIMARY KEY (firstreg))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{firstreg}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (firstreg, description);
-  gen_ethnicity:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{gen_ethnicity}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{gen_ethnicity}
-      (gen_ethnicity TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (gen_ethnicity))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{gen_ethnicity}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (gen_ethnicity, description);
-  intmanig:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{intmanig}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{intmanig}
-      (intmanig TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (intmanig))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{intmanig}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (intmanig, description);
-  icd10Dict:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{icd10Dict}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{icd10Dict}
-      (icd10 VARCHAR(6),
-      alt_code VARCHAR(5),
-      usage_uk TINYINT,
-      description VARCHAR(200),
-      modifier_4 VARCHAR(100),
-      modifier_5 VARCHAR(100),
-      qualifiers VARCHAR(200),
-      gender_mask TINYINT,
-      min_age TINYINT,
-      max_age TINYINT,
-      tree_description VARCHAR(200),
-      PRIMARY KEY (icd10))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{icd10Dict}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\n'
-      IGNORE 1 LINES
-      (icd10, alt_code, usage_uk, description, @modifier_4, @modifier_5, @qualifiers, @gender_mask, @min_age, @max_age, @tree_description)
-      SET modifier_4 = NULLIF(@modifier_4,''),
-      modifier_5 = NULLIF(@modifier_5,''),
-      qualifiers = NULLIF(@qualifiers,''),
-      gender_mask = NULLIF(@gender_mask,''),
-      min_age = NULLIF(@min_age,''),
-      max_age = NULLIF(@max_age,''),
-      tree_description = NULLIF(@tree_description,'');
-  mainspef:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{mainspef}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{mainspef}
-      (mainspef CHAR(4),
-      description VARCHAR(100),
-      PRIMARY KEY (mainspef))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{mainspef}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (mainspef, description);
-  nhs_indicator:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{nhs_indicator}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{nhs_indicator}
-      (nhs_indicator TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (nhs_indicator))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{nhs_indicator}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (nhs_indicator, description);
-  opcs4Dict:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{opcs4Dict}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{opcs4Dict}
-      (opcs4 VARCHAR(4),
-      code VARCHAR(5),
-      description VARCHAR(200),
-      PRIMARY KEY (opcs4))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{opcs4Dict}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (code, opcs4, description);
-  orgsup:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{orgsup}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{orgsup}
-      (orgsup TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (orgsup))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{orgsup}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (orgsup, description);
-  tretspef:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{tretspef}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{tretspef}
-      (tretspef CHAR(4),
-      description_01Apr2004_onwards VARCHAR(200),
-      description_up_to_31Mar2004 VARCHAR(100),
-      PRIMARY KEY (tretspef))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE cprd_data.rl_tretspef
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (tretspef, description_01Apr2004_onwards, @description_up_to_31Mar2004)
-      SET description_up_to_31Mar2004 = NULLIF(@description_up_to_31Mar2004,'');
-  trustid:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{trustid}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{trustid}
-      (trustid CHAR(3),
-      description VARCHAR(100),
-      PRIMARY KEY (trustid))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{trustid}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (trustid, description);
-  unitbedconfig:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{unitbedconfig}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{unitbedconfig}
-      (unitbedconfig TINYINT,
-      description VARCHAR(400),
-      PRIMARY KEY (unitbedconfig))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{unitbedconfig}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (unitbedconfig, description);
+#  acpdisp:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{acpdisp};
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{acpdisp}
+#      (acpdisp TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (acpdisp))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{acpdisp}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (acpdisp, description);
+#  acploc:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{acploc}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{acploc}
+#      (acploc TINYINT,
+#      description VARCHAR(300),
+#      PRIMARY KEY (acploc))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{acploc}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (acploc, description);
+#  acpout:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{acpout}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{acpout}
+#      (acpout TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (acpout))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{acpout}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (acpout, description);
+#  acpplan:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{acpplan}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{acpplan}
+#      (acpplan TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (acpplan))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{acpplan}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (acpplan, description);
+#  acpsour:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{acpsour}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{acpsour}
+#      (acpsour TINYINT,
+#      description VARCHAR(200),
+#      PRIMARY KEY (acpsour))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{acpsour}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (acpsour, description);
+#  acpspef:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{acpspef}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{acpspef}
+#      (acpspef CHAR(4),
+#      description VARCHAR(100),
+#      PRIMARY KEY (acpspef))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{acpspef}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (acpspef, description);
+#  admimeth:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{admimeth}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{admimeth}
+#      (admimeth CHAR(2),
+#      admimeth_type VARCHAR(19),
+#      description VARCHAR(500),
+#      PRIMARY KEY (admimeth))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE cprd_data.rl_admimeth
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (admimeth,admimeth_type, description);
+#  admisorc:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{admisorc}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{admisorc}
+#      (admisorc TINYINT,
+#      description VARCHAR(400),
+#      PRIMARY KEY (admisorc))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{admisorc}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (admisorc, description);
+#  ccadmisorc:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{ccadmisorc}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{ccadmisorc}
+#      (ccadmisorc TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (ccadmisorc))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{ccadmisorc}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (ccadmisorc, description);
+#  ccadmitype:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{ccadmitype}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{ccadmitype}
+#      (ccadmitype TINYINT,
+#      description VARCHAR(600),
+#      PRIMARY KEY (ccadmitype))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{ccadmitype}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (ccadmitype, description);
+#  ccapcrel:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{ccapcrel}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{ccapcrel}
+#      (ccapcrel TINYINT,
+#      description VARCHAR(200),
+#      PRIMARY KEY (ccapcrel))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{ccapcrel}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (ccapcrel, description);
+#  ccdisdest:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{ccdisdest}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{ccdisdest}
+#      (ccdisdest TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (ccdisdest))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{ccdisdest}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (ccdisdest, description);
+#  ccdisloc:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{ccdisloc}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{ccdisloc}
+#      (ccdisloc TINYINT,
+#      description VARCHAR(200),
+#      PRIMARY KEY (ccdisloc))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{ccdisloc}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (ccdisloc, description);
+#  ccdisstat:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{ccdisstat}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{ccdisstat}
+#      (ccdisstat TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (ccdisstat))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{ccdisstat}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (ccdisstat, description);
+#  ccsorcloc:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{ccsorcloc}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{ccsorcloc}
+#      (ccsorcloc TINYINT,
+#      description VARCHAR(200),
+#      PRIMARY KEY (ccsorcloc))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{ccsorcloc}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (ccsorcloc, description);
+#  ccunitfun:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{ccunitfun}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{ccunitfun}
+#      (ccunitfun TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (ccunitfun))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{ccunitfun}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (ccunitfun, description);
+#  classpat:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{classpat}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{classpat}
+#      (classpat TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (classpat))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{classpat}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (classpat, description);
+#  disdest:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{disdest}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{disdest}
+#      (disdest TINYINT,
+#      description VARCHAR(200),
+#      PRIMARY KEY (disdest))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{disdest}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (disdest, description);
+#  dismeth:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{dismeth}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{dismeth}
+#      (dismeth TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (dismeth))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{dismeth}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (dismeth, description);
+#  epitype:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{epitype}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{epitype}
+#      (epitype TINYINT,
+#      description VARCHAR(300),
+#      PRIMARY KEY (epitype))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{epitype}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (epitype, description);
+#  firstreg:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{firstreg}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{firstreg}
+#      (firstreg TINYINT,
+#      description VARCHAR(300),
+#      PRIMARY KEY (firstreg))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{firstreg}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (firstreg, description);
+#  gen_ethnicity:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{gen_ethnicity}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{gen_ethnicity}
+#      (gen_ethnicity TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (gen_ethnicity))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{gen_ethnicity}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (gen_ethnicity, description);
+#  intmanig:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{intmanig}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{intmanig}
+#      (intmanig TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (intmanig))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{intmanig}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (intmanig, description);
+#  icd10Dict:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{icd10Dict}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{icd10Dict}
+#      (icd10 VARCHAR(6),
+#      alt_code VARCHAR(5),
+#      usage_uk TINYINT,
+#      description VARCHAR(200),
+#      modifier_4 VARCHAR(100),
+#      modifier_5 VARCHAR(100),
+#      qualifiers VARCHAR(200),
+#      gender_mask TINYINT,
+#      min_age TINYINT,
+#      max_age TINYINT,
+#      tree_description VARCHAR(200),
+#      PRIMARY KEY (icd10))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{icd10Dict}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\n'
+#      IGNORE 1 LINES
+#      (icd10, alt_code, usage_uk, description, @modifier_4, @modifier_5, @qualifiers, @gender_mask, @min_age, @max_age, @tree_description)
+#      SET modifier_4 = NULLIF(@modifier_4,''),
+#      modifier_5 = NULLIF(@modifier_5,''),
+#      qualifiers = NULLIF(@qualifiers,''),
+#      gender_mask = NULLIF(@gender_mask,''),
+#      min_age = NULLIF(@min_age,''),
+#      max_age = NULLIF(@max_age,''),
+#      tree_description = NULLIF(@tree_description,'');
+#  mainspef:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{mainspef}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{mainspef}
+#      (mainspef CHAR(4),
+#      description VARCHAR(100),
+#      PRIMARY KEY (mainspef))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{mainspef}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (mainspef, description);
+#  nhs_indicator:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{nhs_indicator}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{nhs_indicator}
+#      (nhs_indicator TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (nhs_indicator))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{nhs_indicator}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (nhs_indicator, description);
+#  opcs4Dict:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{opcs4Dict}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{opcs4Dict}
+#      (opcs4 VARCHAR(4),
+#      code VARCHAR(5),
+#      description VARCHAR(200),
+#      PRIMARY KEY (opcs4))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{opcs4Dict}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (code, opcs4, description);
+#  orgsup:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{orgsup}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{orgsup}
+#      (orgsup TINYINT,
+#      description VARCHAR(100),
+#      PRIMARY KEY (orgsup))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{orgsup}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (orgsup, description);
+#  tretspef:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{tretspef}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{tretspef}
+#      (tretspef CHAR(4),
+#      description_01Apr2004_onwards VARCHAR(200),
+#      description_up_to_31Mar2004 VARCHAR(100),
+#      PRIMARY KEY (tretspef))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE cprd_data.rl_tretspef
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (tretspef, description_01Apr2004_onwards, @description_up_to_31Mar2004)
+#      SET description_up_to_31Mar2004 = NULLIF(@description_up_to_31Mar2004,'');
+#  trustid:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{trustid}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{trustid}
+#      (trustid CHAR(3),
+#      description VARCHAR(100),
+#      PRIMARY KEY (trustid))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{trustid}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (trustid, description);
+#  unitbedconfig:
+#    drop: |
+#      DROP TABLE IF EXISTS {dataDb}.{unitbedconfig}
+#    create: |
+#      CREATE TABLE IF NOT EXISTS {dataDb}.{unitbedconfig}
+#      (unitbedconfig TINYINT,
+#      description VARCHAR(400),
+#      PRIMARY KEY (unitbedconfig))
+#      ENGINE=MYISAM
+#      CHARSET=latin1 COLLATE=latin1_general_ci;
+#    load: |
+#      LOAD DATA INFILE '{path}' IGNORE
+#      INTO TABLE {dataDb}.{unitbedconfig}
+#      FIELDS TERMINATED BY '\t'
+#      LINES TERMINATED BY '\r\n'
+#      IGNORE 1 LINES
+#      (unitbedconfig, description);
