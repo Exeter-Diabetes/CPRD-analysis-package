@@ -1,4 +1,3 @@
----
 naming:
   medDict: r_med_dict
   productDict: r_product_dict
@@ -523,7 +522,6 @@ tables:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{visionToEmisMigrators};
     create: |
-      VisionToEmisMigrators
       CREATE TABLE IF NOT EXISTS {dataDb}.{visionToEmisMigrators}
       (gold_pracid SMALLINT,
       gold_lcdate DATE,
