@@ -1,8 +1,4 @@
 naming:
-  drugIssueTest: drug_issue_test
-  observationTest: observation_test
-  patientTest: patient_test
-  practiceTest: practice_test
   consultation: consultation
   drugIssue: drug_issue
   observation: observation
@@ -25,10 +21,6 @@ naming:
   patientImd2015: patient_imd2015
   practiceImd: practice_imd
 tables:
-  drugIssueTest:
-  observationTest:
-  patientTest:
-  practiceTest:
   consultation:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{consultation}
