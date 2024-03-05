@@ -44,12 +44,12 @@ if (!"here" %in% rownames(installed.packages()))
   install.packages("here", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
 if (!"openssl" %in% rownames(installed.packages()))
   install.packages("openssl", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
-if (!"slackr" %in% rownames(installed.packages()))
-  install.packages("slackr", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
+#if (!"slackr" %in% rownames(installed.packages()))
+#  install.packages("slackr", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
 
 # load utilities functions from the rest of the package
 source(here::here("CPRD-analysis-package/R/db-utils.R"))
-source(here::here("CPRD-analysis-package/R/7zip.R"))
+#source(here::here("CPRD-analysis-package/R/7zip.R"))
 source(here::here("CPRD-analysis-package/data-raw/load-utils.R"))
 
 # load configuration and set up the slack bot.
@@ -181,7 +181,7 @@ for(tbl in names(lookupSql$tables)) {
 # indexes will already exist. In general through when installing from a clean
 # database then the tables will be created from scratch.
 
-dataSql = yaml::read_yaml(here::here("data-raw/data-tables.yaml"))
+dataSql = yaml::read_yaml(here::here("CPRD-analysis-package/data-raw/data-tables.yaml"))
 # ensure tables exist
 tables = DBI::dbListTables(con)
 for (table in names(dataSql$tables)) {
@@ -281,7 +281,7 @@ tableErrors = 0
 for (i in 1:jobSize) {
 
   # Only work during the night time
-  .sleepDuringDay()
+  #.sleepDuringDay()
 
   # get details of the next job in terms of data chunk location
   job = todo %>% filter(row_number() == i) %>% as.list()
@@ -305,7 +305,15 @@ for (i in 1:jobSize) {
   # CPRD files given to us. We are extracting just one file from the uber zip
   # based on the path in the todo dataframe. This corresponds to one data chunk relevant
   # to one table.
-  extract1 = .doUnzip(job$file,path = job$path,dir = tmpDir)
+  
+  #extract1 = .doUnzip(job$file,path = job$path,dir = tmpDir)
+  # Katie: issue with target?
+  
+  #Katie added from old version:
+  zip::unzip(job$file,files = job$path,exdir = tmpDir)
+  extract1 = paste0(tmpDir,"/",job$path)
+  
+  
   message("...unzipped", appendLF=FALSE)
 
   # If the original data was a zip of zips we get the files contained within the sub zip if exists
