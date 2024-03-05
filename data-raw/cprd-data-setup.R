@@ -419,7 +419,7 @@ i=0
 report = NULL
 for (sql in sqlIndexes) {
   i = i+1
-  .sleepDuringDay()
+  #.sleepDuringDay()
 
   status = tryCatch({
       # there is no way to create an index if exists
