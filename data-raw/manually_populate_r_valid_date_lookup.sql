@@ -3,7 +3,10 @@
 ## Diabetes 2020 download
 set role 'role_full_admin';
 
-drop table if exists cprd_data.r_valid_date_lookup;
+#drop table if exists cprd_data.r_valid_date_lookup;
+
+create table cprd_dementia_data.r_valid_date_lookup (patid bigint);
+
 
 create table cprd_data.r_valid_date_lookup as select c.patid, min_dob, gp_end_date, ons_death, hes_death_all, hes_death_nph_filtered,
 least(if(gp_end_date is null,str_to_date('1/1/2050','%d/%m/%Y'),gp_end_date), 
