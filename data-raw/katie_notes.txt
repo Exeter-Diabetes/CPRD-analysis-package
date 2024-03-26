@@ -1,0 +1,25 @@
+To add new download:
+* Update 'setup_databases.sql' to add new databases and permissions
+* Update lookup-tables.yaml with new filenames for medical and product dictionaries and drug substance class lookup and oha lookup (last 2 files need adding manually)
+* Make/update .aurum.full-load.yaml with database names and location of raw data on server / where staging should take place (make sure staging area is emptied if previous attempts)
+* Clone CPRD-analysis-package into home folder on Slade using: 'git clone https://github.com/Exeter-Diabetes/CPRD-analysis-package'
+* Using Command prompt/MobaXTerm, move to folder where package is
+* Run 'module load R'
+* Run (dev): 'nohup Rscript CPRD-analysis-package/data-raw/cprd-data-setup.R "dev" &> nohup-dementia.out &'
+or (prod): 'nohup Rscript CPRD-analysis-package/data-raw/cprd-data-setup.R "prod" &> nohup-dementia.out &'
+* NB: script points to default .aurum.full-load.yaml or can add as argument: 'nohup Rscript CPRD-analysis-package/data-raw/cprd-data-setup.R "prod" ".aurum.full-load2.yaml" &> nohup-diabetes.out &'
+* NB: changing staging table name: need to change in operational-tables.yaml AND cprd-data-setup script (stageParams)
+
+Previously had issue with zip files from CPRD system not being able to be unzipped by R
+I have bash file in CPRD/2024/MySQL loading to unzip and rezip
+
+Tables made:
+* All primary care tables, also all HES APC (except maternity), patient and practice IMD, and ONS death, plus lookups for these
+* Linkage tables and their lookups will be empty if data not provided but no errors
+* All these tables, plus patient_test, practice_test, observation_test and drug_issue_test and r_valid_date_lookup need to be present to connect via R
+* SQL scripts in data-raw to make above 5 tables
+
+Data QC after loading:
+* Have been repairing all tables to check indexes are all fine
+* Check row counts vs log files from CPRD system
+* Check all patients are acceptable==1, patienttypeid==3 and no missing/0 regstartdates
