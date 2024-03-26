@@ -1,7 +1,7 @@
 
 set role 'role_full_admin';
 
-use full_cprd_data;
+use cprd_dementia_data;
 
 create table patient_test as select * from patient where patienttypeid=3 and acceptable=1 and (regenddate is null or regenddate>=date("2004-01-01")) and (cprd_ddate is null or cprd_ddate>=date("2004-01-01")) and (regenddate is null or datediff(regenddate, regstartdate)>730) and (cprd_ddate is null or datediff(cprd_ddate, regstartdate)>730) and regstartdate<date("2019-06-01") order by rand() limit 10000;
 
