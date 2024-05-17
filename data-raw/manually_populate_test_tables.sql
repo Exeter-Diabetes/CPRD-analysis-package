@@ -1,20 +1,20 @@
 
 set role 'role_full_admin';
 
-use cprd_dementia_data;
+use cprd_feb24dm_data;
 
-create table patient_test as select * from patient where patienttypeid=3 and acceptable=1 and (regenddate is null or regenddate>=date("2004-01-01")) and (cprd_ddate is null or cprd_ddate>=date("2004-01-01")) and (regenddate is null or datediff(regenddate, regstartdate)>730) and (cprd_ddate is null or datediff(cprd_ddate, regstartdate)>730) and regstartdate<date("2019-06-01") order by rand() limit 10000;
+create table patient_test ENGINE=MyIsam as select * from patient where patienttypeid=3 and acceptable=1 and (regenddate is null or regenddate>=date("2004-01-01")) and (cprd_ddate is null or cprd_ddate>=date("2004-01-01")) and (regenddate is null or datediff(regenddate, regstartdate)>730) and (cprd_ddate is null or datediff(cprd_ddate, regstartdate)>730) and regstartdate<date("2019-06-01") order by rand() limit 10000;
 
 alter table patient_test add primary key (patid);
 create index x_patient_test_pracid on patient_test (pracid);
 
-create table practice_test as select distinct b.* from patient_test a inner join practice b on a.pracid=b.pracid;
+create table practice_test ENGINE=MyIsam as select distinct b.* from patient_test a inner join practice b on a.pracid=b.pracid;
 
 alter table practice_test add primary key (pracid);
 create index x_practice_test_lcd on practice_test (lcd);
 create index x_practice_test_region on practice_test (region);
 
-create table observation_test as select b.* from patient_test a inner join observation b on a.patid=b.patid;
+create table observation_test ENGINE=MyIsam as select b.* from patient_test a inner join observation b on a.patid=b.patid;
 select count(*) from observation_test;
 # 13,289,041
 
@@ -25,7 +25,7 @@ create index x_observation_test_obsdate on observation_test (obsdate);
 create index x_observation_test_testvalue on observation_test (testvalue);
 create index x_observation_test_numunitid on observation_test (numunitid);
 
-create table drug_issue_test as select b.* from patient_test a inner join drug_issue b on a.patid=b.patid;
+create table drug_issue_test ENGINE=MyIsam as select b.* from patient_test a inner join drug_issue b on a.patid=b.patid;
 select count(*) from drug_issue_test;
 # 9,568,882
 
