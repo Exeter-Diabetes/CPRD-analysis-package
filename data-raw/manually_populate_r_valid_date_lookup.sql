@@ -98,7 +98,7 @@ create table cprd_feb24dm_data.r_valid_date_lookup ENGINE=MyISAM as select patid
 least(if(cprd_ddate is null,str_to_date('1/1/2050','%d/%m/%Y'),cprd_ddate), 
 if(regenddate is null,str_to_date('1/1/2050','%d/%m/%Y'),regenddate), 
 if(lcd is null,str_to_date('1/1/2050','%d/%m/%Y'),lcd)) as gp_end_date from 
-(select a.patid, if(a.mob is NULL, str_to_date(concat('1/1/',a.yob),'%d/%m/%Y'), str_to_date(concat('1/',a.mob,'/',a.yob),'%d/%m/%Y')) as min_dob, a.cprd_ddate, a.regenddate, b.lcd from cprd_dementia_data.patient a left join cprd_dementia_data.practice b on a.pracid=b.pracid) as T1;
+(select a.patid, if(a.mob is NULL, str_to_date(concat('1/1/',a.yob),'%d/%m/%Y'), str_to_date(concat('1/',a.mob,'/',a.yob),'%d/%m/%Y')) as min_dob, a.cprd_ddate, a.regenddate, b.lcd from cprd_feb24dm_data.patient a left join cprd_feb24dm_data.practice b on a.pracid=b.pracid) as T1;
 
 create unique index x_patid_r_valid_date_lookup on cprd_feb24dm_data.r_valid_date_lookup (patid);
 create index x_gp_end_date_r_valid_date_lookup on cprd_feb24dm_data.r_valid_date_lookup (gp_end_date);
