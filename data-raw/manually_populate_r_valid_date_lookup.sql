@@ -5,9 +5,6 @@ set role 'role_full_admin';
 
 #drop table if exists cprd_data.r_valid_date_lookup;
 
-create table cprd_dementia_data.r_valid_date_lookup (patid bigint);
-
-
 create table cprd_data.r_valid_date_lookup as select c.patid, min_dob, gp_end_date, ons_death, hes_death_all, hes_death_nph_filtered,
 least(if(gp_end_date is null,str_to_date('1/1/2050','%d/%m/%Y'),gp_end_date), 
 if(ons_death is null,str_to_date('1/1/2050','%d/%m/%Y'),ons_death)) as gp_ons_end_date,
@@ -88,4 +85,21 @@ if(lcd is null,str_to_date('1/1/2050','%d/%m/%Y'),lcd)) as gp_end_date from
 create unique index x_patid_r_valid_date_lookup on cprd_dementia_data.r_valid_date_lookup (patid);
 create index x_gp_end_date_r_valid_date_lookup on cprd_dementia_data.r_valid_date_lookup (gp_end_date);
 
+
+
+
+# 2024 diabetes download (do without ONS linked data)
+
+set role 'role_full_admin';
+
+drop table if exists cprd_feb24dm_data.r_valid_date_lookup;
+
+create table cprd_feb24dm_data.r_valid_date_lookup ENGINE=MyISAM as select patid, min_dob,
+least(if(cprd_ddate is null,str_to_date('1/1/2050','%d/%m/%Y'),cprd_ddate), 
+if(regenddate is null,str_to_date('1/1/2050','%d/%m/%Y'),regenddate), 
+if(lcd is null,str_to_date('1/1/2050','%d/%m/%Y'),lcd)) as gp_end_date from 
+(select a.patid, if(a.mob is NULL, str_to_date(concat('1/1/',a.yob),'%d/%m/%Y'), str_to_date(concat('1/',a.mob,'/',a.yob),'%d/%m/%Y')) as min_dob, a.cprd_ddate, a.regenddate, b.lcd from cprd_dementia_data.patient a left join cprd_dementia_data.practice b on a.pracid=b.pracid) as T1;
+
+create unique index x_patid_r_valid_date_lookup on cprd_feb24dm_data.r_valid_date_lookup (patid);
+create index x_gp_end_date_r_valid_date_lookup on cprd_feb24dm_data.r_valid_date_lookup (gp_end_date);
 
