@@ -16,7 +16,7 @@ create index x_practice_test_region on practice_test (region);
 
 create table observation_test ENGINE=MyIsam as select b.* from patient_test a inner join observation b on a.patid=b.patid;
 select count(*) from observation_test;
-# 13,289,041
+# 15,442,293
 
 alter table observation_test add primary key (obsid);
 create index x_observation_test_patid on observation_test (patid);
@@ -27,7 +27,7 @@ create index x_observation_test_numunitid on observation_test (numunitid);
 
 create table drug_issue_test ENGINE=MyIsam as select b.* from patient_test a inner join drug_issue b on a.patid=b.patid;
 select count(*) from drug_issue_test;
-# 9,568,882
+# 7,726,699
 
 alter table drug_issue_test add primary key (issueid);
 create index x_drug_issue_test_patid on drug_issue_test (patid);
@@ -38,7 +38,3 @@ create index x_drug_issue_test_quantity on drug_issue_test (quantity);
 create index x_drug_issue_test_quantunitid on drug_issue_test (quantunitid);
 create index x_drug_issue_test_duration on drug_issue_test (duration);
 
-
-## Test time to run HbA1c query
-select a.* from observation_test a inner join (select codeid from cprd_analysis_dev.code_sets where setname="hba1c") b on a.medcodeid=b.codeid;
-# <1 minute
