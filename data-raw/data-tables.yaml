@@ -18,7 +18,7 @@ naming:
   hesPrimaryDiagHosp: hes_primary_diag_hosp
   hesProceduresEpi: hes_procedures_epi
   onsDeath: ons_death
-  patientImd2015: patient_imd2015
+  patientImd: patient_imd
   practiceImd: practice_imd
 tables:
   consultation:
@@ -627,24 +627,24 @@ tables:
       ccunitfun = NULLIF(@ccunitfun,''),
       unitbedconfig = NULLIF(@unitbedconfig,''),
       bestmatch = NULLIF(@bestmatch,'')
-  patientImd2015:
+  patientImd:
     drop: |
-      DROP TABLE IF EXISTS {dataDb}.{patientImd2015}
+      DROP TABLE IF EXISTS {dataDb}.{patientImd}
     create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{patientImd2015}
+      CREATE TABLE IF NOT EXISTS {dataDb}.{patientImd}
       (patid BIGINT UNSIGNED NOT NULL,
       pracid MEDIUMINT,
-      imd2015_10 TINYINT,
+      imd_decile TINYINT,
       PRIMARY KEY (patid))
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{patientImd2015}
+      INTO TABLE {dataDb}.{patientImd}
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, pracid, @imd2015_10)
-      SET imd2015_10 = NULLIF(@imd2015_10,'')
+      (patid, pracid, @imd_10)
+      SET imd_decile = NULLIF(@imd_decile,'')
   practiceImd:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{practiceImd}
