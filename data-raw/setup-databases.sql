@@ -28,6 +28,16 @@ CREATE SCHEMA IF NOT EXISTS `cprd_feb24dm_data_dev` DEFAULT CHARACTER SET latin1
 CREATE SCHEMA IF NOT EXISTS `cprd_feb24dm_data` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
 CREATE SCHEMA IF NOT EXISTS `cprd_feb24dm_analysis` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
 
+# Create the the databases for 202402 depression dataset
+CREATE SCHEMA IF NOT EXISTS `cprd_feb24depression_data_dev` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+CREATE SCHEMA IF NOT EXISTS `cprd_feb24depression_data` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+CREATE SCHEMA IF NOT EXISTS `cprd_feb24depression_analysis` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+
+# Create the the databases for 202406 diabetes dataset
+CREATE SCHEMA IF NOT EXISTS `cprd_jun24dm_data_dev` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+CREATE SCHEMA IF NOT EXISTS `cprd_jun24dm_data` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+CREATE SCHEMA IF NOT EXISTS `cprd_jun24dm_analysis` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+
 
 # Create the roles:
 # 1) Loader role
@@ -54,6 +64,14 @@ GRANT ALL privileges ON `cprd_feb24dm_data_dev`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `cprd_feb24dm_data`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `cprd_feb24dm_analysis`.* TO `role_cprd_loader`@`%`;
 
+GRANT ALL privileges ON `cprd_feb24depression_data_dev`.* TO `role_cprd_loader`@`%`;
+GRANT ALL privileges ON `cprd_feb24depression_data`.* TO `role_cprd_loader`@`%`;
+GRANT ALL privileges ON `cprd_feb24depression_analysis`.* TO `role_cprd_loader`@`%`;
+
+GRANT ALL privileges ON `cprd_jun24dm_data_dev`.* TO `role_cprd_loader`@`%`;
+GRANT ALL privileges ON `cprd_jun24dm_data`.* TO `role_cprd_loader`@`%`;
+GRANT ALL privileges ON `cprd_jun24dm_analysis`.* TO `role_cprd_loader`@`%`;
+
 
 # 2) Admin role
 CREATE ROLE IF NOT EXISTS `role_cprd_admin`;
@@ -75,6 +93,14 @@ GRANT ALL privileges ON `cprd_dementia_analysis`.* TO `role_cprd_admin`@`%`;
 GRANT SELECT ON `cprd_feb24dm_data_dev`.* TO `role_cprd_admin`@`%`;
 GRANT SELECT ON `cprd_feb24dm_data`.* TO `role_cprd_admin`@`%`;
 GRANT ALL privileges ON `cprd_feb24dm_analysis`.* TO `role_cprd_admin`@`%`;
+
+GRANT SELECT ON `cprd_feb24depression_data_dev`.* TO `role_cprd_admin`@`%`;
+GRANT SELECT ON `cprd_feb24depression_data`.* TO `role_cprd_admin`@`%`;
+GRANT ALL privileges ON `cprd_feb24depression_analysis`.* TO `role_cprd_admin`@`%`;
+
+GRANT SELECT ON `cprd_jun24dm_data_dev`.* TO `role_cprd_admin`@`%`;
+GRANT SELECT ON `cprd_jun24dm_data`.* TO `role_cprd_admin`@`%`;
+GRANT ALL privileges ON `cprd_jun24dm_analysis`.* TO `role_cprd_admin`@`%`;
 
 
 # 3) Reader role

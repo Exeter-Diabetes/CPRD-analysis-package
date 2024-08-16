@@ -1,6 +1,8 @@
 To add new download:
 * Update 'setup_databases.sql' to add new databases and permissions
 * Update lookup-tables.yaml with new filenames for medical and product dictionaries and drug substance class lookup and oha lookup (last 2 files need adding manually)
+* Add HES lookups to reference-files folder
+* (Run bash script to unzip and rezip folders)
 * Make/update .aurum.full-load.yaml with database names and location of raw data on server / where staging should take place (make sure staging area is emptied if previous attempts)
 * Clone CPRD-analysis-package into home folder on Slade using: 'git clone https://github.com/Exeter-Diabetes/CPRD-analysis-package'
 * Using Command prompt/MobaXTerm, move to folder where package is
@@ -18,6 +20,7 @@ Tables made:
 * Linkage tables and their lookups will be empty if data not provided but no errors
 * All these tables, plus patient_test, practice_test, observation_test and drug_issue_test and r_valid_date_lookup need to be present to connect via R
 * SQL scripts in data-raw to make above 5 tables
+* patids_with_linkage is made but empty
 
 Data QC after loading:
 * Have been repairing all tables to check indexes are all fine

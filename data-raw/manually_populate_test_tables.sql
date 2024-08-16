@@ -1,7 +1,7 @@
 
 set role 'role_full_admin';
 
-use cprd_feb24dm_data;
+use cprd_jun24dm_data;
 
 create table patient_test ENGINE=MyIsam as select * from patient where patienttypeid=3 and acceptable=1 and (regenddate is null or regenddate>=date("2004-01-01")) and (cprd_ddate is null or cprd_ddate>=date("2004-01-01")) and (regenddate is null or datediff(regenddate, regstartdate)>730) and (cprd_ddate is null or datediff(cprd_ddate, regstartdate)>730) and regstartdate<date("2019-06-01") order by rand() limit 10000;
 
@@ -16,7 +16,7 @@ create index x_practice_test_region on practice_test (region);
 
 create table observation_test ENGINE=MyIsam as select b.* from patient_test a inner join observation b on a.patid=b.patid;
 select count(*) from observation_test;
-# 15,442,293
+# 16,400,620
 
 alter table observation_test add primary key (obsid);
 create index x_observation_test_patid on observation_test (patid);
@@ -27,7 +27,7 @@ create index x_observation_test_numunitid on observation_test (numunitid);
 
 create table drug_issue_test ENGINE=MyIsam as select b.* from patient_test a inner join drug_issue b on a.patid=b.patid;
 select count(*) from drug_issue_test;
-# 7,726,699
+# 4,481,906
 
 alter table drug_issue_test add primary key (issueid);
 create index x_drug_issue_test_patid on drug_issue_test (patid);
