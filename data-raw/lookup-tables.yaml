@@ -20,6 +20,7 @@ naming:
   refUrgency: r_ref_urgency
   region: r_region
   sign: r_sign
+  validDateLookup: r_valid_date_lookup
   visionToEmisMigrators: r_vision_to_emis_migrators
   acpdisp: rl_acpdisp
   acploc: rl_acploc
@@ -518,6 +519,7 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (signid, description);
+  validDateLookup:
   visionToEmisMigrators:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{visionToEmisMigrators};
