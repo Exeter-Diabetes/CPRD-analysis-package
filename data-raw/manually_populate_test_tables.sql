@@ -16,7 +16,7 @@ create index x_practice_test_region on practice_test (region);
 
 create table observation_test ENGINE=MyIsam as select b.* from patient_test a inner join observation b on a.patid=b.patid;
 select count(*) from observation_test;
-# 16,400,620
+# 10,231,379
 
 alter table observation_test add primary key (obsid);
 create index x_observation_test_patid on observation_test (patid);
@@ -27,7 +27,7 @@ create index x_observation_test_numunitid on observation_test (numunitid);
 
 create table drug_issue_test ENGINE=MyIsam as select b.* from patient_test a inner join drug_issue b on a.patid=b.patid;
 select count(*) from drug_issue_test;
-# 4,481,906
+# 8,389,011
 
 alter table drug_issue_test add primary key (issueid);
 create index x_drug_issue_test_patid on drug_issue_test (patid);
