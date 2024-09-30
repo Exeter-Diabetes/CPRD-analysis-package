@@ -595,7 +595,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, spno, epikey, @admidate, @discharged, @epistart, @epiend, eorder, @ccstartdate, @ccstarttime, @ccdisrdydate, @ccdisrdytime, @ccdisdate, @ccdistime, @ccadmitype, @ccadmisorc, @ccsorcloc, @ccdisstat, @ccdisdest, @ccdisloc, @cclev2days, @cclev3days, @bcardsupdays, @acardsupdays, @bressupdays, @aressupdays, @gisupdays, @liversupdays, @neurosupdays, @rensupdays, @dermsupdays, @orgsupmax, @ccunitfun, @unitbedconfig, @bestmatch, ccapcrel)
+      (patid, spno, epikey, @admidate, @discharged, @epistart, @epiend, eorder, @ccstartdate, @ccstarttime, @ccdisrdydate, @ccdisrdytime, @ccdisdate, @ccdistime, @ccadmitype, @cclev2days, @cclev3days, @bcardsupdays, @acardsupdays, @bressupdays, @aressupdays, @gisupdays, @liversupdays, @neurosupdays, @rensupdays, @dermsupdays, @orgsupmax, @ccunitfun, @bestmatch, ccapcrel)
       SET admidate = STR_TO_DATE(@admidate,'%d/%m/%Y'),
       discharged = STR_TO_DATE(NULLIF(@discharged,''),'%d/%m/%Y'),
       epistart = STR_TO_DATE(@epistart,'%d/%m/%Y'),
@@ -607,11 +607,6 @@ tables:
       ccdisdate = STR_TO_DATE(@ccdisdate,'%d/%m/%Y'),
       ccdistime = NULLIF(@ccdistime,''),
       ccadmitype = NULLIF(@ccadmitype,''),
-      ccadmisorc = NULLIF(@ccadmisorc,''),
-      ccsorcloc = NULLIF(@ccsorcloc,''),
-      ccdisstat = NULLIF(@ccdisstat,''),
-      ccdisdest = NULLIF(@ccdisdest,''),
-      ccdisloc = NULLIF(@ccdisloc,''),
       cclev2days = IF(@cclev2days='' OR @cclev2days='999',NULL,@cclev2days),
       cclev3days = IF(@cclev3days='' OR @cclev3days='999',NULL,@cclev3days),
       bcardsupdays = IF(@bcardsupdays='' OR @bcardsupdays='999',NULL,@bcardsupdays),
@@ -625,7 +620,6 @@ tables:
       dermsupdays = IF(@dermsupdays='' OR @dermsupdays='999',NULL,@dermsupdays),
       orgsupmax = NULLIF(@orgsupmax,''),
       ccunitfun = NULLIF(@ccunitfun,''),
-      unitbedconfig = NULLIF(@unitbedconfig,''),
       bestmatch = NULLIF(@bestmatch,'')
   patientImd:
     drop: |
@@ -902,11 +896,6 @@ indexes:
   - CREATE INDEX x_{hesCcare}_ccdisdate ON {dataDb}.{hesCcare} (ccdisdate);
   - CREATE INDEX x_{hesCcare}_ccdistime ON {dataDb}.{hesCcare} (ccdistime);
   - CREATE INDEX x_{hesCcare}_ccadmitype ON {dataDb}.{hesCcare} (ccadmitype);
-  - CREATE INDEX x_{hesCcare}_ccadmisorc ON {dataDb}.{hesCcare} (ccadmisorc);
-  - CREATE INDEX x_{hesCcare}_ccsorcloc ON {dataDb}.{hesCcare} (ccsorcloc);
-  - CREATE INDEX x_{hesCcare}_ccdisstat ON {dataDb}.{hesCcare} (ccdisstat);
-  - CREATE INDEX x_{hesCcare}_ccdisdest ON {dataDb}.{hesCcare} (ccdisdest);
-  - CREATE INDEX x_{hesCcare}_ccdisloc ON {dataDb}.{hesCcare} (ccdisloc);
   - CREATE INDEX x_{hesCcare}_cclev2days ON {dataDb}.{hesCcare} (cclev2days);
   - CREATE INDEX x_{hesCcare}_cclev3days ON {dataDb}.{hesCcare} (cclev3days);
   - CREATE INDEX x_{hesCcare}_bcardsupdays ON {dataDb}.{hesCcare} (bcardsupdays);
@@ -920,7 +909,6 @@ indexes:
   - CREATE INDEX x_{hesCcare}_dermsupdays ON {dataDb}.{hesCcare} (dermsupdays);
   - CREATE INDEX x_{hesCcare}_orgsupmax ON {dataDb}.{hesCcare} (orgsupmax);
   - CREATE INDEX x_{hesCcare}_ccunitfun ON {dataDb}.{hesCcare} (ccunitfun);
-  - CREATE INDEX x_{hesCcare}_unitbedconfig ON {dataDb}.{hesCcare} (unitbedconfig);
   - CREATE INDEX x_{hesCcare}_bestmatch ON {dataDb}.{hesCcare} (bestmatch);
   - CREATE INDEX x_{hesCcare}_ccapcrel ON {dataDb}.{hesCcare} (ccapcrel);
   # patientImd2015
