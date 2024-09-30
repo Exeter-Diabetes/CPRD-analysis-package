@@ -26,3 +26,8 @@ Data QC after loading:
 * Have been repairing all tables to check indexes are all fine
 * Check row counts vs log files from CPRD system
 * Check all patients are acceptable==1, patienttypeid==3 and no missing/0 regstartdates
+
+
+Further work:
+* Decide whether any codelists need updating - medications might
+* Check numunitid changes for biomarkers if want to use EHRBiomarkr package? Between 2020 and 2024 seemed fine (no changes)

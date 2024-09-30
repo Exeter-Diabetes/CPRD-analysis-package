@@ -322,7 +322,6 @@ tables:
       admimeth CHAR(2),
       admisorc TINYINT,
       disdest TINYINT,
-      dismeth TINYINT,
       duration MEDIUMINT,
       elecdate DATE,
       elecdur SMALLINT,
@@ -334,7 +333,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, spno, @admidate, @discharged, admimeth, admisorc, disdest, dismeth, @duration, @elecdate, @elecdur)
+      (patid, spno, @admidate, @discharged, admimeth, admisorc, disdest, @duration, @elecdate, @elecdur)
       SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%d/%m/%Y'),
       discharged = STR_TO_DATE(NULLIF(@discharged,''),'%d/%m/%Y'),
       duration = NULLIF(@duration,''),
@@ -805,7 +804,6 @@ indexes:
   - CREATE INDEX x_{hesHospital}_admimeth ON {dataDb}.{hesHospital} (admimeth);
   - CREATE INDEX x_{hesHospital}_admisorc ON {dataDb}.{hesHospital} (admisorc);
   - CREATE INDEX x_{hesHospital}_disdest ON {dataDb}.{hesHospital} (disdest);
-  - CREATE INDEX x_{hesHospital}_dismeth ON {dataDb}.{hesHospital} (dismeth);
   - CREATE INDEX x_{hesHospital}_duration ON {dataDb}.{hesHospital} (duration);
   - CREATE INDEX x_{hesHospital}_elecdate ON {dataDb}.{hesHospital} (elecdate);
   - CREATE INDEX x_{hesHospital}_elecdur ON {dataDb}.{hesHospital} (elecdur);
