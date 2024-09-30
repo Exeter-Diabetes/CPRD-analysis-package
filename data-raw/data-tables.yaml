@@ -519,6 +519,7 @@ tables:
       acpplan TINYINT,
       acpspef CHAR(3),
       orgsup TINYINT,
+      acpdqind CHAR(1),
       primary_key INT PRIMARY KEY AUTO_INCREMENT)
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
@@ -527,7 +528,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, spno, epikey, @epistart, @epiend, eorder, @epidur, numacp, @acpn, @acpstar, @acpend, @acpdur, @intdays, @depdays, @acploc, @acpsour, @acpdisp, @acpout, @acpplan, @acpspef, @orgsup)
+      (patid, spno, epikey, @epistart, @epiend, eorder, @epidur, numacp, @acpn, @acpstar, @acpend, @acpdur, @intdays, @depdays, @acploc, @acpsour, @acpdisp, @acpout, @acpplan, @acpspef, @orgsup, @acpdqind)
       SET epistart = STR_TO_DATE(@epistart,'%d/%m/%Y'),
       epiend = STR_TO_DATE(NULLIF(@epiend,''),'%d/%m/%Y'),
       epidur = NULLIF(@epidur,''),
@@ -543,7 +544,8 @@ tables:
       acpout = IF(@acpout='' OR @acpout='0',NULL,@acpout),
       acpplan = IF(@acpplan='Y',1,IF(@acpplan='N',2,IF(@acpplan='',NULL,@acpplan))),
       acpspef = IF(@acpspef='' OR @acpspef='0',NULL,@acpspef),
-      orgsup = NULLIF(@orgsup,'')
+      orgsup = NULLIF(@orgsup,''),
+      acpdqind = NULLIF(@acpdqind,'')
   hesCcare:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{hesCcare}
@@ -883,6 +885,7 @@ indexes:
   - CREATE INDEX x_{hesAcp}_acpplan ON {dataDb}.{hesAcp} (acpplan);
   - CREATE INDEX x_{hesAcp}_acpspef ON {dataDb}.{hesAcp} (acpspef);
   - CREATE INDEX x_{hesAcp}_orgsup ON {dataDb}.{hesAcp} (orgsup);
+  - CREATE INDEX x_{hesAcp}_acdpqind ON {dataDb}.{hesAcp} (acdpqind);
   # hesCcare
   - CREATE INDEX x_{hesCcare}_patid ON {dataDb}.{hesCcare} (patid);
   - CREATE INDEX x_{hesCcare}_spno ON {dataDb}.{hesCcare} (spno);
