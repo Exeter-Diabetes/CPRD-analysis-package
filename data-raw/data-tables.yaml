@@ -906,8 +906,8 @@ indexes:
   - CREATE INDEX x_{hesCcare}_bestmatch ON {dataDb}.{hesCcare} (bestmatch);
   - CREATE INDEX x_{hesCcare}_ccapcrel ON {dataDb}.{hesCcare} (ccapcrel);
   # patientImd2015
-  - CREATE INDEX x_{patientImd2015}_pracid ON {dataDb}.{patientImd2015} (pracid);
-  - CREATE INDEX x_{patientImd2015}_imd2015_10 ON {dataDb}.{patientImd2015} (imd2015_10);
+  - CREATE INDEX x_{patientImd}_pracid ON {dataDb}.{patientImd2015} (pracid);
+  - CREATE INDEX x_{patientImd}_imd_decile ON {dataDb}.{patientImd2015} (imd_decile);
   # practiceImd
   - CREATE INDEX x_{practiceImd}_country ON {dataDb}.{practiceImd} (country);
   - CREATE INDEX x_{practiceImd}_e2015_imd_10 ON {dataDb}.{practiceImd} (e2015_imd_10);
