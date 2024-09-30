@@ -357,7 +357,6 @@ tables:
       admimeth CHAR(2),
       admisorc TINYINT,
       disdest TINYINT,
-      dismeth TINYINT,
       mainspef CHAR(3),
       tretspef CHAR(3),
       pconsult CHAR(16),
@@ -373,7 +372,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, spno, epikey, @admidate, @epistart, @epiend, @discharged, eorder, @epidur, epitype, admimeth, admisorc, disdest, dismeth, mainspef, tretspef, @pconsult, intmanig, classpat, @firstreg, @ethnos)
+      (patid, spno, epikey, @admidate, @epistart, @epiend, @discharged, eorder, @epidur, epitype, admimeth, admisorc, disdest, mainspef, tretspef, @pconsult, intmanig, classpat, @firstreg, @ethnos)
       SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%d/%m/%Y'),
       epistart = STR_TO_DATE(NULLIF(@epistart,''),'%d/%m/%Y'),
       epiend = STR_TO_DATE(NULLIF(@epiend,''),'%d/%m/%Y'),
@@ -821,7 +820,6 @@ indexes:
   - CREATE INDEX x_{hesEpisodes}_admimeth ON {dataDb}.{hesEpisodes} (admimeth);
   - CREATE INDEX x_{hesEpisodes}_admisorc ON {dataDb}.{hesEpisodes} (admisorc);
   - CREATE INDEX x_{hesEpisodes}_disdest ON {dataDb}.{hesEpisodes} (disdest);
-  - CREATE INDEX x_{hesEpisodes}_dismeth ON {dataDb}.{hesEpisodes} (dismeth);
   - CREATE INDEX x_{hesEpisodes}_mainspef ON {dataDb}.{hesEpisodes} (mainspef);
   - CREATE INDEX x_{hesEpisodes}_tretspef ON {dataDb}.{hesEpisodes} (tretspef);
   - CREATE INDEX x_{hesEpisodes}_pconsult ON {dataDb}.{hesEpisodes} (pconsult);
