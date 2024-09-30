@@ -379,7 +379,7 @@ tables:
       discharged = STR_TO_DATE(NULLIF(@discharged,''),'%d/%m/%Y'),
       epidur = NULLIF(@epidur,''),
       pconsult = IF(@pconsult='&' OR @pconsult='99',NULL,@pconsult),
-      firstreg = IF(@firstreg='N',1,IF(@firstreg='',NULL,@firstreg)),
+      firstreg = IF(@firstreg='N',1,IF(@firstreg='' or @firstreg='?',NULL,@firstreg)),
       ethnos = IF(@ethnos = 'White', 1,
       IF(@ethnos = 'Bl_Carib', 2,
       IF(@ethnos = 'Bl_Afric', 3,
