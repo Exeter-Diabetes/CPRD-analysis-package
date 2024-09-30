@@ -30,17 +30,11 @@ naming:
   acpspef: rl_acpspef
   admimeth: rl_admimeth
   admisorc: rl_admisorc
-  ccadmisorc: rl_ccadmisorc
   ccadmitype: rl_ccadmitype
   ccapcrel: rl_ccapcrel
-  ccdisdest: rl_ccdisdest
-  ccdisloc: rl_ccdisloc
-  ccdisstat: rl_ccdisstat
-  ccsorcloc: rl_ccsorcloc
   ccunitfun: rl_ccunitfun
   classpat: rl_classpat
   disdest: rl_disdest
-  dismeth: rl_dismeth
   epitype: rl_epitype
   firstreg: rl_firstreg
   gen_ethnicity: rl_gen_ethnicity
@@ -52,7 +46,6 @@ naming:
   orgsup: rl_orgsup
   tretspef: rl_tretspef
   trustid: rl_trustid
-  unitbedconfig: rl_unitbedconfig
 keys:
   medDict: "medcodeid"
   productDict: "prodcodeid"
@@ -89,17 +82,11 @@ paths:
   acpspef: "{refPath}/acpspef.txt"
   admimeth: "{refPath}/admimeth.txt"
   admisorc: "{refPath}/admisorc.txt"
-  ccadmisorc: "{refPath}/ccadmisorc.txt"
   ccadmitype: "{refPath}/ccadmitype.txt"
   ccapcrel: "{refPath}/ccapcrel.txt"
-  ccdisdest: "{refPath}/ccdisdest.txt"
-  ccdisloc: "{refPath}/ccdisloc.txt"
-  ccdisstat: "{refPath}/ccdisstat.txt"
-  ccsorcloc: "{refPath}/ccsorcloc.txt"
   ccunitfun: "{refPath}/ccunitfun.txt"
   classpat: "{refPath}/classpat.txt"
   disdest: "{refPath}/disdest.txt"
-  dismeth: "{refPath}/dismeth.txt"
   epitype: "{refPath}/epitype.txt"
   firstreg: "{refPath}/firstreg.txt"
   gen_ethnicity: "{refPath}/gen_ethnicity.txt"
@@ -111,7 +98,6 @@ paths:
   orgsup: "{refPath}/orgsup.txt"
   tretspef: "{refPath}/tretspef.txt"
   trustid: "{refPath}/trustid.txt"
-  unitbedconfig: "{refPath}/unitbedconfig.txt"
 tables:
   medDict:
     drop: |
@@ -685,23 +671,6 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (admisorc, description);
-  ccadmisorc:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccadmisorc}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccadmisorc}
-      (ccadmisorc TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (ccadmisorc))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccadmisorc}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccadmisorc, description);
   ccadmitype:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{ccadmitype}
@@ -736,74 +705,6 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (ccapcrel, description);
-  ccdisdest:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccdisdest}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccdisdest}
-      (ccdisdest TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (ccdisdest))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccdisdest}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccdisdest, description);
-  ccdisloc:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccdisloc}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccdisloc}
-      (ccdisloc TINYINT,
-      description VARCHAR(200),
-      PRIMARY KEY (ccdisloc))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccdisloc}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccdisloc, description);
-  ccdisstat:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccdisstat}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccdisstat}
-      (ccdisstat TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (ccdisstat))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccdisstat}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccdisstat, description);
-  ccsorcloc:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{ccsorcloc}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{ccsorcloc}
-      (ccsorcloc TINYINT,
-      description VARCHAR(200),
-      PRIMARY KEY (ccsorcloc))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{ccsorcloc}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (ccsorcloc, description);
   ccunitfun:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{ccunitfun}
@@ -855,23 +756,6 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (disdest, description);
-  dismeth:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{dismeth}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{dismeth}
-      (dismeth TINYINT,
-      description VARCHAR(100),
-      PRIMARY KEY (dismeth))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{dismeth}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (dismeth, description);
   epitype:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{epitype}
@@ -1078,20 +962,3 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (trustid, description);
-  unitbedconfig:
-    drop: |
-      DROP TABLE IF EXISTS {dataDb}.{unitbedconfig}
-    create: |
-      CREATE TABLE IF NOT EXISTS {dataDb}.{unitbedconfig}
-      (unitbedconfig TINYINT,
-      description VARCHAR(400),
-      PRIMARY KEY (unitbedconfig))
-      ENGINE=MYISAM
-      CHARSET=latin1 COLLATE=latin1_general_ci;
-    load: |
-      LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE {dataDb}.{unitbedconfig}
-      FIELDS TERMINATED BY '\t'
-      LINES TERMINATED BY '\r\n'
-      IGNORE 1 LINES
-      (unitbedconfig, description);
