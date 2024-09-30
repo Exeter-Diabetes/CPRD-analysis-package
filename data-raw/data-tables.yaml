@@ -889,7 +889,7 @@ indexes:
   - CREATE INDEX x_{hesAcp}_acpplan ON {dataDb}.{hesAcp} (acpplan);
   - CREATE INDEX x_{hesAcp}_acpspef ON {dataDb}.{hesAcp} (acpspef);
   - CREATE INDEX x_{hesAcp}_orgsup ON {dataDb}.{hesAcp} (orgsup);
-  - CREATE INDEX x_{hesAcp}_acdpqind ON {dataDb}.{hesAcp} (acdpqind);
+  - CREATE INDEX x_{hesAcp}_acpdqind ON {dataDb}.{hesAcp} (acpdqind);
   # hesCcare
   - CREATE INDEX x_{hesCcare}_patid ON {dataDb}.{hesCcare} (patid);
   - CREATE INDEX x_{hesCcare}_spno ON {dataDb}.{hesCcare} (spno);
