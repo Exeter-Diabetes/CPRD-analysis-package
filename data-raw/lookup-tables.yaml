@@ -340,8 +340,9 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (prodcodeid, Acarbose, DPP4, GIPGLP1, Glinide, GLP1, ldSema, hdSema, oSema, sema_query, MFN, SGLT2, SU, TZD, INS, drug_substance1, @drug_substance2)
-      SET drug_substance2=NULLIF(@drug_substance2,'');
+      (prodcodeid, drug_class_1, @drug_class_2, drug_substance_1, @drug_substance_2)
+      SET drug_class_2=NULLIF(@drug_class_2,''),
+      drug_substance_2=NULLIF(@drug_substance_2,'');
   orgType:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{orgType};
