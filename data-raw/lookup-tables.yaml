@@ -327,22 +327,10 @@ tables:
     create: |
       CREATE TABLE IF NOT EXISTS {dataDb}.{ohaLookup}
       (prodcodeid BIGINT UNSIGNED,
-      Acarbose BOOL,
-      DPP4 BOOL,
-      GIPGLP1 BOOL,
-      Glinide BOOL,
-      GLP1 BOOL,
-      ldSema BOOL,
-      hdSema BOOL,
-      oSema BOOL,
-      sema_query BOOL,
-      MFN BOOL,
-      SGLT2 BOOL,
-      SU BOOL,
-      TZD BOOL,
-      INS BOOL,
-      drug_substance1 varchar(30),
-      drug_substance2 varchar(30),
+      drug_class_1 varchar(10),
+      drug_class_2 varchar(10),
+      drug_substance_1 varchar(30),
+      drug_substance_2 varchar(30),
       PRIMARY KEY (prodcodeid))
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci;
@@ -352,8 +340,9 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (prodcodeid, Acarbose, DPP4, GIPGLP1, Glinide, GLP1, ldSema, hdSema, oSema, sema_query, MFN, SGLT2, SU, TZD, INS, drug_substance1, @drug_substance2)
-      SET drug_substance2=NULLIF(@drug_substance2,'');
+      (prodcodeid, drug_class_1, @drug_class_2, drug_substance_1, @drug_substance_2)
+      SET drug_class_2=NULLIF(@drug_class_2,''),
+      drug_substance_2=NULLIF(@drug_substance_2,'');
   orgType:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{orgType};
