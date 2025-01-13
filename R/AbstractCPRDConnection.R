@@ -159,7 +159,7 @@ AbstractCPRDConnection = R6::R6Class("AbstractCPRDConnection", public=list(
   #' @param database the database
   tableExists = function(table, database=self$.analysisDb) {
     table = self$conv(table)
-    DBI::dbExistsTable(self$.con, dbQualifiedTable(database, table))
+    DBI::dbExistsTable(self$.con, dbQualifiedTable(database, paste0("`", table, "`")))
   },
 
   conv = function(name) {
