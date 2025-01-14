@@ -100,7 +100,7 @@ CPRDAnalysis = R6::R6Class("CPRDAnalysis", inherit = AbstractCPRDConnection, pub
     # table exists already
     if(!recompute & self$tableExists(tmpTableName, self$.analysisDb)) {
       return(dplyr::tbl(self$.con, id))
-     message("using pre-existing cached table")
+      message("using pre-existing cached table")
     }
     # table exists already but we have to recompute it
     if(recompute & self$tableExists(tmpTableName, self$.analysisDb)) {
