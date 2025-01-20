@@ -135,9 +135,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (medcodeid, term, originalreadcode, @orig_cleansedreadcode,
-      snomedctconceptid, snomedctdescriptionid,
-      @orig_releaseid, emiscodecatid)
+      (medcodeid, @observations, originalreadcode, @orig_cleansedreadcode, term, snomedctconceptid, snomedctdescriptionid, @orig_releaseid, emiscodecatid)
       SET cleansedreadcode = NULLIF(@orig_cleansedreadcode,''),
       releaseid = NULLIF(@orig_releaseid,'');
   productDict:
@@ -154,7 +152,6 @@ tables:
       drugsubstancename VARCHAR(999),
       substancestrength VARCHAR(999),
       bnfchapter VARCHAR(999),
-      releaseid VARCHAR(100),
       PRIMARY KEY (prodcodeid))
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci;
@@ -164,7 +161,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (prodcodeid, @orig_dmdid, @orig_termfromemis, @orig_productname, @orig_formulation, @orig_routeofadministration, @orig_drugsubstancename, @orig_substancestrength, @orig_bnfchapter, @orig_releaseid)
+      (prodcodeid, @orig_dmdid, @orig_termfromemis, @orig_productname, @orig_formulation, @orig_routeofadministration, @orig_drugsubstancename, @orig_substancestrength, @orig_bnfchapter, @drugIssues)
       SET dmdid = NULLIF(@orig_dmdid,''),
       termfromemis = @orig_termfromemis,
       productname = IF(@orig_productname='',@orig_termfromemis,@orig_productname),
@@ -172,8 +169,7 @@ tables:
       routeofadministration = NULLIF(@orig_routeofadministration,''),
       drugsubstancename = NULLIF(@orig_drugsubstancename,''),
       substancestrength = NULLIF(@orig_substancestrength,''),
-      bnfchapter = NULLIF(@orig_bnfchapter,''),
-      releaseid = NULLIF(@orig_releaseid,'');
+      bnfchapter = NULLIF(@orig_bnfchapter,'');
   commonDose:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{commonDose};
