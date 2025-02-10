@@ -53,6 +53,8 @@ naming:
   tretspef: rl_tretspef
   trustid: rl_trustid
   unitbedconfig: rl_unitbedconfig
+  pod_cod: rl_pod_cod
+  pod_establishment_type: rl_pod_establishment_type
 keys:
   medDict: "medcodeid"
   productDict: "prodcodeid"
@@ -112,6 +114,8 @@ paths:
   tretspef: "{refPath}/tretspef.txt"
   trustid: "{refPath}/trustid.txt"
   unitbedconfig: "{refPath}/unitbedconfig.txt"
+  pod_cod: "{refPath}/pod_cod.txt"
+  pod_establishment_type: "{refPath}/pod_establishment_type.txt"
 tables:
   medDict:
     drop: |
@@ -1033,19 +1037,22 @@ tables:
     create: |
       CREATE TABLE IF NOT EXISTS {dataDb}.{tretspef}
       (tretspef CHAR(4),
-      description_01Apr2004_onwards VARCHAR(200),
-      description_up_to_31Mar2004 VARCHAR(100),
+      description_2023_onwards VARCHAR(100),
+      description_2004_2023 VARCHAR(200),
+      description_pre_2004 VARCHAR(100),
       PRIMARY KEY (tretspef))
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci;
     load: |
       LOAD DATA INFILE '{path}' IGNORE
-      INTO TABLE cprd_data.rl_tretspef
+      INTO TABLE {dataDb}.{tretspef}
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (tretspef, description_01Apr2004_onwards, @description_up_to_31Mar2004)
-      SET description_up_to_31Mar2004 = NULLIF(@description_up_to_31Mar2004,'');
+      (tretspef, @description_2023_onwards, @description_2004_2023, @description_pre_2004)
+      SET description_2023_onwards = NULLIF(@description_2023_onwards,''),
+      description_2004_2023 = NULLIF(@description_2004_2023,''),
+      description_pre_2004 = NULLIF(@description_pre_2004,'');
   trustid:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{trustid}
@@ -1080,3 +1087,37 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (unitbedconfig, description);
+  pod_cod:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{pod_cod}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{pod_cod}
+      (pod_cod CHAR(1),
+      description VARCHAR(30),
+      PRIMARY KEY (pod_cod))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{pod_cod}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (pod_cod, description);
+  pod_establishment_type:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{pod_establishment_type}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{pod_establishment_type}
+      (pod_establishment_type TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (pod_establishment_type))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{pod_establishment_type}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (pod_establishment_type, description);

@@ -285,10 +285,8 @@ tables:
       CREATE TABLE IF NOT EXISTS {dataDb}.{hesPatient}
       (patid BIGINT UNSIGNED NOT NULL,
       pracid MEDIUMINT,
-      gen_hesid BIGINT UNSIGNED,
-      n_patid_hes SMALLINT,
+      cprd_mpsid BIGINT UNSIGNED,
       gen_ethnicity TINYINT,
-      match_rank TINYINT,
       PRIMARY KEY (patid))
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
@@ -297,7 +295,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, pracid, gen_hesid, n_patid_hes, @gen_ethnicity, match_rank)
+      (patid, pracid, cprd_mpsid, @gen_ethnicity)
       SET gen_ethnicity = IF(@gen_ethnicity = 'White', 1,
       IF(@gen_ethnicity = 'Bl_Carib', 2,
       IF(@gen_ethnicity = 'Bl_Afric', 3,
@@ -335,10 +333,10 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (patid, spno, @admidate, @discharged, admimeth, admisorc, disdest, dismeth, @duration, @elecdate, @elecdur)
-      SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%d/%m/%Y'),
-      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%d/%m/%Y'),
+      SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%Y/%m/%d'),
+      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%Y/%m/%d'),
       duration = NULLIF(@duration,''),
-      elecdate = STR_TO_DATE(NULLIF(@elecdate,''),'%d/%m/%Y'),
+      elecdate = STR_TO_DATE(NULLIF(@elecdate,''),'%Y/%m/%d'),
       elecdur = NULLIF(@elecdur,'')
   hesEpisodes:
     drop: |
@@ -374,14 +372,19 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, spno, epikey, @admidate, @epistart, @epiend, @discharged, eorder, @epidur, epitype, admimeth, admisorc, disdest, dismeth, mainspef, tretspef, @pconsult, intmanig, classpat, @firstreg, @ethnos)
-      SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%d/%m/%Y'),
-      epistart = STR_TO_DATE(NULLIF(@epistart,''),'%d/%m/%Y'),
-      epiend = STR_TO_DATE(NULLIF(@epiend,''),'%d/%m/%Y'),
-      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%d/%m/%Y'),
+      (patid, spno, epikey, @admidate, @epistart, @epiend, @discharged, eorder, @epidur, epitype, admimeth, @admisorc, @disdest, dismeth, @mainspef, @tretspef, @pconsult, @intmanig, classpat, @firstreg, @ethnos)
+      SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%Y/%m/%d'),
+      epistart = STR_TO_DATE(NULLIF(@epistart,''),'%Y/%m/%d'),
+      epiend = STR_TO_DATE(NULLIF(@epiend,''),'%Y/%m/%d'),
+      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%Y/%m/%d'),
       epidur = NULLIF(@epidur,''),
+      admisorc = NULLIF(@admisorc,''),
+      disdest = NULLIF(@disdest,''),
+      tretspef = NULLIF(NULLIF(@tretspef,''),'000'),
+      mainspef = NULLIF(@mainspef,''),
       pconsult = IF(@pconsult='&' OR @pconsult='99',NULL,@pconsult),
-      firstreg = IF(@firstreg='N',1,IF(@firstreg='' or @firstreg='?',NULL,@firstreg)),
+      intmanig = NULLIF(@intmanig,''),
+      firstreg = NULLIF(@firstreg,''),
       ethnos = IF(@ethnos = 'White', 1,
       IF(@ethnos = 'Bl_Carib', 2,
       IF(@ethnos = 'Bl_Afric', 3,
@@ -415,9 +418,10 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, spno, epikey, @epistart, @epiend, ICD, @ICDx, d_order)
-      SET epistart = STR_TO_DATE(NULLIF(@epistart,''),'%d/%m/%Y'),
-      epiend = STR_TO_DATE(NULLIF(@epiend,''),'%d/%m/%Y'),
+      (patid, spno, epikey, @epistart, @epiend, @ICD, @ICDx, d_order)
+      SET epistart = STR_TO_DATE(NULLIF(@epistart,''),'%Y/%m/%d'),
+      epiend = STR_TO_DATE(NULLIF(@epiend,''),'%Y/%m/%d'),
+      ICD = NULLIF(@ICD,'-.'),
       ICDx = NULLIF(@ICDx,'')
   hesDiagnosisHosp:
     drop: |
@@ -438,9 +442,10 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, spno, @admidate, @discharged, ICD, @ICDx)
-      SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%d/%m/%Y'),
-      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%d/%m/%Y'),
+      (patid, spno, @admidate, @discharged, @ICD, @ICDx)
+      SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%Y/%m/%d'),
+      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%Y/%m/%d'),
+      ICD = NULLIF(@ICD,'-.'),
       ICDx = NULLIF(@ICDx,'')
   hesPrimaryDiagHosp:
     drop: |
@@ -462,8 +467,8 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (patid, spno, @admidate, @discharged, ICD_PRIMARY, @ICDx)
-      SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%d/%m/%Y'),
-      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%d/%m/%Y'),
+      SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%Y/%m/%d'),
+      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%Y/%m/%d'),
       ICDx = NULLIF(@ICDx,'')
   hesProceduresEpi:
     drop: |
@@ -489,12 +494,12 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (patid, spno, epikey, @admidate, @epistart, @epiend, @discharged, @OPCS, @evdate, p_order)
-      SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%d/%m/%Y'),
-      epistart = STR_TO_DATE(NULLIF(@epistart,''),'%d/%m/%Y'),
-      epiend = STR_TO_DATE(NULLIF(@epiend,''),'%d/%m/%Y'),
-      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%d/%m/%Y'),
-      OPCS=IF(@OPCS='&',NULL,@OPCS),
-      evdate = STR_TO_DATE(NULLIF(@evdate,''),'%d/%m/%Y')
+      SET admidate = STR_TO_DATE(NULLIF(@admidate,''),'%Y/%m/%d'),
+      epistart = STR_TO_DATE(NULLIF(@epistart,''),'%Y/%m/%d'),
+      epiend = STR_TO_DATE(NULLIF(@epiend,''),'%Y/%m/%d'),
+      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%Y/%m/%d'),
+      OPCS=NULLIF(NULLIF(@OPCS,''), '&'),
+      evdate = STR_TO_DATE(NULLIF(@evdate,''),'%Y/%m/%d')
   hesAcp:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{hesAcp}
@@ -598,17 +603,17 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (patid, spno, epikey, @admidate, @discharged, @epistart, @epiend, eorder, @ccstartdate, @ccstarttime, @ccdisrdydate, @ccdisrdytime, @ccdisdate, @ccdistime, @ccadmitype, @ccadmisorc, @ccsorcloc, @ccdisstat, @ccdisdest, @ccdisloc, @cclev2days, @cclev3days, @bcardsupdays, @acardsupdays, @bressupdays, @aressupdays, @gisupdays, @liversupdays, @neurosupdays, @rensupdays, @dermsupdays, @orgsupmax, @ccunitfun, @unitbedconfig, @bestmatch, ccapcrel)
-      SET admidate = STR_TO_DATE(@admidate,'%d/%m/%Y'),
-      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%d/%m/%Y'),
-      epistart = STR_TO_DATE(@epistart,'%d/%m/%Y'),
-      epiend = STR_TO_DATE(@epiend,'%d/%m/%Y'),
-      ccstartdate = STR_TO_DATE(@ccstartdate,'%d/%m/%Y'),
+      SET admidate = STR_TO_DATE(@admidate,'%Y/%m/%d'),
+      discharged = STR_TO_DATE(NULLIF(@discharged,''),'%Y/%m/%d'),
+      epistart = STR_TO_DATE(@epistart,'%Y/%m/%d'),
+      epiend = STR_TO_DATE(@epiend,'%Y/%m/%d'),
+      ccstartdate = STR_TO_DATE(@ccstartdate,'%Y/%m/%d'),
       ccstarttime = NULLIF(@ccstarttime,''),
-      ccdisrdydate = STR_TO_DATE(NULLIF(@ccdisrdydate,''),'%d/%m/%Y'),
+      ccdisrdydate = STR_TO_DATE(NULLIF(@ccdisrdydate,''),'%Y/%m/%d'),
       ccdisrdytime = NULLIF(@ccdisrdytime,''),
-      ccdisdate = STR_TO_DATE(@ccdisdate,'%d/%m/%Y'),
+      ccdisdate = STR_TO_DATE(@ccdisdate,'%Y/%m/%d'),
       ccdistime = NULLIF(@ccdistime,''),
-      ccadmitype = NULLIF(@ccadmitype,''),
+      ccadmitype = NULLIF(NULLIF(@ccadmitype,''), 'NU'),
       ccadmisorc = NULLIF(@ccadmisorc,''),
       ccsorcloc = NULLIF(@ccsorcloc,''),
       ccdisstat = NULLIF(@ccdisstat,''),
@@ -795,10 +800,8 @@ indexes:
   # Linkage data (index all fields)
   # hesPatient
   - CREATE INDEX x_{hesPatient}_pracid ON {dataDb}.{hesPatient} (pracid);
-  - CREATE INDEX x_{hesPatient}_gen_hesid ON {dataDb}.{hesPatient} (gen_hesid);
-  - CREATE INDEX x_{hesPatient}_n_patid_hes ON {dataDb}.{hesPatient} (n_patid_hes);
+  - CREATE INDEX x_{hesPatient}_cprd_mpsid ON {dataDb}.{hesPatient} (cprd_mpsid);
   - CREATE INDEX x_{hesPatient}_gen_ethnicity ON {dataDb}.{hesPatient} (gen_ethnicity);
-  - CREATE INDEX x_{hesPatient}_match_rank ON {dataDb}.{hesPatient} (match_rank);
   # hesHospital
   - CREATE INDEX x_{hesHospital}_patid ON {dataDb}.{hesHospital} (patid);
   - CREATE INDEX x_{hesHospital}_spno ON {dataDb}.{hesHospital} (spno);
@@ -927,7 +930,7 @@ indexes:
   - CREATE INDEX x_{hesCcare}_unitbedconfig ON {dataDb}.{hesCcare} (unitbedconfig);
   - CREATE INDEX x_{hesCcare}_bestmatch ON {dataDb}.{hesCcare} (bestmatch);
   - CREATE INDEX x_{hesCcare}_ccapcrel ON {dataDb}.{hesCcare} (ccapcrel);
-  # patientImd2015
+  # patientImd
   - CREATE INDEX x_{patientImd}_pracid ON {dataDb}.{patientImd} (pracid);
   - CREATE INDEX x_{patientImd}_imd_decile ON {dataDb}.{patientImd} (imd_decile);
   # practiceImd
