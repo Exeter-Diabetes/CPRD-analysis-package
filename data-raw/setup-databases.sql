@@ -76,10 +76,10 @@ GRANT ALL privileges ON `cprd_jun24dm_analysis`.* TO `role_cprd_loader`@`%`;
 # 2) Admin role
 CREATE ROLE IF NOT EXISTS `role_cprd_admin`;
 # Creates and maintains code sets within the database.
-# GRANT SELECT ON `cprd_data_dev` TO `role_cprd_admin`@`%`;
-# GRANT SELECT ON `cprd_data` TO `role_cprd_admin`@`%`;
-# GRANT ALL privileges ON `cprd_analysis_dev` TO `role_cprd_admin`@`%`;
-# GRANT ALL privileges ON `cprd_analysis` TO `role_cprd_admin`@`%`;
+# GRANT SELECT ON `cprd_data_dev`.* TO `role_cprd_admin`@`%`;
+# GRANT SELECT ON `cprd_data`.* TO `role_cprd_admin`@`%`;
+# GRANT ALL privileges ON `cprd_analysis_dev`.* TO `role_cprd_admin`@`%`;
+# GRANT ALL privileges ON `cprd_analysis`.* TO `role_cprd_admin`@`%`;
 
 # GRANT SELECT ON `full_cprd_data_dev`.* TO `role_cprd_admin`@`%`;
 # GRANT SELECT ON `full_cprd_data`.* TO `role_cprd_admin`@`%`;
@@ -103,25 +103,32 @@ GRANT SELECT ON `cprd_jun24dm_data`.* TO `role_cprd_admin`@`%`;
 GRANT ALL privileges ON `cprd_jun24dm_analysis`.* TO `role_cprd_admin`@`%`;
 
 
-# 3) Reader role
-# Currently not using
-CREATE ROLE IF NOT EXISTS `role_cprd_read`;
-# creates specific queries for an analysis using existing code sets.
-# Can create interim tables in the analysis database (formally only dev analysis)
-# GRANT SELECT ON `cprd_data_dev`.* TO `role_cprd_read`@`%`;
-# GRANT SELECT ON `cprd_data`.* TO `role_cprd_read`@`%`;
-# GRANT ALL privileges ON `cprd_analysis_dev`.* TO `role_cprd_read`@`%`;
-# GRANT SELECT ON `cprd_analysis`.* TO `role_cprd_read`@`%`;
+# 3) User role
+CREATE ROLE IF NOT EXISTS `role_cprd_user`;
+#As for role_cprd_admin, but can't alter cprd_jun24dm_analysis.code_sets due to differences in CPRD-analysis-package (identical here)
 
-# GRANT SELECT ON `full_cprd_data_dev`.* TO `role_cprd_read`@`%`;
-# GRANT SELECT ON `full_cprd_data`.* TO `role_cprd_read`@`%`;
-# GRANT ALL privileges ON `full_cprd_analysis_dev`.* TO `role_cprd_read`@`%`;
-# GRANT SELECT ON `full_cprd_analysis`.* TO `role_cprd_read`@`%`;
+GRANT SELECT ON `cprd_data_dev`.* TO `role_cprd_user`@`%`;
+GRANT SELECT ON `cprd_data`.* TO `role_cprd_user`@`%`;
+GRANT ALL privileges ON `cprd_analysis_dev`.* TO `role_cprd_user`@`%`;
+GRANT ALL privileges ON `cprd_analysis`.* TO `role_cprd_user`@`%`;
 
-# GRANT SELECT ON `cprd_dementia_data_dev`.* TO `role_cprd_read`@`%`;
-# GRANT SELECT ON `cprd_dementia_data`.* TO `role_cprd_read`@`%`;
-# GRANT SELECT ON `cprd_dementia_analysis`.* TO `role_cprd_read`@`%`;
+GRANT SELECT ON `full_cprd_data_dev`.* TO `role_cprd_user`@`%`;
+GRANT SELECT ON `full_cprd_data`.* TO `role_cprd_user`@`%`;
+GRANT ALL privileges ON `full_cprd_analysis_dev`.* TO `role_cprd_user`@`%`;
+GRANT ALL privileges ON `full_cprd_analysis`.* TO `role_cprd_user`@`%`;
 
-# GRANT SELECT ON `cprd_feb24dm_data_dev`.* TO `role_cprd_read`@`%`;
-# GRANT SELECT ON `cprd_feb24dm_data`.* TO `role_cprd_read`@`%`;
-# GRANT SELECT ON `cprd_feb24dm_analysis`.* TO `role_cprd_read`@`%`;
+GRANT SELECT ON `cprd_dementia_data_dev`.* TO `role_cprd_user`@`%`;
+GRANT SELECT ON `cprd_dementia_data`.* TO `role_cprd_user`@`%`;
+GRANT ALL privileges ON `cprd_dementia_analysis`.* TO `role_cprd_user`@`%`;
+
+GRANT SELECT ON `cprd_feb24dm_data_dev`.* TO `role_cprd_user`@`%`;
+GRANT SELECT ON `cprd_feb24dm_data`.* TO `role_cprd_user`@`%`;
+GRANT ALL privileges ON `cprd_feb24dm_analysis`.* TO `role_cprd_user`@`%`;
+
+GRANT SELECT ON `cprd_feb24depression_data_dev`.* TO `role_cprd_user`@`%`;
+GRANT SELECT ON `cprd_feb24depression_data`.* TO `role_cprd_user`@`%`;
+GRANT ALL privileges ON `cprd_feb24depression_analysis`.* TO `role_cprd_user`@`%`;
+
+GRANT SELECT ON `cprd_jun24dm_data_dev`.* TO `role_cprd_user`@`%`;
+GRANT SELECT ON `cprd_jun24dm_data`.* TO `role_cprd_user`@`%`;
+GRANT ALL privileges ON `cprd_jun24dm_analysis`.* TO `role_cprd_user`@`%`;

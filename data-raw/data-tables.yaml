@@ -650,7 +650,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, pracid, @imd_10)
+      (patid, pracid, @imd_decile)
       SET imd_decile = NULLIF(@imd_decile,'')
   practiceImd:
     drop: |
