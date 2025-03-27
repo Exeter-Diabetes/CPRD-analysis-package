@@ -31,3 +31,8 @@ Data QC after loading:
 Further work:
 * Decide whether any codelists need updating - medications might
 * Check numunitid changes for biomarkers if want to use EHRBiomarkr package? Between 2020 and 2024 seemed fine (no changes)
+
+
+* Check whether death data has decimal points in ICD10 codes or not (HES does) - in 2020 did, in 2024 didn't
+
+

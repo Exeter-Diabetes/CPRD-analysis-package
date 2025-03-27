@@ -173,6 +173,7 @@ icd9_secondary_causes <- interim_1 %>%
 
 
 # Make long table of all secondary cause then convert to wide
+# Also add in decimal points
 all_secondary_causes_long <- interim_1 %>%
   select(patid, starts_with("s_cod_code")) %>%
   pivot_longer(cols=c(starts_with("s_cod_code"))) %>%
@@ -184,15 +185,17 @@ all_secondary_causes_long <- interim_1 %>%
   summarise(id=n()) %>%
   ungroup() %>%
   select(-id) %>%
+  mutate(cause=ifelse(nchar(cause)==3, cause, paste0(substr(cause, 1, 3), ".", substr(cause, 4, 4)))) %>%
   analysis$cached("all_secondary_causes_long", indexes="patid")
   
 all_secondary_causes_wide <- all_secondary_causes_long %>%
   group_by(patid) %>%
   dbplyr::window_order(cause) %>%
   mutate(id=paste0("cause_", row_number())) %>%
+  dbplyr::window_order() %>%
   ungroup() %>%
   pivot_wider(id_cols="patid", names_from="id", values_from="cause") %>%
-  analysis$cached("all_secondary_causes_wide", unqiue_indexes="patid")
+  analysis$cached("all_secondary_causes_wide", unique_indexes="patid")
 # max number of causes = 17
 
 
@@ -215,7 +218,8 @@ icd9_underlying_causes <- interim_1 %>%
   analysis$cached("icd9_underlying_causes", indexes="patid")
 
 
-# Make long table of all secondary cause then convert to wide
+# Make long table of all primary causes then convert to wide
+# Also add in decimal points
 all_underlying_causes_long <- interim_1 %>%
   select(patid, s_underlying_cod_icd10) %>%
   filter(!is.na(s_underlying_cod_icd10)) %>%
@@ -226,15 +230,18 @@ all_underlying_causes_long <- interim_1 %>%
   summarise(id=n()) %>%
   ungroup() %>%
   select(-id) %>%
+  mutate(underlying_cause=ifelse(nchar(underlying_cause)==3, underlying_cause, paste0(substr(underlying_cause, 1, 3), ".", substr(underlying_cause, 4, 4)))) %>%
   analysis$cached("all_underlying_causes_long", indexes="patid")
+
 
 all_underlying_causes_wide <- all_underlying_causes_long %>%
   group_by(patid) %>%
   dbplyr::window_order(underlying_cause) %>%
   mutate(id=paste0("underlying_cause_", row_number())) %>%
+  dbplyr::window_order() %>%
   ungroup() %>%
   pivot_wider(id_cols="patid", names_from="id", values_from="underlying_cause") %>%
-  analysis$cached("all_underlying_causes_wide", unqiue_indexes="patid")
+  analysis$cached("all_underlying_causes_wide", unique_indexes="patid")
 # max number of causes = 3
 
 
