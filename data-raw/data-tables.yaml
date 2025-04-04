@@ -737,6 +737,41 @@ tables:
       cause13 = NULLIF(@cause13,''),
       cause14 = NULLIF(@cause14,''),
       cause15 = NULLIF(@cause15,'')
+  denominatorData:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{denominatorData}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{denominatorData}
+      (patid BIGINT UNSIGNED NOT NULL,
+      pracid MEDIUMINT,
+      gender SMALLINT,
+      yob SMALLINT,
+      mob TINYINT,
+      emis_ddate DATE,
+      regstartdate DATE,
+      patienttypeid MEDIUMINT,
+      regenddate DATE,
+      acceptable BOOL,
+      cprd_ddate DATE,
+      uts DATE,
+      lcd DATE,
+      region MEDIUMINT,
+      PRIMARY KEY (patid))
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{denominatorData}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patid, pracid, gender, yob, @orig_mob, @orig_emis_ddate, @orig_regstartdate, patienttypeid, @orig_regenddate, acceptable, @orig_cprd_ddate, @orig_uts, lcd, @orig_region)
+      SET mob = NULLIF(@orig_mob,''),
+      emis_ddate = STR_TO_DATE(NULLIF(@orig_emis_ddate,''),'%d/%m/%Y'),
+      regstartdate = STR_TO_DATE(@orig_regstartdate,'%d/%m/%Y'),
+      regenddate = STR_TO_DATE(NULLIF(@orig_regenddate,''),'%d/%m/%Y'),
+      cprd_ddate = STR_TO_DATE(NULLIF(@orig_cprd_ddate,''),'%d/%m/%Y'),
+      uts = STR_TO_DATE(NULLIF(@orig_uts,''),'%d/%m/%Y'),
+      region = NULLIF(@orig_region,'')
 indexes:
   # Primary care data
   # patid
@@ -758,6 +793,7 @@ indexes:
   - CREATE INDEX x_{problem}_pracid ON {dataDb}.{problem} (pracid);
   - CREATE INDEX x_{referral}_pracid ON {dataDb}.{referral} (pracid);
   - CREATE INDEX x_{staff}_pracid ON {dataDb}.{staff} (pracid);
+  - CREATE INDEX x_{denominatorData}_pracid ON {dataDb}.{staff} (denominatorData);
   # dates
   - CREATE INDEX x_{consultation}_consdate ON {dataDb}.{consultation} (consdate);
   - CREATE INDEX x_{drugIssue}_issuedate ON {dataDb}.{drugIssue} (issuedate);
@@ -769,6 +805,12 @@ indexes:
   - CREATE INDEX x_{patient}_regstartdate ON {dataDb}.{patient} (regstartdate);
   - CREATE INDEX x_{practice}_lcd ON {dataDb}.{practice} (lcd);
   - CREATE INDEX x_{problem}_probenddate ON {dataDb}.{problem} (probenddate);
+  - CREATE INDEX x_{denominatorData}_dob ON {dataDb}.{denominatorData} (yob,mob);
+  - CREATE INDEX x_{denominatorData}_cprd_ddate ON {dataDb}.{denominatorData} (cprd_ddate);
+  - CREATE INDEX x_{denominatorData}_emis_ddate ON {dataDb}.{denominatorData} (emis_ddate);
+  - CREATE INDEX x_{denominatorData}_regenddate ON {dataDb}.{denominatorData} (regenddate);
+  - CREATE INDEX x_{denominatorData}_regstartdate ON {dataDb}.{denominatorData} (regstartdate);
+  - CREATE INDEX x_{denominatorData}_lcd ON {dataDb}.{denominatorData} (lcd);
   # medCodes / prodCodes and associated
   - CREATE INDEX x_{consultation}_consmedcodeid ON {dataDb}.{consultation} (consmedcodeid);
   - CREATE INDEX x_{drugIssue}_prodcodeid ON {dataDb}.{drugIssue} (prodcodeid);
@@ -779,6 +821,7 @@ indexes:
   - CREATE INDEX x_{patient}_patienttypeid ON {dataDb}.{patient} (patienttypeid);
   - CREATE INDEX x_{problem}_probstatusid ON {dataDb}.{problem} (probstatusid);
   - CREATE INDEX x_{referral}_refservicetypeid ON {dataDb}.{referral} (refservicetypeid);
+  - CREATE INDEX x_{denominatorData}_patienttypeid ON {dataDb}.{denominatorData} (patienttypeid);
   # staffid
   - CREATE INDEX x_{consultation}_staffid ON {dataDb}.{consultation} (staffid);
   - CREATE INDEX x_{drugIssue}_staffid ON {dataDb}.{drugIssue} (staffid);
@@ -798,6 +841,8 @@ indexes:
   - CREATE INDEX x_{referral}_refurgencyid ON {dataDb}.{referral} (refurgencyid);
   - CREATE INDEX x_{referral}_refmodeid ON {dataDb}.{referral} (refmodeid);
   - CREATE INDEX x_{staff}_jobcatid ON {dataDb}.{staff} (jobcatid);
+  - CREATE INDEX x_{denominatorData}_gender ON {dataDb}.{denominatorData} (gender);
+  - CREATE INDEX x_{denominatorData}_region ON {dataDb}.{denominatorData} (region);
   # Linkage data (index all fields)
   # hesPatient
   - CREATE INDEX x_{hesPatient}_pracid ON {dataDb}.{hesPatient} (pracid);
