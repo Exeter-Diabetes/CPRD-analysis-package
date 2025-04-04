@@ -794,7 +794,7 @@ indexes:
   - CREATE INDEX x_{problem}_pracid ON {dataDb}.{problem} (pracid);
   - CREATE INDEX x_{referral}_pracid ON {dataDb}.{referral} (pracid);
   - CREATE INDEX x_{staff}_pracid ON {dataDb}.{staff} (pracid);
-  - CREATE INDEX x_{denominatorData}_pracid ON {dataDb}.{staff} (denominatorData);
+  - CREATE INDEX x_{denominatorData}_pracid ON {dataDb}.{denominatorData} (pracid);
   # dates
   - CREATE INDEX x_{consultation}_consdate ON {dataDb}.{consultation} (consdate);
   - CREATE INDEX x_{drugIssue}_issuedate ON {dataDb}.{drugIssue} (issuedate);
