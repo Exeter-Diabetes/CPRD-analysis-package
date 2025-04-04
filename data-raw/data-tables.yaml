@@ -764,13 +764,14 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
-      (patid, pracid, gender, yob, @orig_mob, @orig_emis_ddate, @orig_regstartdate, patienttypeid, @orig_regenddate, acceptable, @orig_cprd_ddate, @orig_uts, lcd, @orig_region)
+      (patid, pracid, gender, yob, @orig_mob, @orig_emis_ddate, @orig_regstartdate, patienttypeid, @orig_regenddate, acceptable, @orig_cprd_ddate, @orig_uts, @orig_lcd, @orig_region)
       SET mob = NULLIF(@orig_mob,''),
       emis_ddate = STR_TO_DATE(NULLIF(@orig_emis_ddate,''),'%d/%m/%Y'),
       regstartdate = STR_TO_DATE(@orig_regstartdate,'%d/%m/%Y'),
       regenddate = STR_TO_DATE(NULLIF(@orig_regenddate,''),'%d/%m/%Y'),
       cprd_ddate = STR_TO_DATE(NULLIF(@orig_cprd_ddate,''),'%d/%m/%Y'),
       uts = STR_TO_DATE(NULLIF(@orig_uts,''),'%d/%m/%Y'),
+      lcd = STR_TO_DATE(@orig_lcd,'%d/%m/%Y'),
       region = NULLIF(@orig_region,'')
 indexes:
   # Primary care data
