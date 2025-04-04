@@ -20,6 +20,7 @@ naming:
   onsDeath: ons_death
   patientImd: patient_imd
   practiceImd: practice_imd
+  denominatorData: denominator_data
 tables:
   consultation:
     drop: |
