@@ -526,6 +526,7 @@ tables:
       PRIMARY KEY (patid))
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
   visionToEmisMigrators:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{visionToEmisMigrators};
