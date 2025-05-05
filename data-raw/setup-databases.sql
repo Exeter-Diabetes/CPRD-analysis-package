@@ -38,6 +38,11 @@ CREATE SCHEMA IF NOT EXISTS `cprd_jun24dm_data_dev` DEFAULT CHARACTER SET latin1
 CREATE SCHEMA IF NOT EXISTS `cprd_jun24dm_data` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
 CREATE SCHEMA IF NOT EXISTS `cprd_jun24dm_analysis` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
 
+# Create the the databases for 202406 non-diabetes dataset
+CREATE SCHEMA IF NOT EXISTS `cprd_jun24nondm_data_dev` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+CREATE SCHEMA IF NOT EXISTS `cprd_jun24nondm_data` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+CREATE SCHEMA IF NOT EXISTS `cprd_jun24nondm_analysis` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+
 
 # Create the roles:
 # 1) Loader role
@@ -71,6 +76,10 @@ GRANT ALL privileges ON `cprd_feb24depression_analysis`.* TO `role_cprd_loader`@
 GRANT ALL privileges ON `cprd_jun24dm_data_dev`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `cprd_jun24dm_data`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `cprd_jun24dm_analysis`.* TO `role_cprd_loader`@`%`;
+
+GRANT ALL privileges ON `cprd_jun24nondm_data_dev`.* TO `role_cprd_loader`@`%`;
+GRANT ALL privileges ON `cprd_jun24nondm_data`.* TO `role_cprd_loader`@`%`;
+GRANT ALL privileges ON `cprd_jun24nondm_analysis`.* TO `role_cprd_loader`@`%`;
 
 
 # 2) Admin role
@@ -132,3 +141,7 @@ GRANT ALL privileges ON `cprd_feb24depression_analysis`.* TO `role_cprd_user`@`%
 GRANT SELECT ON `cprd_jun24dm_data_dev`.* TO `role_cprd_user`@`%`;
 GRANT SELECT ON `cprd_jun24dm_data`.* TO `role_cprd_user`@`%`;
 GRANT ALL privileges ON `cprd_jun24dm_analysis`.* TO `role_cprd_user`@`%`;
+
+GRANT SELECT ON `cprd_jun24nondm_data_dev`.* TO `role_cprd_user`@`%`;
+GRANT SELECT ON `cprd_jun24nondm_data`.* TO `role_cprd_user`@`%`;
+GRANT ALL privileges ON `cprd_jun24nondm_analysis`.* TO `role_cprd_user`@`%`;

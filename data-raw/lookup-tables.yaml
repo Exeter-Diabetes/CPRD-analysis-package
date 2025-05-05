@@ -61,8 +61,8 @@ keys:
   icd10Dict: "icd10"
   opcs4Dict: "opcs4"
 paths:
-  medDict: "{refPath}/202312_EMISMedicalDictionary.txt"
-  productDict: "{refPath}/202312_EMISProductDictionary.txt"
+  medDict: "{refPath}/202406_EMISMedicalDictionary.txt"
+  productDict: "{refPath}/202406_EMISProductDictionary.txt"
   commonDose: "{refPath}/common_dosages.txt"
   consSource: "{refPath}/ConsSource.txt"
   drugSubstanceClassLookup: "{refPath}/drug_substance_class_lookup_jan24.txt"
