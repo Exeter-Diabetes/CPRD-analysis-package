@@ -111,6 +111,10 @@ GRANT SELECT ON `cprd_jun24dm_data_dev`.* TO `role_cprd_admin`@`%`;
 GRANT SELECT ON `cprd_jun24dm_data`.* TO `role_cprd_admin`@`%`;
 GRANT ALL privileges ON `cprd_jun24dm_analysis`.* TO `role_cprd_admin`@`%`;
 
+GRANT SELECT ON `cprd_jun24nondm_data_dev`.* TO `role_cprd_admin`@`%`;
+GRANT SELECT ON `cprd_jun24nondm_data`.* TO `role_cprd_admin`@`%`;
+GRANT ALL privileges ON `cprd_jun24nondm_analysis`.* TO `role_cprd_admin`@`%`;
+
 
 # 3) User role
 CREATE ROLE IF NOT EXISTS `role_cprd_user`;
@@ -145,3 +149,4 @@ GRANT ALL privileges ON `cprd_jun24dm_analysis`.* TO `role_cprd_user`@`%`;
 GRANT SELECT ON `cprd_jun24nondm_data_dev`.* TO `role_cprd_user`@`%`;
 GRANT SELECT ON `cprd_jun24nondm_data`.* TO `role_cprd_user`@`%`;
 GRANT ALL privileges ON `cprd_jun24nondm_analysis`.* TO `role_cprd_user`@`%`;
+
