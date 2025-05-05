@@ -523,7 +523,7 @@ tables:
       CREATE TABLE IF NOT EXISTS {dataDb}.{validDateLookup}
       (patid BIGINT UNSIGNED,
       min_dob DATE,
-      gp_end_date DATE
+      gp_end_date DATE,
       PRIMARY KEY (patid))
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci;
