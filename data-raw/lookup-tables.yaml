@@ -65,13 +65,13 @@ paths:
   productDict: "{refPath}/202406_EMISProductDictionary.txt"
   commonDose: "{refPath}/common_dosages.txt"
   consSource: "{refPath}/ConsSource.txt"
-  drugSubstanceClassLookup: "{refPath}/drug_substance_class_lookup_jan24.txt"
+  drugSubstanceClassLookup: "{refPath}/drug_substance_class_lookup.txt"
   emisCodeCat: "{refPath}/EmisCodeCat.txt"
   jobCat: "{refPath}/JobCat.txt"
   gender: "{refPath}/Gender.txt"
   numUnit: "{refPath}/NumUnit.txt"
   obsType: "{refPath}/ObsType.txt"
-  ohaLookup: "{refPath}/oha_lookup_jan24.txt"
+  ohaLookup: "{refPath}/oha_lookup.txt"
   orgType: "{refPath}/OrgType.txt"
   parentProbRel: "{refPath}/ParentProbRel.txt"
   patientType: "{refPath}/PatientType.txt"
@@ -516,6 +516,16 @@ tables:
       IGNORE 1 LINES
       (signid, description);
   validDateLookup:
+      drop: |
+      DROP TABLE IF EXISTS {dataDb}.{validDateLookup};
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{validDateLookup}
+      (patid BIGINT UNSIGNED,
+      min_dob DATE,
+      gp_end_date DATE
+      PRIMARY KEY (patid))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
   visionToEmisMigrators:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{visionToEmisMigrators};
