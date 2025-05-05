@@ -82,6 +82,7 @@ paths:
   refUrgency: "{refPath}/RefUrgency.txt"
   region: "{refPath}/Region.txt"
   sign: "{refPath}/Sign.txt"
+  validDateLookup: "{refPath}/valid_date_lookup.txt"
   visionToEmisMigrators: "{refPath}/VisionToEmisMigrators.txt"
   acpdisp: "{refPath}/acpdisp.txt"
   acploc: "{refPath}/acploc.txt"
@@ -527,6 +528,12 @@ tables:
       ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci;
     load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{validDateLookup}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patid, min_dob, gp_end_date);
   visionToEmisMigrators:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{visionToEmisMigrators};
