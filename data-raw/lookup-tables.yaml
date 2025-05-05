@@ -516,7 +516,7 @@ tables:
       IGNORE 1 LINES
       (signid, description);
   validDateLookup:
-      drop: |
+    drop: |
       DROP TABLE IF EXISTS {dataDb}.{validDateLookup};
     create: |
       CREATE TABLE IF NOT EXISTS {dataDb}.{validDateLookup}
