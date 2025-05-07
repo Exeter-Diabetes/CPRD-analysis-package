@@ -289,6 +289,7 @@ tables:
       cprd_mpsid BIGINT UNSIGNED,
       gen_ethnicity TINYINT,
       PRIMARY KEY (patid))
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -326,6 +327,7 @@ tables:
       elecdate DATE,
       elecdur SMALLINT,
       PRIMARY KEY (patid, spno))
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -366,6 +368,7 @@ tables:
       firstreg TINYINT,
       ethnos TINYINT,
       PRIMARY KEY (patid, epikey))
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -412,6 +415,7 @@ tables:
       ICDx CHAR(2),
       d_order TINYINT NOT NULL,
       PRIMARY KEY (patid, epikey, d_order))
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -436,6 +440,7 @@ tables:
       ICD CHAR(5),
       ICDx CHAR(2),
       primary_key INT PRIMARY KEY AUTO_INCREMENT)
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -460,6 +465,7 @@ tables:
       ICD_PRIMARY CHAR(5),
       ICDx CHAR(2),
       primary_key INT PRIMARY KEY AUTO_INCREMENT)
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -487,6 +493,7 @@ tables:
       evdate DATE,
       p_order TINYINT NOT NULL,
       PRIMARY KEY (patid, epikey, p_order))
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -529,6 +536,7 @@ tables:
       orgsup TINYINT,
       acpdqind CHAR(1),
       primary_key INT PRIMARY KEY AUTO_INCREMENT)
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -596,6 +604,7 @@ tables:
       bestmatch BOOL DEFAULT NULL,
       ccapcrel TINYINT,
       primary_key INT PRIMARY KEY AUTO_INCREMENT)
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -644,6 +653,7 @@ tables:
       pracid MEDIUMINT,
       imd_decile TINYINT,
       PRIMARY KEY (patid))
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -709,6 +719,7 @@ tables:
       cause14 VARCHAR(5),
       cause15 VARCHAR(5),
       PRIMARY KEY (patid))
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
@@ -757,6 +768,7 @@ tables:
       lcd DATE,
       region MEDIUMINT,
       PRIMARY KEY (patid))
+      ENGINE=MYISAM
       CHARSET=latin1 COLLATE=latin1_general_ci
     load: |
       LOAD DATA INFILE '{path}' IGNORE
