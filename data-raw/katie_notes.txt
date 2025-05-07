@@ -2,7 +2,7 @@ To add new download:
 * Update 'setup_databases.sql' to add new databases and permissions
 * Update lookup-tables.yaml with new filenames for medical and product dictionaries and drug substance class lookup and oha lookup (last 2 files need adding manually)
 * Add HES lookups to reference-files folder
-* (Run bash script to unzip and rezip folders)
+* (Run bash script to unzip and rezip folders - each zip needs files for one table only (and >1 file I think) - have bash script to sort this out in C:\Users\ky279\OneDrive - University of Exeter\CPRD\2025\Linkage and MM data\denominator_id_files)
 * Make/update .aurum.full-load.yaml with database names and location of raw data on server / where staging should take place (make sure staging area is emptied if previous attempts)
 * Clone CPRD-analysis-package into home folder on Slade using: 'git clone https://github.com/Exeter-Diabetes/CPRD-analysis-package'
 * Using Command prompt/MobaXTerm, move to folder where package is
