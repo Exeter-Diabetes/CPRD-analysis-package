@@ -55,6 +55,20 @@ naming:
   unitbedconfig: rl_unitbedconfig
   pod_cod: rl_pod_cod
   pod_establishment_type: rl_pod_establishment_type
+  numbaby: rl_numbaby
+  neocare: rl_neocare
+  birordr: rl_birordr
+  birstat: rl_birstat
+  biresus: rl_biresus
+  sexbaby: rl_sexbaby
+  delmeth: rl_delmeth
+  delonset: rl_delonset
+  delinten: rl_delinten
+  delplac: rl_delplac
+  delchang: rl_delchang
+  delprean: rl_delprean
+  delposan: rl_delposan
+  delstat: rl_delstat
 keys:
   medDict: "medcodeid"
   productDict: "prodcodeid"
@@ -117,6 +131,20 @@ paths:
   unitbedconfig: "{refPath}/unitbedconfig.txt"
   pod_cod: "{refPath}/pod_cod.txt"
   pod_establishment_type: "{refPath}/pod_establishment_type.txt"
+  numbaby: "{refPath}/numbaby.txt"
+  neocare: "{refPath}/neocare.txt"
+  birordr: "{refPath}/birordr.txt"
+  birstat: "{refPath}/birstat.txt"
+  biresus: "{refPath}/biresus.txt"
+  sexbaby: "{refPath}/sexbaby.txt"
+  delmeth: "{refPath}/delmeth.txt"
+  delonset: "{refPath}/delonset.txt"
+  delinten: "{refPath}/delinten.txt"
+  delplac: "{refPath}/delplac.txt"
+  delchang: "{refPath}/delchang.txt"
+  delprean: "{refPath}/delprean.txt"
+  delposan: "{refPath}/delposan.txt"
+  delstat: "{refPath}/delstat.txt"
 tables:
   medDict:
     drop: |
@@ -1141,3 +1169,241 @@ tables:
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (pod_establishment_type, description);
+  numbaby:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{numbaby}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{numbaby}
+      (numbaby CHAR(1),
+      description VARCHAR(200),
+      PRIMARY KEY (numbaby))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{numbaby}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (numbaby, description);
+  neocare:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{neocare}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{neocare}
+      (neocare TINYINT,
+      description VARCHAR(400),
+      PRIMARY KEY (neocare))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{neocare}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (neocare, description);
+  birordr:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{birordr}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{birordr}
+      (birordr CHAR(1),
+      description VARCHAR(200),
+      PRIMARY KEY (birordr))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{birordr}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (birordr, description);
+  birstat:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{birstat}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{birstat}
+      (birstat TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (birstat))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{birstat}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (birstat, description);
+  biresus:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{biresus}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{biresus}
+      (biresus TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (biresus))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{biresus}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (biresus, description);
+  sexbaby:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{sexbaby}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{sexbaby}
+      (sexbaby TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (sexbaby))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{sexbaby}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (sexbaby, description);
+  delmeth:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{delmeth}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{delmeth}
+      (delmeth CHAR(1),
+      description VARCHAR(200),
+      PRIMARY KEY (delmeth))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{delmeth}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (delmeth, description);
+  delonset:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{delonset}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{delonset}
+      (delonset TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (delonset))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{delonset}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (delonset, description);
+  delinten:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{delinten}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{delinten}
+      (delinten TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (delinten))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{delinten}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (delinten, description);
+  delplac:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{delplac}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{delplac}
+      (delplac TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (delplac))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{delplac}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (delplac, description);
+  delchang:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{delchang}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{delchang}
+      (delchang TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (delchang))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{delchang}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (delchang, description);
+  delprean:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{delprean}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{delprean}
+      (delprean TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (delprean))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{delprean}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (delprean, description);
+  delposan:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{delposan}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{delposan}
+      (delposan TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (delposan))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{delposan}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (delposan, description);
+  delstat:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{delstat}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{delstat}
+      (delstat TINYINT,
+      description VARCHAR(200),
+      PRIMARY KEY (delstat))
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci;
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{delstat}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (delstat, description);

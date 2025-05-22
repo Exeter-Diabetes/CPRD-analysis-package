@@ -14,6 +14,7 @@ naming:
   hesDiagnosisHosp: hes_diagnosis_hosp
   hesEpisodes: hes_episodes
   hesHospital: hes_hospital
+  hesMaternity: hes_maternity
   hesPatient: hes_patient
   hesPrimaryDiagHosp: hes_primary_diag_hosp
   hesProceduresEpi: hes_procedures_epi
@@ -341,6 +342,76 @@ tables:
       duration = NULLIF(@duration,''),
       elecdate = STR_TO_DATE(NULLIF(@elecdate,''),'%Y/%m/%d'),
       elecdur = NULLIF(@elecdur,'')
+  hesMaternity:
+    drop: |
+      DROP TABLE IF EXISTS {dataDb}.{hesMaternity}
+    create: |
+      CREATE TABLE IF NOT EXISTS {dataDb}.{hesMaternity}
+      (patid BIGINT UNSIGNED NOT NULL,
+      spno BIGINT UNSIGNED NOT NULL,
+      epikey BIGINT UNSIGNED NOT NULL,
+      epistart DATE,
+      epiend DATE,
+      eorder SMALLINT,
+      epidur MEDIUMINT,
+      numbaby CHAR(1),
+      numtailb TINYINT,
+      matordr TINYINT,
+      neocare TINYINT,
+      wellbaby CHAR(1),
+      anasdate DATE,
+      birordr CHAR(1),
+      birstat TINYINT,
+      biresus TINYINT,
+      sexbaby TINYINT,
+      birweit SMALLINT,
+      delmeth CHAR(1),
+      delonset TINYINT,
+      delinten TINYINT,
+      delplac TINYINT,
+      delchang TINYINT,
+      delprean TINYINT,
+      delposan TINYINT,
+      delstat TINYINT,
+      anagest SMALLINT,
+      gestat TINYINT,
+      numpreg TINYINT,
+      matage SMALLINT,
+      neodur SMALLINT,
+      antedur SMALLINT,
+      postdur SMALLINT,
+      primary_key INT PRIMARY KEY AUTO_INCREMENT)
+      ENGINE=MYISAM
+      CHARSET=latin1 COLLATE=latin1_general_ci
+    load: |
+      LOAD DATA INFILE '{path}' IGNORE
+      INTO TABLE {dataDb}.{hesMaternity}
+      FIELDS TERMINATED BY '\t'
+      LINES TERMINATED BY '\r\n'
+      IGNORE 1 LINES
+      (patid, spno, epikey, @epistart, @epiend, @eorder, @epidur, numbaby, @numtailb, matordr, @neocare, wellbaby, @anasdate, birordr, @birstat, @biresus, @sexbaby, @birweit, @delmeth, delonset, delinten, @delplac, delchang, delprean, delposan, @delstat, @anagest, @gestat, @numpreg, @matage, @neodur, @antedur, @postdur)
+      SET epistart = STR_TO_DATE(NULLIF(@epistart,''),'%Y/%m/%d'),
+      epiend = STR_TO_DATE(NULLIF(@epiend,''),'%Y/%m/%d'),
+      epidur = NULLIF(@epidur,''),
+      numtailb = NULLIF(@numtailb,''),
+      neocare = NULLIF(@neocare,''),
+      anasdate = STR_TO_DATE(NULLIF(@anasdate,''),'%Y/%m/%d'),
+      birstat = NULLIF(@birstat,''),
+      biresus = NULLIF(@biresus,''),
+      sexbaby = IF(@sexbaby = 'M' OR @sexbaby = '1', 1,
+      IF(@sexbaby = 'F' OR @sexbaby = '2', 2,
+      IF(@sexbaby = '3' OR @sexbaby = '9', 9, NULL))),
+      birweit = IF(@birweit = '9999' OR @birweit = '', NULL, @birweit),
+      delmeth = NULLIF(@delmeth,''),
+      delplac = NULLIF(@delplac,''),
+      delstat = NULLIF(@delstat,''),
+      anagest = NULLIF(@anagest,''),
+      gestat = NULLIF(@gestat,''),
+      numpreg = NULLIF(@numpreg,''),
+      matage = NULLIF(@matage,''),
+      neodur = NULLIF(@neodur,''),
+      antedur = NULLIF(@antedur,''),
+      postdur = NULLIF(@postdur,'')
   hesEpisodes:
     drop: |
       DROP TABLE IF EXISTS {dataDb}.{hesEpisodes}
