@@ -16,7 +16,7 @@ Previously had issue with zip files from CPRD system not being able to be unzipp
 I have bash file in CPRD/2024/MySQL loading to unzip and rezip
 
 Tables made:
-* All primary care tables, also all HES APC (except maternity), patient and practice IMD, and ONS death, plus lookups for these
+* All primary care tables, also all HES APC (not HES HRG), patient and practice IMD, and ONS death, plus lookups for these
 * Linkage tables and their lookups will be empty if data not provided but no errors
 * All these tables, plus patient_test, practice_test, observation_test and drug_issue_test and r_valid_date_lookup need to be present to connect via R
 * SQL scripts in data-raw to make above 5 tables

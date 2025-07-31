@@ -950,7 +950,6 @@ indexes:
   - CREATE INDEX x_{hesMaternity}_epikey ON {dataDb}.{hesMaternity} (epikey);
   - CREATE INDEX x_{hesMaternity}_epistart ON {dataDb}.{hesMaternity} (epistart);
   - CREATE INDEX x_{hesMaternity}_epiend ON {dataDb}.{hesMaternity} (epiend);
-  - CREATE INDEX x_{hesMaternity}_discharged ON {dataDb}.{hesMaternity} (discharged);
   - CREATE INDEX x_{hesMaternity}_eorder ON {dataDb}.{hesMaternity} (eorder);
   - CREATE INDEX x_{hesMaternity}_epidur ON {dataDb}.{hesMaternity} (epidur);
   - CREATE INDEX x_{hesMaternity}_numbaby ON {dataDb}.{hesMaternity} (numbaby);
@@ -967,7 +966,7 @@ indexes:
   - CREATE INDEX x_{hesMaternity}_delmeth ON {dataDb}.{hesMaternity} (delmeth);
   - CREATE INDEX x_{hesMaternity}_delonset ON {dataDb}.{hesMaternity} (delonset);
   - CREATE INDEX x_{hesMaternity}_delinten ON {dataDb}.{hesMaternity} (delinten);
-  - CREATE INDEX x_{hesMaternity}_delpac ON {dataDb}.{hesMaternity} (delpac);
+  - CREATE INDEX x_{hesMaternity}_delplac ON {dataDb}.{hesMaternity} (delplac);
   - CREATE INDEX x_{hesMaternity}_delchang ON {dataDb}.{hesMaternity} (delchang);
   - CREATE INDEX x_{hesMaternity}_delprean ON {dataDb}.{hesMaternity} (delprean);
   - CREATE INDEX x_{hesMaternity}_delposan ON {dataDb}.{hesMaternity} (delposan);
