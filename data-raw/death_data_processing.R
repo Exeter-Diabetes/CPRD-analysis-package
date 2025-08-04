@@ -1,10 +1,17 @@
 
+# Keep ICD9 and 10 causes separate
+
+
 # Setup
 library(tidyverse)
 library(aurum)
 rm(list=ls())
 
-cprd = CPRDData$new(cprdEnv = "diabetes-jun2024", cprdConf = "~/.aurum.yaml")
+cprd = CPRDData$new(cprdEnv = "nondiabetes-jun2024", cprdConf = "~/.aurum.yaml")
+
+cprd$tables$patient <- tbl(cprd$.con, dbplyr::in_schema("cprd_jun24nondm_data", "patient"))
+cprd$tables$old_patient <- tbl(cprd$.con, dbplyr::in_schema("cprd_jun24dm_data", "patient"))
+
 
 # Get raw death data
 analysis = cprd$analysis("temporary")
@@ -15,12 +22,21 @@ analysis = cprd$analysis("ons_death")
 
 # Number of distinct patids
 death %>% distinct(patid) %>% count()
-#628,750
+#4,256,372
 
 # Number with death date (will remove those without)
 death %>% filter(!is.na(reg_date_of_death)) %>% distinct(patid) %>% count()
-#628,745
+#4,256,329
 
+
+# Remove patients from diabetes download (as won't have be in patient table)
+death <- death %>% anti_join(cprd$tables$old_patient, by="patid")
+
+death %>% distinct(patid) %>% count()
+#3,627,622
+
+death %>% filter(!is.na(reg_date_of_death)) %>% distinct(patid) %>% count()
+#3,627,584
 
 
 # Choose reliable date of death for those with multiple dates, based on cprd_ddate/earliest date where cprd_ddate not available
@@ -78,7 +94,7 @@ interim_1 <- death_multiple_dates %>%
   analysis$cached("interim_1")
 
 interim_1 %>% distinct(patid) %>% count()
-#628745 as above
+#3,627,584 as above
 
 
 
@@ -104,6 +120,7 @@ pod_cod <- interim_1 %>%
   group_by(patid) %>%
   dbplyr::window_order(pod_cod) %>%
   mutate(id=paste0("pod_cod_", row_number())) %>%
+  dbplyr::window_order() %>%
   ungroup() %>%
   pivot_wider(id_cols=patid, names_from=id, values_from=pod_cod) %>%
   analysis$cached("pod_cod", unique_indexes="patid")
@@ -119,6 +136,7 @@ pod_establishment_site <- interim_1 %>%
   group_by(patid) %>%
   dbplyr::window_order(pod_establishment_type) %>%
   mutate(id=paste0("pod_establishment_type_", row_number())) %>%
+  dbplyr::window_order() %>%
   ungroup() %>%
   pivot_wider(id_cols=patid, names_from=id, values_from=pod_establishment_type) %>%
   analysis$cached("pod_establishment_site", unique_indexes="patid")
@@ -136,6 +154,7 @@ nhs_indicator <- interim_1 %>%
   group_by(patid) %>%
   dbplyr::window_order(nhs_indicator) %>%
   mutate(id=paste0("nhs_indicator_", row_number())) %>%
+  dbplyr::window_order() %>%
   ungroup() %>%
   pivot_wider(id_cols=patid, names_from=id, values_from=nhs_indicator) %>%
   analysis$cached("nhs_indicator", unique_indexes="patid")
@@ -143,123 +162,83 @@ nhs_indicator <- interim_1 %>%
 
 # Secondary causes of death
 ## Only include unique values for each patient
+## Add decimal points back into ICD10 codes
 
-## Convert ICD9 to ICD10: using UKBB lookup which is based on:
-### TRUD files used from 'NHS ICD-10 5th Edition data files' file pack: ICD10_Edition5_CodesAndTitlesAndMetadataFileSpecification_GB_20160401, ICD10_Edition5_TablesOfCodingEquivalencesSpecification(analysis)_GB_20160401. [Date downloaded: 21/06/2019]
-### Additional files: NHS Centre for Coding and Classification. Tables of Equivalence A Specification of the File Structure for Tables of Equivalence between ICD-9 and ICD-10 Version 1.1. Sep 1994.
-### Not all had translation - mapped to nearest definition (all seemed to map well in terms of definition)
-### Only 15 codes, 14 unique values
-
-icd9_secondary_causes <- interim_1 %>%
+icd9_secondary_causes_wide <- interim_1 %>%
   select(patid, starts_with("icd9_orig")) %>%
- pivot_longer(cols=c(starts_with("icd9_orig"))) %>%
+  pivot_longer(cols=c(starts_with("icd9_orig"))) %>%
   filter(!is.na(value)) %>%
-  mutate(cause=case_when(value==1749 ~ "C509",
-                         value==1990 ~ "C800",
-                         value==1991 ~ "C809",
-                         value==2387 ~ "D479",
-                         value==2429 ~ "E059", 
-                         value==2500 ~ "E119",
-                         value==380 ~ "H60",
-                         value==4019 ~ "I10",
-                         value==410 ~ "I21",
-                         value==485 ~ "J180",
-                         value==4823 ~ "J13",
-                         value==486 ~ "J188",
-                         value==492 ~ "J43",
-                         value==5329 ~ "K269")) %>%
-  select(patid, cause) %>%
-  analysis$cached("icd9_secondary_causes", indexes="patid")
+  distinct(patid, value) %>%
+  group_by(patid) %>%
+  dbplyr::window_order(value) %>%
+  mutate(id=paste0("cause_icd9_", row_number())) %>%
+  dbplyr::window_order() %>%
+  ungroup() %>%
+  pivot_wider(id_cols="patid", names_from="id", values_from="value") %>%
+  analysis$cached("icd9_secondary_causes_wide", unique_indexes="patid")
+# max number of causes = 12
 
-
-# Make long table of all secondary cause then convert to wide
-# Also add in decimal points
-all_secondary_causes_long <- interim_1 %>%
+icd10_secondary_causes_wide <- interim_1 %>%
   select(patid, starts_with("s_cod_code")) %>%
   pivot_longer(cols=c(starts_with("s_cod_code"))) %>%
   filter(!is.na(value)) %>%
-  rename(cause=value) %>%
-  select(patid, cause) %>%
-  union_all(icd9_secondary_causes) %>%
-  group_by(patid, cause) %>%
-  summarise(id=n()) %>%
-  ungroup() %>%
-  select(-id) %>%
-  mutate(cause=ifelse(nchar(cause)==3, cause, paste0(substr(cause, 1, 3), ".", substr(cause, 4, 4)))) %>%
-  analysis$cached("all_secondary_causes_long", indexes="patid")
-  
-all_secondary_causes_wide <- all_secondary_causes_long %>%
+  distinct(patid, value) %>%
+  mutate(value=ifelse(nchar(value)==3, value, paste0(substr(value, 1, 3), ".", substr(value, 4, 4)))) %>%
   group_by(patid) %>%
-  dbplyr::window_order(cause) %>%
+  dbplyr::window_order(value) %>%
   mutate(id=paste0("cause_", row_number())) %>%
   dbplyr::window_order() %>%
   ungroup() %>%
-  pivot_wider(id_cols="patid", names_from="id", values_from="cause") %>%
-  analysis$cached("all_secondary_causes_wide", unique_indexes="patid")
+  pivot_wider(id_cols="patid", names_from="id", values_from="value") %>%
+  analysis$cached("icd10_secondary_causes_wide", unique_indexes="patid")
 # max number of causes = 17
-
 
 
 # Underlying cause of death
 ## Only include unique values for each patient
 
-## Convert ICD9 to ICD10: using UKBB lookup which is based on:
-### Only 5 codes
-
-icd9_underlying_causes <- interim_1 %>%
+icd9_underlying_causes_wide <- interim_1 %>%
   select(patid, s_underlying_cod_icd9) %>%
   filter(!is.na(s_underlying_cod_icd9)) %>%
-  mutate(underlying_cause=case_when(s_underlying_cod_icd9==1749 ~ "C509",
-                                    s_underlying_cod_icd9==1991 ~ "C809",
-                                    s_underlying_cod_icd9==2429 ~ "E059", 
-                                    s_underlying_cod_icd9==485 ~ "J180",
-                                    s_underlying_cod_icd9==492 ~ "J43")) %>%
-  select(patid, underlying_cause) %>%
-  analysis$cached("icd9_underlying_causes", indexes="patid")
-
-
-# Make long table of all primary causes then convert to wide
-# Also add in decimal points
-all_underlying_causes_long <- interim_1 %>%
+  distinct(patid, s_underlying_cod_icd9) %>%
+  group_by(patid) %>%
+  dbplyr::window_order(s_underlying_cod_icd9) %>%
+  mutate(id=paste0("underlying_cause_icd9_", row_number())) %>%
+  dbplyr::window_order() %>%
+  ungroup() %>%
+  pivot_wider(id_cols="patid", names_from="id", values_from="s_underlying_cod_icd9") %>%
+  analysis$cached("icd9_underlying_causes_wide", unique_indexes="patid")
+# max number of causes = 2
+  
+icd10_underlying_causes_wide <- interim_1 %>%
   select(patid, s_underlying_cod_icd10) %>%
   filter(!is.na(s_underlying_cod_icd10)) %>%
-  rename(underlying_cause=s_underlying_cod_icd10) %>%
-  select(patid, underlying_cause) %>%
-  union_all(icd9_underlying_causes) %>%
-  group_by(patid, underlying_cause) %>%
-  summarise(id=n()) %>%
-  ungroup() %>%
-  select(-id) %>%
-  mutate(underlying_cause=ifelse(nchar(underlying_cause)==3, underlying_cause, paste0(substr(underlying_cause, 1, 3), ".", substr(underlying_cause, 4, 4)))) %>%
-  analysis$cached("all_underlying_causes_long", indexes="patid")
-
-
-all_underlying_causes_wide <- all_underlying_causes_long %>%
+  distinct(patid, s_underlying_cod_icd10) %>%
+  mutate(s_underlying_cod_icd10=ifelse(nchar(s_underlying_cod_icd10)==3, s_underlying_cod_icd10, paste0(substr(s_underlying_cod_icd10, 1, 3), ".", substr(s_underlying_cod_icd10, 4, 4)))) %>%
   group_by(patid) %>%
-  dbplyr::window_order(underlying_cause) %>%
+  dbplyr::window_order(s_underlying_cod_icd10) %>%
   mutate(id=paste0("underlying_cause_", row_number())) %>%
   dbplyr::window_order() %>%
   ungroup() %>%
-  pivot_wider(id_cols="patid", names_from="id", values_from="underlying_cause") %>%
-  analysis$cached("all_underlying_causes_wide", unique_indexes="patid")
+  pivot_wider(id_cols="patid", names_from="id", values_from="s_underlying_cod_icd10") %>%
+  analysis$cached("icd10_underlying_causes_wide", unique_indexes="patid")
 # max number of causes = 3
 
 
-
 final <- interim_1 %>%
-  group_by(patid, pracid, reg_date_of_death) %>%
-  summarise(id=n()) %>%
-  ungroup() %>%
-  select(-id) %>%
+  distinct(patid, pracid, reg_date_of_death) %>%
   left_join(pod_cod, by="patid") %>%
   left_join(pod_establishment_site, by="patid") %>%
   left_join(nhs_indicator, by="patid") %>%
-  left_join(all_secondary_causes_wide, by="patid") %>%
-  left_join(all_underlying_causes_wide, by="patid") %>%
+  left_join(icd9_secondary_causes_wide, by="patid") %>%
+  left_join(icd10_secondary_causes_wide, by="patid") %>%
+  left_join(icd9_underlying_causes_wide, by="patid") %>%
+  left_join(icd10_underlying_causes_wide, by="patid") %>%
   analysis$cached("final", unique_indexes="patid")
 
-#628745 as above
+final  %>% count()
+#3,627,584 as above
 
-# manually copied into cprd_jun24dm_data via MySQL (see death_data_processing SQL script), and all columns indexed
+# manually copied into cprd_jun24nondm_data via MySQL (see death_data_processing SQL script), and all columns indexed
 
 
