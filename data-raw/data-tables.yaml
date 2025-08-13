@@ -516,7 +516,7 @@ tables:
     load: |
       LOAD DATA INFILE '{path}' IGNORE
       INTO TABLE {dataDb}.{hesDiagnosisHosp}
-      FIELDS TERMINATED BY '\t'
+      FIELDS TERMINATED BY '\t' ESCAPED BY '\\'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (patid, spno, @admidate, @discharged, @ICD, @ICDx)
@@ -541,7 +541,7 @@ tables:
     load: |
       LOAD DATA INFILE '{path}' IGNORE
       INTO TABLE {dataDb}.{hesPrimaryDiagHosp}
-      FIELDS TERMINATED BY '\t'
+      FIELDS TERMINATED BY '\t' ESCAPED BY '\\'
       LINES TERMINATED BY '\r\n'
       IGNORE 1 LINES
       (patid, spno, @admidate, @discharged, ICD_PRIMARY, @ICDx)
