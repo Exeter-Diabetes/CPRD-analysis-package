@@ -984,7 +984,7 @@ tables:
       CREATE TABLE IF NOT EXISTS {dataDb}.{icd10Dict}
       (icd10 VARCHAR(6),
       alt_code VARCHAR(5),
-      usage TINYINT,
+      usage_ TINYINT,
       usage_uk TINYINT,
       description VARCHAR(200),
       modifier_4 VARCHAR(100),
@@ -1003,7 +1003,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\n'
       IGNORE 1 LINES
-      (icd10, usage, alt_code, usage_uk, description, @modifier_4, @modifier_5, @qualifiers, @gender_mask, @min_age, @max_age, @tree_description)
+      (icd10, usage_, alt_code, usage_uk, description, @modifier_4, @modifier_5, @qualifiers, @gender_mask, @min_age, @max_age, @tree_description)
       SET modifier_4 = NULLIF(@modifier_4,''),
       modifier_5 = NULLIF(@modifier_5,''),
       qualifiers = NULLIF(@qualifiers,''),
