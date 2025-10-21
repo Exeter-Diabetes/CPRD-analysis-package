@@ -984,7 +984,7 @@ tables:
       CREATE TABLE IF NOT EXISTS {dataDb}.{icd10Dict}
       (icd10 VARCHAR(6),
       alt_code VARCHAR(5),
-      usage_ TINYINT,
+      usage_ VARCHAR(8),
       usage_uk TINYINT,
       description VARCHAR(200),
       modifier_4 VARCHAR(100),
