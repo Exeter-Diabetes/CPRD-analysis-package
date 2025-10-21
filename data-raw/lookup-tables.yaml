@@ -1003,7 +1003,7 @@ tables:
       FIELDS TERMINATED BY '\t'
       LINES TERMINATED BY '\n'
       IGNORE 1 LINES
-      (icd10, usage_, alt_code, usage_uk, description, @modifier_4, @modifier_5, @qualifiers, @gender_mask, @min_age, @max_age, @tree_description)
+      (icd10, alt_code, usage_, usage_uk, description, @modifier_4, @modifier_5, @qualifiers, @gender_mask, @min_age, @max_age, @tree_description)
       SET modifier_4 = NULLIF(@modifier_4,''),
       modifier_5 = NULLIF(@modifier_5,''),
       qualifiers = NULLIF(@qualifiers,''),
