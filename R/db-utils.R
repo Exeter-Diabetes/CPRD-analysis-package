@@ -3,9 +3,21 @@
 
 # https://github.com/rstudio/pool
 
+setupSession = function(sessionConfig, con) {
+  for (name in names(sessionConfig)) {
+   value=sessionConfig[[name]]
+   message("setting option... ",name,": ",value)
+   DBI::dbSendStatement(con,glue::glue("SET {name}={value};", name=name, value=value)) %>% DBI::dbClearResult()
+  }
+}
+
+.dry_run = function() {
+  return(Sys.getenv("DRY_RUN","no") == "yes")
+}
+
 ## Functions for modifying db based on yanl queries
 
-execSql = function(sqlTemplates, tableName, cmd, params=sqlTemplates$naming, verbose=FALSE, debug=FALSE) {
+execSql = function(sqlTemplates, tableName, cmd, params=sqlTemplates$naming, verbose=FALSE, debug=.dry_run()) {
   env = rlang::caller_env()
   if(verbose) message("executing: ",cmd," for table ",tableName)
   sqlTemplate = sqlTemplates$tables[[tableName]][[cmd]]
@@ -14,7 +26,8 @@ execSql = function(sqlTemplates, tableName, cmd, params=sqlTemplates$naming, ver
     return(NULL)
   }
   sql = glue::glue_data(params, sqlTemplate,.envir = env)
-  if(debug) message("sql: ",sql)
+  if (debug) message("sql: ",sql)
+  if (.dry_run()) sql = "DO 0;" # SQL NO-OP
   tmp = tryCatch(
     DBI::dbSendStatement(con,sql),
     error = function(e) {
@@ -24,7 +37,19 @@ execSql = function(sqlTemplates, tableName, cmd, params=sqlTemplates$naming, ver
   return(tmp)
 }
 
-buildIndexes = function(sqlTemplates, params=sqlTemplates$naming, verbose=FALSE, debug=FALSE) {
+checkIndexExists = function(con, tableName, indexName) {
+  # there is no way to create an index if exists
+  check = DBI::dbSendStatement(con,sprintf("SHOW INDEX FROM %s where Key_name = '%s';", tableName, indexName))
+  # SELECT COUNT(*)>0 as found FROM INFORMATION_SCHEMA.statistics
+  # WHERE table_schema = 'cprd_data' AND table_name = 'drug_issue' AND index_name = "x_drug_issue_patid";
+  found = DBI::dbFetch(check)
+  DBI::dbClearResult(check)
+  return(nrow(found) > 0)
+}
+
+# This has to try create an index and catch the error as there is no "if exists"
+# syntax for indexes.
+buildIndexes = function(sqlTemplates, params=sqlTemplates$naming, verbose=FALSE, debug=.dry_run()) {
   env = rlang::caller_env()
   if(verbose) message("indexing")
   sqlIndexes = sqlTemplates$indexes
@@ -32,6 +57,7 @@ buildIndexes = function(sqlTemplates, params=sqlTemplates$naming, verbose=FALSE,
     unname(sapply(sqlIndexes, function(i) glue::glue_data(.x=params,i,.envir = env)))
   for (sql in sqlIndexes) {
     if (verbose) message("Query: ",sql)
+    if (.dry_run()) sql = "DO 0;" # SQL NO-OP
     if (!debug) {
       tryCatch(
         DBI::dbSendStatement(con,sql) %>% DBI::dbClearResult(),

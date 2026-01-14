@@ -1,5 +1,5 @@
 Package: aurum
-Title: What the Package Does (One Line, Title Case)
+Title: Access and build an aurum MySQL instance
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "First",
@@ -15,7 +15,10 @@ Suggests:
     knitr,
     rmarkdown,
     testthat,
-    openssl
+    openssl,
+    slackr,
+    optparse,
+    tidyverse
 VignetteBuilder: knitr
 Imports: 
     dplyr,
@@ -25,7 +28,8 @@ Imports:
     magrittr,
     config,
     here,
-    RMariaDB
+    RMariaDB,
+    yaml
 RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)

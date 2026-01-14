@@ -38,6 +38,11 @@ AbstractCPRDConnection = R6::R6Class("AbstractCPRDConnection", public=list(
       # No existing connection
       message("Initialising... using config: ",cprdConf,"; option: ",cprdEnv)
       if(!file.exists(cprdConf)) stop("config file not found: ",cprdConf)
+      tmp = yaml::yaml.load(readr::read_file(cprdConf))
+      if (!(cprdEnv %in% names(tmp))) stop(sprintf("
+cprdEnv '%s' is not found in configuration: %s'.
+allowable values for cprdEnv are: %s.
+", cprdEnv, cprdConf, paste0("'",names(tmp),"'", collapse=", ")))
       cfg = config::get(file = cprdConf,config = cprdEnv)
       # connect to the database
       # TODO: consider managing the database connection with "pool" (https://github.com/rstudio/pool)

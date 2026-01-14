@@ -5,70 +5,90 @@
 # An optional second command line argument defines the path to the .aurum.yml
 # file with database connection details (default = "~/.aurum.full-load.yaml")
 
-here::i_am("data-raw/cprd-data-setup.R")
-setwd(here::here())
-source(here::here("data-raw/load-utils.R"))
-.check_dependencies()
-# load utilities functions from the rest of the package
-source(here::here("R/db-utils.R"))
-source(here::here("R/7zip.R"))
-
 args = commandArgs(trailingOnly=TRUE)
-
-opt = OptionParser() %>%
-  add_option(
-    c("-d", "--dry-run"),
-    action="store_true",
-    default=FALSE,
-    help="simulate a load without performing it"
-  ) %>%
-  add_option(
-    c("-e", "--env"),
-    type="character",
-    default="<no default>",
-    help="the config setup [default \"%default\"]"
-  ) %>%
-  add_option(
-    c("-c", "--config"),
-    type="character",
-    default="~/.aurum.load.yaml",
-    help="A filename pointing to a yaml configuration file [default \"%default\"]"
-  ) %>% parse_args(
-    # args = c("--help")
-    args = c("--dry-run", "--config=~/.aurum.load.yaml", "--env=full-dev" )
-  )
 
 ## Setup the loader, get the configuration, initialise the slack bot and connect to the database ----
 
+# Running this as a script on the command line gave me some issues because
+# the easybuild system does not correctly configure the libPaths.
+# TODO: This is probably possible to fix somehow but results in package version conflicts
+.libPaths(c("~/R/x86_64-pc-linux-gnu-library/4.0",
+            "/software/easybuild/software/R-bundle-Packages/4.0.3-foss-2020a",
+            "/software/easybuild/software/R/4.0.3-foss-2020a/lib64/R/library"))
+
 # find the cprd environment configuration
-Sys.setenv("DRY_RUN" = if (opt$`dry-run`) "yes" else "no")
+if(length(args)<1) {
+  cprdEnv = getOption("cprd.environment",default="dev")
+} else {
+  cprdEnv = args[1]
+}
+if(!cprdEnv %in% c("dev","prod")) stop("no such environment: ",cprdEnv)
 
-# check config consistent and load
-cfg = .load_config(opt)
+# find the config file location
+if(length(args) > 1) {
+  cprdConf = args[2]
+} else {
+  cprdConf = getOption("cprd.config.load",default="~/.aurum.full-load.yaml")
+}
+if(!file.exists(cprdConf)) stop("config file not found: ",cprdConf)
 
-# setup slack bot - don't use slack if dry run
-.setup_slack(cfg)
+# Check needed libraries are set up and if no set them up:
+# check for dependencies and install them if needed
+library(tidyverse)
+here::i_am("data-raw/cprd-data-setup.R")
+setwd(here::here())
+
+if (!"config" %in% rownames(installed.packages()))
+  install.packages("config", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
+if (!"here" %in% rownames(installed.packages()))
+  install.packages("here", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
+if (!"openssl" %in% rownames(installed.packages()))
+  install.packages("openssl", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
+if (!"slackr" %in% rownames(installed.packages()))
+  install.packages("slackr", repos="https://www.stats.bris.ac.uk/R/", lib=Sys.getenv("R_LIBS_USER"))
+
+# load utilities functions from the rest of the package
+source(here::here("R/db-utils.R"))
+source(here::here("R/7zip.R"))
+source(here::here("data-raw/load-utils.R"))
+
+# load configuration and set up the slack bot.
+message("Initialising... using config: ",cprdConf,"; option:",cprdEnv)
+cfg = config::get(file = cprdConf,config = cprdEnv)
+# setup slack bot
+if (!is.null(cfg$slackToken)) {
+  slackr::slackr_setup(channel = cfg$slackChannel, incoming_webhook_url = cfg$slackWebhook, token = cfg$slackToken)
+  Sys.setenv(USE_SLACK = "yes")
+} else {
+  warning("No slack set up detected.")
+}
+
+# configure halting during daytime
+if (isTRUE(cfg$ignoreSleep)) {
+  Sys.setenv(IGNORE_SLEEP = "yes")
+}
 
 # Send a start message
 .slack_message(
   sprintf("Initialising loader: %s",toupper(cprdEnv)),
   sprintf("reference data directory: %s",cfg$lookupSourceDirectory),
-  sprintf("table data directory: %s", paste0(cfg$dataSourceDirectories, collapse = "\n"))
+  sprintf("table data directory: %s", cfg$dataSourceDirectories)
 )
 
 # Connect to the database and switch to the loader role:
-con <- DBI::dbConnect(
-  RMariaDB::MariaDB(),
-  user = cfg$user, pass=cfg$password,
-  dbname=cfg$dataDatabase,
-  bigint="integer64",
-  load_data_local_infile = TRUE)
-
+con <- DBI::dbConnect(RMariaDB::MariaDB(), user = cfg$user, pass=cfg$password, dbname=cfg$dataDatabase, bigint="integer64", load_data_local_infile = TRUE)
 DBI::dbSendStatement(con,"SET ROLE 'role_cprd_loader'") %>% DBI::dbClearResult()
-setupSession(cfg$sessionConfig)
+
+
 
 dataDb = cfg$dataDatabase
 
+# sessionConfig = cfg$sessionConfig
+# for (name in names(sessionConfig)) {
+#  value=sessionConfig[[name]]
+#  message("setting option... ",name,": ",value)
+#  DBI::dbSendStatement(con,glue::glue("SET {name}={value};", name=name, value=value)) %>% DBI::dbClearResult()
+#}
 
 ## Setup operation tables including log table ----
 
@@ -386,22 +406,17 @@ indexSkips = 0
 
 message("indexing")
 sqlIndexes = sqlTemplates$indexes
-sqlIndexes = unname(sapply(sqlIndexes, function(sql) glue::glue_data(.x=params,sql)))
+sqlIndexes = unname(sapply(sqlIndexes, function(i) glue::glue_data(.x=params,i)))
 i=0
 report = NULL
 for (sql in sqlIndexes) {
   i = i+1
   .sleepDuringDay()
-  indexName = stringr::str_extract(sql, "CREATE INDEX (.*?) ON", 1)
-  tableName = stringr::str_extract(sql, "ON (.*?) \\(", 1)
 
   status = tryCatch({
-      if (!checkIndexExists(con, tableName, indexName)) {
-        DBI::dbSendStatement(con,sql) %>% DBI::dbClearResult()
-        sprintf("Created index %d/%d: %s", i,length(sqlIndexes), indexName)
-      } else {
-        sprintf("Skipped existing index %d/%d: %s", i,length(sqlIndexes), indexName)
-      }
+      # there is no way to create an index if exists
+      DBI::dbSendStatement(con,sql) %>% DBI::dbClearResult()
+      sprintf("Created index %d/%d: %s", i,length(sqlIndexes))
     },
     error = function(e) {
       # ignore duplicate key name errors
