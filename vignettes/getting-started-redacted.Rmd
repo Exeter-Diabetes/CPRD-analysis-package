@@ -30,7 +30,7 @@ The config file must be similar as follows:
 
 ```YAML
 default:
-  user: <your cprd database user>
+  user: <your cprd database username>
   password: <your cprd database password>
   server: "localhost"
   port: 3306  
@@ -72,18 +72,17 @@ test-remote:
 with this SSH configuration (`~/.ssh/config`)
 
 ```console
-host hashbang
-    HostName <jumphost>
-    User <your exeter username>
-
-host <dbservername>
-    HostName <dbserver>
-    User <your exeter username>
+host <servername>
+    HostName <serveraddress>
+    User <serverusername>
     Cipher chacha20-poly1305@openssh.com
     ForwardX11 yes
     Compression yes
     LocalForward 3307 127.0.0.1:3306
-    ProxyCommand ssh hashbang -W %h:%p
+
+Host *
+    ServerAliveInterval 15
+    ServerAliveCountMax 4
 ```
 
 If you are using VPN it should be possible to do the same thing with:
