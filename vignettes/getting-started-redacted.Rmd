@@ -35,13 +35,7 @@ default:
   server: "localhost"
   port: 3306  
   sessionConfig:
-    SESSION sort_buffer_size: 2*1024*1024-1
-    SESSION myisam_sort_buffer_size: 2*1024*1024-1
-    SESSION read_buffer_size: 1024*1024*1024-1
-    SESSION read_rnd_buffer_size: 1024*1024*1024-1
-    SESSION join_buffer_size: 256*1024*1024-1
-    SESSION max_heap_table_size: 4*1024*1024*1024-1
-    SESSION tmp_table_size: 4*1024*1024*1024-1
+    SESSION default_storage_engine: "MyISAM"
   
 analysis:
   dataDatabase: cprd_data
