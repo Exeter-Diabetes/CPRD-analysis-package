@@ -30,18 +30,12 @@ The config file must be similar as follows:
 
 ```YAML
 default:
-  user: <your cprd database user>
+  user: <your cprd database username>
   password: <your cprd database password>
   server: "localhost"
   port: 3306  
   sessionConfig:
-    SESSION sort_buffer_size: 2*1024*1024-1
-    SESSION myisam_sort_buffer_size: 2*1024*1024-1
-    SESSION read_buffer_size: 1024*1024*1024-1
-    SESSION read_rnd_buffer_size: 1024*1024*1024-1
-    SESSION join_buffer_size: 256*1024*1024-1
-    SESSION max_heap_table_size: 4*1024*1024*1024-1
-    SESSION tmp_table_size: 4*1024*1024*1024-1
+    SESSION default_storage_engine: "MyISAM"
   
 analysis:
   dataDatabase: cprd_data
@@ -72,18 +66,17 @@ test-remote:
 with this SSH configuration (`~/.ssh/config`)
 
 ```console
-host hashbang
-    HostName <jumphost>
-    User <your exeter username>
-
-host <dbservername>
-    HostName <dbserver>
-    User <your exeter username>
+host <servername>
+    HostName <serveraddress>
+    User <serverusername>
     Cipher chacha20-poly1305@openssh.com
     ForwardX11 yes
     Compression yes
     LocalForward 3307 127.0.0.1:3306
-    ProxyCommand ssh hashbang -W %h:%p
+
+Host *
+    ServerAliveInterval 15
+    ServerAliveCountMax 4
 ```
 
 If you are using VPN it should be possible to do the same thing with:
