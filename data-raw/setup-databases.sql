@@ -44,6 +44,12 @@ CREATE SCHEMA IF NOT EXISTS `cprd_jun24nondm_data` DEFAULT CHARACTER SET latin1 
 CREATE SCHEMA IF NOT EXISTS `cprd_jun24nondm_analysis` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
 
 
+# Create the the databases for 202406 non-diabetes dataset
+CREATE SCHEMA IF NOT EXISTS `cprd_mar26_full_data_dev` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+CREATE SCHEMA IF NOT EXISTS `cprd_mar26_full_data` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+CREATE SCHEMA IF NOT EXISTS `cprd_mar26_full_analysis` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+
+
 # Create the roles:
 # 1) Loader role
 # ideally this should only exist on localhost to stop people from trying to load data remotely
@@ -81,6 +87,9 @@ GRANT ALL privileges ON `cprd_jun24nondm_data_dev`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `cprd_jun24nondm_data`.* TO `role_cprd_loader`@`%`;
 GRANT ALL privileges ON `cprd_jun24nondm_analysis`.* TO `role_cprd_loader`@`%`;
 
+GRANT ALL privileges ON `cprd_mar26_full_data_dev`.* TO `role_cprd_loader`@`%`;
+GRANT ALL privileges ON `cprd_mar26_full_data`.* TO `role_cprd_loader`@`%`;
+GRANT ALL privileges ON `cprd_mar26_full_analysis`.* TO `role_cprd_loader`@`%`;
 
 # 2) Admin role
 CREATE ROLE IF NOT EXISTS `role_cprd_admin`;
@@ -115,6 +124,9 @@ GRANT SELECT ON `cprd_jun24nondm_data_dev`.* TO `role_cprd_admin`@`%`;
 GRANT SELECT ON `cprd_jun24nondm_data`.* TO `role_cprd_admin`@`%`;
 GRANT ALL privileges ON `cprd_jun24nondm_analysis`.* TO `role_cprd_admin`@`%`;
 
+GRANT SELECT ON `cprd_mar26_full_data_dev`.* TO `role_cprd_admin`@`%`;
+GRANT SELECT ON `cprd_mar26_full_data`.* TO `role_cprd_admin`@`%`;
+GRANT ALL privileges ON `cprd_mar26_full_analysis`.* TO `role_cprd_admin`@`%`;
 
 # 3) User role
 CREATE ROLE IF NOT EXISTS `role_cprd_user`;
@@ -149,4 +161,8 @@ GRANT ALL privileges ON `cprd_jun24dm_analysis`.* TO `role_cprd_user`@`%`;
 GRANT SELECT ON `cprd_jun24nondm_data_dev`.* TO `role_cprd_user`@`%`;
 GRANT SELECT ON `cprd_jun24nondm_data`.* TO `role_cprd_user`@`%`;
 GRANT ALL privileges ON `cprd_jun24nondm_analysis`.* TO `role_cprd_user`@`%`;
+
+GRANT SELECT ON `cprd_mar26_full_data_dev`.* TO `role_cprd_user`@`%`;
+GRANT SELECT ON `cprd_mar26_full_data`.* TO `role_cprd_user`@`%`;
+GRANT ALL privileges ON `cprd_mar26_full_analysis`.* TO `role_cprd_user`@`%`;
 

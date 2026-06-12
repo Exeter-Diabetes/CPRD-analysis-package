@@ -36,3 +36,7 @@ Further work:
 * Check whether death data has decimal points in ICD10 codes or not (HES does) - in 2020 did, in 2024 didn't
 
 
+
+
+
+Need to check if any lookups have been updated, especially region!! (Check gender too)
